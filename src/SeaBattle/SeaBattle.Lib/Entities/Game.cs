@@ -17,6 +17,8 @@ namespace SeaBattle.Lib.Entities
 
         private ICollection<uint> _teamsId;
 
+        //Dictionary of fields to stores data about fields for the allocation ships by players when the game is initializing.
+        //Key - teamId, Value - startFieldId.
         private IDictionary<uint, uint> _startFieldsId;
 
         private bool _searchPlayers;

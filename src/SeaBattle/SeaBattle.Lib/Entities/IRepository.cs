@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -12,7 +8,6 @@ namespace SeaBattle.Lib.Entities
     /// <param name="T">Entity which implements IEntity.</param>
     public interface IRepository<T> where T : IEntity
     {
-        
         /// <summary>
         /// Method for get all objects from repository.
         /// </summary>
@@ -44,6 +39,5 @@ namespace SeaBattle.Lib.Entities
         /// </summary>
         /// <param name="id">Id of entities object.</param>
         void Delete(uint id);
-
     }
 }

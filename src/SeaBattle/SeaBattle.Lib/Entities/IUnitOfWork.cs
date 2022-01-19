@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SeaBattle.Lib.Entities
+﻿namespace SeaBattle.Lib.Entities
 {
     public interface IUnitOfWork
-    {
-        
+    { 
         IRepository<IGame> Games { get; }
 
         IRepository<IGameField> GameFields { get; }
@@ -24,6 +17,5 @@ namespace SeaBattle.Lib.Entities
         IRepository<IRepair> Repairs { get; }
 
         IRepository<ITeam> Teams { get; }
-
     }
 }

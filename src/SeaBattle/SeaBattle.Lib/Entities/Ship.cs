@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeaBattle.Lib.Entities
 {
     public class Ship : IShip
-    {
-        
+    { 
         private uint _id;
 
         private ShipType _type;
@@ -25,9 +22,9 @@ namespace SeaBattle.Lib.Entities
         
         public uint Id { get => _id; }
         
-        public ushort AttackRange { get => _weapons?.Max(w => w.AttackRange) ?? 0; }
+        public ushort AttackRange { get => _weapons?.FirstOrDefault()?.AttackRange ?? 0; }
         
-        public ushort RepairRange { get => _repairs?.Max(r => r.RepairRange) ?? 0; }
+        public ushort RepairRange { get => _repairs?.FirstOrDefault()?.RepairRange ?? 0; }
         
         public ushort Damage { get => Convert.ToUInt16(_weapons?.Sum(w => w.Damage) ?? 0); }
 

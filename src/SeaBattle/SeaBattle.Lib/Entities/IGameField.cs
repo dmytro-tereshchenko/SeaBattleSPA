@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace SeaBattle.Lib.Entities
 {
     public interface IGameField : IEntity
     {
-        
         ushort SizeX { get; }
 
         ushort SizeY { get; }
@@ -17,6 +12,5 @@ namespace SeaBattle.Lib.Entities
         IGameShip this[ushort u, ushort y] { get; set; }
 
         ICollection<string> GetFieldWithShips(uint? teamId = null);
-
     }
 }

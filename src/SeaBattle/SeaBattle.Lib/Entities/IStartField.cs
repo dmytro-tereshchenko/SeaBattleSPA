@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace SeaBattle.Lib.Entities
 {
     public interface IStartField : IEntity
     {
-
         IGameField GameField { get; set; }
 
         //labels for gamefield when the player can put his own ships on start field (true - can; false - can't)
@@ -21,6 +16,5 @@ namespace SeaBattle.Lib.Entities
 
         //ships that bought but don't put to the field
         ICollection<IGameShip> Ships { get; set; }
-
     }
 }
