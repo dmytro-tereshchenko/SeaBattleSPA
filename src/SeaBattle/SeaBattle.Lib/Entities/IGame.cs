@@ -14,13 +14,13 @@ namespace SeaBattle.Lib.Entities
 
         string CurrentTeamMove { get; set; }
 
-        IDictionary<string, bool> GivenStartFields { get; }
+        IDictionary<uint, bool> GivenStartFields { get; }
 
         bool EndGame { get; set; }
 
         ICollection<uint> TeamsId { get; }
 
-        IDictionary<string, uint> StartFieldsId { get; }
+        IDictionary<uint, uint> StartFieldsId { get; }
 
         bool SearchPlayers { get; set; }
     }

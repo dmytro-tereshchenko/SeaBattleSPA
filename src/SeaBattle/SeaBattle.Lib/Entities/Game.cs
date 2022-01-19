@@ -11,13 +11,13 @@ namespace SeaBattle.Lib.Entities
 
         private string _currentTeamMove;
 
-        private IDictionary<string, bool> _givenStartFields;
+        private IDictionary<uint, bool> _givenStartFields;
 
         private bool _endGame;
 
         private ICollection<uint> _teamsId;
 
-        private IDictionary<string, uint> _startFieldsId;
+        private IDictionary<uint, uint> _startFieldsId;
 
         private bool _searchPlayers;
 
@@ -29,22 +29,22 @@ namespace SeaBattle.Lib.Entities
 
         public string CurrentTeamMove { get => _currentTeamMove; set => _currentTeamMove = value; }
         
-        public IDictionary<string, bool> GivenStartFields { get => _givenStartFields; }
+        public IDictionary<uint, bool> GivenStartFields { get => _givenStartFields; }
         
         public bool EndGame { get => _endGame; set => _endGame = value; }
         
         public ICollection<uint> TeamsId { get => _teamsId; }
         
-        public IDictionary<string, uint> StartFieldsId { get => _startFieldsId; }
+        public IDictionary<uint, uint> StartFieldsId { get => _startFieldsId; }
         
         public bool SearchPlayers { get => _searchPlayers; set => _searchPlayers = value; }
         
         public Game(uint id)
         {
             _id = id;
-            _givenStartFields = new Dictionary<string, bool>();
+            _givenStartFields = new Dictionary<uint, bool>();
             _teamsId = new List<uint>();
-            _startFieldsId = new Dictionary<string, uint>();
+            _startFieldsId = new Dictionary<uint, uint>();
         }
     }
 }
