@@ -39,9 +39,13 @@ namespace SeaBattle.Lib.Entities
         
         public bool SearchPlayers { get => _searchPlayers; set => _searchPlayers = value; }
         
-        public Game(uint id)
+        public Game(uint id): this()
         {
             _id = id;
+        }
+
+        public Game()
+        {
             _givenStartFields = new Dictionary<uint, bool>();
             _teamsId = new List<uint>();
             _startFieldsId = new Dictionary<uint, uint>();
