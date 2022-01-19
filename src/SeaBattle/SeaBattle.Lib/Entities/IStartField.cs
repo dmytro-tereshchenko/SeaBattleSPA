@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace SeaBattle.Lib.Entities
 {
-    public interface IStartField
+    public interface IStartField : IEntity
     {
-        uint Id { get; }
+
         IGameField GameField { get; set; }
 
         //labels for gamefield when the player can put his own ships on start field (true - can; false - can't)
         bool[,] FieldLabels { get; set; }
+        
         string Team { get; set; }
 
         //points for buying ships
@@ -20,5 +21,6 @@ namespace SeaBattle.Lib.Entities
 
         //ships that bought but don't put to the field
         ICollection<IGameShip> Ships { get; set; }
+
     }
 }

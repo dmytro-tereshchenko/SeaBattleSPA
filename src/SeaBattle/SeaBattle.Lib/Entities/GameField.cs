@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SeaBattle.Lib.Entities
 {
-    public class GameField : IGameField, IEntity
+    public class GameField : IGameField
     {
         private uint _id;
 
@@ -15,9 +15,13 @@ namespace SeaBattle.Lib.Entities
         private ushort _sizeY;
 
         protected IGameShip[,] _gameShips;
+
         public uint Id { get => _id; }
+
         public ushort SizeX { get => _sizeX; }
+
         public ushort SizeY { get => _sizeY; }
+
         //numeration from "1"
         public IGameShip this[ushort x, ushort y]
         {

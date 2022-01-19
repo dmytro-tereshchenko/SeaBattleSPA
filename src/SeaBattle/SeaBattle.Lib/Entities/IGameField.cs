@@ -6,14 +6,17 @@ using System.Threading.Tasks;
 
 namespace SeaBattle.Lib.Entities
 {
-    public interface IGameField
+    public interface IGameField : IEntity
     {
-        uint Id { get; }
+        
         ushort SizeX { get; }
+
         ushort SizeY { get; }
 
         //numeration from "1"
         IGameShip this[ushort u, ushort y] { get; set; }
+
         ICollection<string> PrintFieldWithShips(string team = null);
+
     }
 }

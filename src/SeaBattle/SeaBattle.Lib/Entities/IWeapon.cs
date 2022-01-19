@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace SeaBattle.Lib.Entities
 {
-    public interface IWeapon
+    public interface IWeapon : IEntity
     {
-        uint Id { get; }
+        
         ushort Damage { get; }
+
         ushort AttackRange { get; }
+
     }
 }

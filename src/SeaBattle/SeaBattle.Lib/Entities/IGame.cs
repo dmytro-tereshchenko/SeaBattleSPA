@@ -6,17 +6,24 @@ using System.Threading.Tasks;
 
 namespace SeaBattle.Lib.Entities
 {
-    public interface IGame
+    public interface IGame: IEntity
     {
-        uint Id { get; }
         uint FieldId { get; set; }
-        byte NumberOfTeam { get; set; }
+
+        byte NumberOfTeam { get; }
+
         string CurrentTeamMove { get; set; }
+
         IDictionary<string, bool> ReadyTeams { get; }
+
         IDictionary<string, bool> GivenStartFields { get; }
+
         bool EndGame { get; set; }
-        ICollection<string> Teams { get; }
+
+        ICollection<uint> TeamsId { get; }
+
         IDictionary<string, uint> StartFieldsId { get; }
+
         bool SearchPlayers { get; set; }
     }
 }

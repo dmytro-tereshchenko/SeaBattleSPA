@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace SeaBattle.Lib.Entities
 {
-    public interface IRepair
+    public interface IRepair : IEntity
     {
-        uint Id { get; }
+        
         ushort RepairPower { get; }
+        
         ushort RepairRange { get; }
     }
 }

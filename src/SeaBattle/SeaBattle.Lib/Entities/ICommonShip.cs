@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 namespace SeaBattle.Lib.Entities
 {
-    public interface ICommonShip
+    public interface ICommonShip: IEntity
     {
-        uint Id { get; }
         ushort AttackRange { get; }
+
         ushort RepairRange { get; } 
+
         ushort Damage { get; }
 
         //amount of hp that ship can repair
         ushort RepairPower { get; }
+
         ShipType Type { get; }
 
         //length of the ship (cells), width = 1 cell
