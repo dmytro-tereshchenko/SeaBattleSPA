@@ -19,7 +19,7 @@ namespace SeaBattle.Lib.Entities
 
         ShipType Type { get; }
 
-        //length of the ship (cells), width = 1 cell
+        //length of the ship (cells) and amount of possible equipment slots, width = 1 cell
         byte Size { get; }
 
         //Max speed (amount of cells, that the ship can move in 1 turn)
@@ -27,9 +27,6 @@ namespace SeaBattle.Lib.Entities
 
         //Max speed
         byte Speed { get; }
-
-        //amount of slots to equip equipment
-        byte EquipmentSlots { get; }
 
     }
 }

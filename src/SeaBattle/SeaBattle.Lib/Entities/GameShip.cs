@@ -40,16 +40,13 @@ namespace SeaBattle.Lib.Entities
         
         public ShipType Type { get => _ship.Type; }
 
-        //length of the ship (cells), width = 1 cell
+        //length of the ship (cells) and amount of possible equipment slots, width = 1 cell
         public byte Size { get => _ship.Size; }
         
         public ushort MaxHp { get => _ship.MaxHp; }
 
         //Max speed (amount of cells, that the ship can move in 1 turn)
         public byte Speed { get => _ship.Speed; }
-
-        //amount of slots to equip equipment
-        public byte EquipmentSlots { get => _ship.EquipmentSlots; }
         
         public GameShip(uint id, IShip ship, uint teamId, int points, ushort hp)
         {

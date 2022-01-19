@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SeaBattle.Lib.Entities
 {
-    public class Ship : IShip, IEntity
+    public class Ship : IShip
     {
         
         private uint _id;
@@ -18,8 +18,6 @@ namespace SeaBattle.Lib.Entities
         private ushort _maxHp;
 
         private byte _speed;
-
-        private byte _equipmentSlots;
 
         protected ICollection<IWeapon> _weapons;
 
@@ -38,25 +36,21 @@ namespace SeaBattle.Lib.Entities
         
         public ShipType Type { get => _type; }
 
-        //length of the ship (cells), width = 1 cell
+        //length of the ship (cells) and amount of possible equipment slots, width = 1 cell
         public byte Size { get => _size; }
         
         public ushort MaxHp { get => _maxHp; }
 
         //Max speed (amount of cells, that the ship can move in 1 turn)
         public byte Speed { get => _speed; }
-
-        //amount of slots to equip equipment
-        public byte EquipmentSlots { get => _equipmentSlots; }
        
-        public Ship(uint id, ShipType type, byte size, ushort maxHp, byte speed, byte eSlots)
+        public Ship(uint id, ShipType type, byte size, ushort maxHp, byte speed)
         {
-            this._id = id;
-            this._type = type;
-            this._size = size;
-            this._maxHp = maxHp;
-            this._speed = speed;
-            _equipmentSlots = eSlots;
+            _id = id;
+            _type = type;
+            _size = size;
+            _maxHp = maxHp;
+            _speed = speed;
         }
         
         public void AddWeapon(IWeapon weapon)
