@@ -24,10 +24,10 @@ namespace SeaBattle.Lib.Entities
 
         public GameField(uint id, ushort sizeX, ushort sizeY)
         {
-            this._id = id;
-            this._sizeX = sizeX;
-            this._sizeY = sizeY;
-            _gameShips = new GameShip[this._sizeX, this._sizeY];
+            _id = id;
+            _sizeX = sizeX;
+            _sizeY = sizeY;
+            _gameShips = new GameShip[_sizeX, _sizeY];
         }
 
         //numeration from "1"
@@ -48,7 +48,7 @@ namespace SeaBattle.Lib.Entities
         }
 
         //null for print all teams
-        public ICollection<string> PrintFieldWithShips(string team=null)
+        public ICollection<string> GetFieldWithShips(uint? teamId=null)
         {
             //Dictionary of ships when Key=ship (IGameShip), Value=array of coordinates(X,Y) on field (List<(ushort, ushort)>)
             Dictionary<IGameShip, List<(ushort, ushort)>> ships = new Dictionary<IGameShip, List<(ushort, ushort)>>();
@@ -57,7 +57,7 @@ namespace SeaBattle.Lib.Entities
                 for(ushort j = 0; j < _sizeY; j++)
                 {
                     //filtering by team and empty cell
-                    if (_gameShips[i, j] != null && (team == null || team == _gameShips[i, j].Team))
+                    if (_gameShips[i, j] != null && (teamId == null || teamId.Value == _gameShips[i, j].TeamId))
                     {
                         if (!ships.ContainsKey(_gameShips[i, j]))
                             //create a list of coordinates if this is the first coordinate of the ship
@@ -71,7 +71,7 @@ namespace SeaBattle.Lib.Entities
             var orderedShips = ships
                 .OrderBy(s => GetDistanceToCenterField(centerField, GetGeometricCenterOfShip(s.Value)))
                 .ToList();
-            return orderedShips.Select(s => $"id={s.Key.Id}, team={s.Key.Team}, " +
+            return orderedShips.Select(s => $"id={s.Key.Id}, teamId={s.Key.TeamId}, " +
             $"coords={String.Join(", ", s.Value.Select(coord=>$"[{coord.Item1+1};{coord.Item2+1}]"))}, " +//+1 as outside the entity, numbering starts from "1"
             $"type={s.Key.Type.ToString()}, size={s.Key.Size}, hp={s.Key.Hp}/{s.Key.MaxHp}").ToList();
         }
