@@ -22,7 +22,8 @@ namespace SeaBattle.Lib.Entities
 
         public IShip Ship { get => _ship; }
 
-        public ushort Hp { get => _hp; set => _hp = Convert.ToUInt16(value < 0 ? 0 : value > MaxHp ? MaxHp : value); } //current hp
+        //current hp
+        public ushort Hp { get => _hp; set => _hp = Convert.ToUInt16(value < 0 ? 0 : value > MaxHp ? MaxHp : value); }
         
         public string Team { get => _team; }
         

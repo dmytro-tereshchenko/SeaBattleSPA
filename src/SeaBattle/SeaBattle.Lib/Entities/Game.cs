@@ -11,8 +11,6 @@ namespace SeaBattle.Lib.Entities
 
         private string _currentTeamMove;
 
-        private IDictionary<string, bool> _readyTeams;
-
         private IDictionary<string, bool> _givenStartFields;
 
         private bool _endGame;
@@ -31,8 +29,6 @@ namespace SeaBattle.Lib.Entities
 
         public string CurrentTeamMove { get => _currentTeamMove; set => _currentTeamMove = value; }
         
-        public IDictionary<string, bool> ReadyTeams { get => _readyTeams; }
-        
         public IDictionary<string, bool> GivenStartFields { get => _givenStartFields; }
         
         public bool EndGame { get => _endGame; set => _endGame = value; }
@@ -46,7 +42,6 @@ namespace SeaBattle.Lib.Entities
         public Game(uint id)
         {
             _id = id;
-            _readyTeams = new Dictionary<string, bool>();
             _givenStartFields = new Dictionary<string, bool>();
             _teamsId = new List<uint>();
             _startFieldsId = new Dictionary<string, uint>();

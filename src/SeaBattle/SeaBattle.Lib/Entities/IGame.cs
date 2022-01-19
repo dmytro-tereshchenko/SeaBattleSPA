@@ -14,8 +14,6 @@ namespace SeaBattle.Lib.Entities
 
         string CurrentTeamMove { get; set; }
 
-        IDictionary<string, bool> ReadyTeams { get; }
-
         IDictionary<string, bool> GivenStartFields { get; }
 
         bool EndGame { get; set; }

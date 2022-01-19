@@ -12,5 +12,7 @@ namespace SeaBattle.Lib.Entities
         public string Name { get; }
 
         public uint GameId { get; }
+
+        public bool Ready { get; set; }
     }
 }
