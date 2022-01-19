@@ -14,7 +14,7 @@ namespace SeaBattle.Lib.Entities
 
         private ushort _hp;
 
-        private string _team;
+        private uint _teamId;
 
         private int _points;
 
@@ -25,7 +25,7 @@ namespace SeaBattle.Lib.Entities
         //current hp
         public ushort Hp { get => _hp; set => _hp = Convert.ToUInt16(value < 0 ? 0 : value > MaxHp ? MaxHp : value); }
         
-        public string Team { get => _team; }
+        public uint TeamId { get => _teamId; }
         
         public int Points { get => _points; }
         
@@ -51,16 +51,16 @@ namespace SeaBattle.Lib.Entities
         //amount of slots to equip equipment
         public byte EquipmentSlots { get => _ship.EquipmentSlots; }
         
-        public GameShip(uint id, IShip ship, string team, int points, ushort hp)
+        public GameShip(uint id, IShip ship, uint teamId, int points, ushort hp)
         {
-            this._id = id;
-            this._ship = ship;
-            this._team = team;
-            this._points = points;
-            this._hp = hp;
+            _id = id;
+            _ship = ship;
+            _teamId = teamId;
+            _points = points;
+            _hp = hp;
         }
         
-        public GameShip(uint id, IShip ship, string team, int points) 
-            : this(id, ship, team, points, ship.MaxHp) { }
+        public GameShip(uint id, IShip ship, uint teamId, int points) 
+            : this(id, ship, teamId, points, ship.MaxHp) { }
     }
 }

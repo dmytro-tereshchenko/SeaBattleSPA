@@ -14,7 +14,7 @@ namespace SeaBattle.Lib.Entities
         //current hp
         ushort Hp { get; set; }
 
-        string Team { get; }
+        uint TeamId { get; }
 
         int Points { get; }
     }

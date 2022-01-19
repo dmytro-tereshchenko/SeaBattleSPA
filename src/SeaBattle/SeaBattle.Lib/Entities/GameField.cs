@@ -22,6 +22,14 @@ namespace SeaBattle.Lib.Entities
 
         public ushort SizeY { get => _sizeY; }
 
+        public GameField(uint id, ushort sizeX, ushort sizeY)
+        {
+            this._id = id;
+            this._sizeX = sizeX;
+            this._sizeY = sizeY;
+            _gameShips = new GameShip[this._sizeX, this._sizeY];
+        }
+
         //numeration from "1"
         public IGameShip this[ushort x, ushort y]
         {
@@ -37,14 +45,6 @@ namespace SeaBattle.Lib.Entities
                     throw new IndexOutOfRangeException($"[{x},{y}] out of range [1, 1]:[{_sizeX},{_sizeY}] in {nameof(GameField)}");
                 _gameShips[x - 1, y - 1] = value;
             } 
-        }
-
-        public GameField(uint id, ushort sizeX, ushort sizeY)
-        {
-            this._id = id;
-            this._sizeX = sizeX;
-            this._sizeY = sizeY;
-            _gameShips = new GameShip[this._sizeX, this._sizeY];
         }
 
         //null for print all teams
