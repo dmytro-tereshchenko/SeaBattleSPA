@@ -82,8 +82,8 @@ namespace SeaBattle.Lib.Entities
             float minX = ship.Min(s => s.Item1);
             float maxY = ship.Max(s => s.Item2);
             float minY = ship.Min(s => s.Item2);
-            float centerX = (maxX - minX) / 2 + 0.5f;
-            float centerY = (maxY - minY) / 2 + 0.5f;
+            float centerX = (maxX + minX) / 2 + 0.5f;
+            float centerY = (maxY + minY) / 2 + 0.5f;
             return (centerX, centerY);
         }
 
