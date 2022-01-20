@@ -62,7 +62,6 @@ namespace SeaBattle.Lib.Entities
             }
             //Set new value Id to item
             f.SetValue(item, newValue);
-            Object ob = f?.GetValue(item);
             _data.Add(item);
         }
         
