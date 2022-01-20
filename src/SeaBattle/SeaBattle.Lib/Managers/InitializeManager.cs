@@ -111,5 +111,37 @@ namespace SeaBattle.Lib.Managers
             //If we don't find a ship that area is free.
             return true;
         }
+
+        public async Task<StateCode> BuyShip(uint teamId, uint gameShipId, uint startFieldId)
+        {
+            IStartField field = _repository.StartFields.Get(startFieldId);
+            ITeam team = _repository.Teams.Get(teamId);
+            IGameShip ship = _repository.GameShips.Get(gameShipId);
+            if (field.Team != team.Name)
+                return StateCode.InvalidTeam;
+            if (ship.Points > field.Points)
+                return StateCode.PointsShortage;
+            field.Ships.Add(ship);
+            field.Points -= ship.Points;
+            _repository.StartFields.Update(field);
+            await _repository.Save();
+            return StateCode.Success;
+        }
+
+        public async Task<StateCode> SellShip(uint teamId, uint gameShipId, uint startFieldId)
+        {
+            IStartField field = _repository.StartFields.Get(startFieldId);
+            ITeam team = _repository.Teams.Get(teamId);
+            IGameShip ship = _repository.GameShips.Get(gameShipId);
+            if (field.Team != team.Name)
+                return StateCode.InvalidTeam;
+            field.Ships.Remove(ship);
+            field.Points += ship.Points;
+            _repository.Ships.Delete(ship.Ship.Id);
+            _repository.GameShips.Delete(ship.Id);
+            _repository.StartFields.Update(field);
+            await _repository.Save();
+            return StateCode.Success;
+        }
     }
 }

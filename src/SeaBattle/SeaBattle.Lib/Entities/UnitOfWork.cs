@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -39,7 +40,7 @@ namespace SeaBattle.Lib.Entities
         public IRepository<ITeam> Teams { get => _teams; }
 
         //command save to external data storage when we use ORM
-        public void Save() { }
+        public async Task Save() => await Task.CompletedTask;
 
         public virtual void Dispose(bool disposing)
         {

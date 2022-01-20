@@ -11,7 +11,13 @@ namespace SeaBattle.Lib.Infrastructure
         //OK
         Success = 010,
 
+        //Not enough allocation points for buying the ship
+        PointsShortage = 011,
+
         //Invalid playing field size
-        InvalidFieldSize = 013
+        InvalidFieldSize = 013,
+
+        //Invalid Team, the team isn't matched with the field
+        InvalidTeam = 014
     }
 }

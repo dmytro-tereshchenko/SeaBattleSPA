@@ -1,4 +1,6 @@
-﻿namespace SeaBattle.Lib.Entities
+﻿using System.Threading.Tasks;
+
+namespace SeaBattle.Lib.Entities
 {
     public interface IUnitOfWork
     { 
@@ -17,5 +19,9 @@
         IRepository<IRepair> Repairs { get; }
 
         IRepository<ITeam> Teams { get; }
+
+        public Task Save();
+
+        public void Dispose();
     }
 }
