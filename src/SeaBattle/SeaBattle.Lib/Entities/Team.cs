@@ -10,7 +10,11 @@
 
         private bool _ready;
 
-        public uint Id { get => _id; }
+        public uint Id
+        {
+            get => _id;
+            private set => _id = value;
+        }
 
         public string Name { get => _name; }
 
@@ -18,9 +22,13 @@
 
         public bool Ready { get => _ready; set => _ready = value; }
 
-        public Team(uint id, string name, uint gameId)
+        public Team(uint id, string name, uint gameId) : this(name, gameId)
         {
             _id = id;
+        }
+
+        public Team(string name, uint gameId)
+        {
             _name = name;
             _gameId = gameId;
         }

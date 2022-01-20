@@ -6,7 +6,11 @@ namespace SeaBattle.Lib.Entities
     {
         private uint _id;
 
-        public uint Id { get => _id; }
+        public uint Id
+        {
+            get => _id;
+            private set => _id = value;
+        }
 
         public IGameField GameField { get; set; }
 
@@ -22,13 +26,25 @@ namespace SeaBattle.Lib.Entities
         public ICollection<IGameShip> Ships { get; set; }
         
         public StartField(uint id, IGameField field, bool[,] fieldLabels, string team, int points, ICollection<IGameShip> gameShips)
+        :this(field, fieldLabels, team,  points,  gameShips)
         {
-            this._id = id;
-            this.GameField = field;
-            this.FieldLabels = fieldLabels;
-            this.Team = team;
-            this.Points = points;
-            this.Ships = gameShips;
+            _id = id;
+        }
+
+        public StartField(IGameField field, bool[,] fieldLabels, string team, int points, ICollection<IGameShip> gameShips) 
+            : this(field, team, points)
+        {
+            FieldLabels = fieldLabels;
+            Ships = gameShips;
+        }
+
+        public StartField(IGameField field, string team, int points)
+        {
+            GameField = field;
+            FieldLabels = new bool[field.SizeX, field.SizeY];
+            Team = team;
+            Points = points;
+            Ships = new List<IGameShip>();
         }
     }
 }

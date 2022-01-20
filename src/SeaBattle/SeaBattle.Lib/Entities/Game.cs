@@ -23,7 +23,11 @@ namespace SeaBattle.Lib.Entities
 
         private bool _searchPlayers;
 
-        public uint Id { get => _id; }
+        public uint Id
+        {
+            get => _id;
+            private set => _id = value;
+        }
 
         public uint FieldId { get => _fieldId; set => _fieldId = value; }
 

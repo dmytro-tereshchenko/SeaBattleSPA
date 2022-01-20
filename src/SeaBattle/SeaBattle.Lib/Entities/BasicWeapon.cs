@@ -8,17 +8,26 @@
 
         private ushort _attackRange;
 
-        public uint Id { get => _id; }
+        public uint Id
+        {
+            get => _id;
+            private set => _id = value;
+        }
 
         public ushort Damage { get => _damage; }
 
         public ushort AttackRange { get => _attackRange; }
 
         public BasicWeapon(uint id, ushort damage, ushort aRange)
+            : this(damage, aRange)
         {
-            this._id = id;
-            this._damage = damage;
-            this._attackRange = aRange;
+            _id = id;
+        }
+
+        public BasicWeapon(ushort damage, ushort aRange)
+        {
+            _damage = damage;
+            _attackRange = aRange;
         }
     }
 }

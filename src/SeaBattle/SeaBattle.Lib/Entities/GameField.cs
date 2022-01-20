@@ -14,15 +14,23 @@ namespace SeaBattle.Lib.Entities
 
         protected IGameShip[,] _gameShips;
 
-        public uint Id { get => _id; }
+        public uint Id
+        {
+            get => _id;
+            private set => _id = value;
+        }
 
         public ushort SizeX { get => _sizeX; }
 
         public ushort SizeY { get => _sizeY; }
 
-        public GameField(uint id, ushort sizeX, ushort sizeY)
+        public GameField(ushort sizeX, ushort sizeY, uint id) : this(sizeX, sizeY)
         {
             _id = id;
+        }
+
+        public GameField(ushort sizeX, ushort sizeY)
+        {
             _sizeX = sizeX;
             _sizeY = sizeY;
             _gameShips = new GameShip[_sizeX, _sizeY];

@@ -14,7 +14,11 @@ namespace SeaBattle.Lib.Entities
 
         private int _points;
 
-        public uint Id { get => _id; }
+        public uint Id
+        {
+            get => _id;
+            private set => _id = value;
+        }
 
         public IShip Ship { get => _ship; }
 
@@ -45,15 +49,23 @@ namespace SeaBattle.Lib.Entities
         public byte Speed { get => _ship.Speed; }
         
         public GameShip(uint id, IShip ship, uint teamId, int points, ushort hp)
+        : this(ship, teamId, points, hp)
         {
             _id = id;
+        }
+        
+        public GameShip(uint id, IShip ship, uint teamId, int points) 
+            : this(id, ship, teamId, points, ship.MaxHp) { }
+
+        public GameShip(IShip ship, uint teamId, int points, ushort hp)
+        {
             _ship = ship;
             _teamId = teamId;
             _points = points;
             _hp = hp;
         }
-        
-        public GameShip(uint id, IShip ship, uint teamId, int points) 
-            : this(id, ship, teamId, points, ship.MaxHp) { }
+
+        public GameShip(IShip ship, uint teamId, int points)
+            : this(ship, teamId, points, ship.MaxHp) { }
     }
 }

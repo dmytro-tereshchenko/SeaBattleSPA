@@ -8,17 +8,26 @@
 
         private ushort _repairRange;
 
-        public uint Id { get => _id; }
+        public uint Id
+        {
+            get => _id;
+            private set => _id = value;
+        }
 
         public ushort RepairPower { get => _repairPower; }
 
         public ushort RepairRange { get => _repairRange; }
 
         public BasicRepair(uint id, ushort power, ushort range)
+        : this(power, range)
         {
-            this._id = id;
-            this._repairPower = power;
-            this._repairRange = range;
+            _id = id;
+        }
+
+        public BasicRepair(ushort power, ushort range)
+        {
+            _repairPower = power;
+            _repairRange = range;
         }
     }
 }

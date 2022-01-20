@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -43,8 +44,28 @@ namespace SeaBattle.Lib.Entities
         /// Method for create and add object to the repository.
         /// </summary>
         /// <param name="item">Entities object which implements IEntity.</param>
-        public void Create(T item) => _data.Add(item);
-
+        public void Create(T item)
+        {
+            Type type = item.GetType();
+            //Find property Id
+            PropertyInfo f = type.GetProperty("Id", BindingFlags.Instance | BindingFlags.Public);
+            //Find new id's number for new item
+            object newValue;
+            try
+            {
+                newValue = _data.Max(i => i.Id) + 1;
+            }
+            catch (InvalidOperationException ex)
+            {
+                //If _data is empty then its first element
+                newValue = 1u;
+            }
+            //Set new value Id to item
+            f.SetValue(item, newValue);
+            Object ob = f?.GetValue(item);
+            _data.Add(item);
+        }
+        
         /// <summary>
         /// Method for edit (update) object in the repository.
         /// </summary>

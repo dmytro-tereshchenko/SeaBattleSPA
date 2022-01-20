@@ -19,9 +19,13 @@ namespace SeaBattle.Lib.Entities
         protected ICollection<IWeapon> _weapons;
 
         protected ICollection<IRepair> _repairs;
-        
-        public uint Id { get => _id; }
-        
+
+        public uint Id
+        {
+            get => _id;
+            private set => _id = value;
+        }
+
         public ushort AttackRange { get => _weapons?.FirstOrDefault()?.AttackRange ?? 0; }
         
         public ushort RepairRange { get => _repairs?.FirstOrDefault()?.RepairRange ?? 0; }
@@ -42,14 +46,19 @@ namespace SeaBattle.Lib.Entities
         public byte Speed { get => _speed; }
        
         public Ship(uint id, ShipType type, byte size, ushort maxHp, byte speed)
+        : this(type, size, maxHp, speed)
         {
             _id = id;
+        }
+
+        public Ship(ShipType type, byte size, ushort maxHp, byte speed)
+        {
             _type = type;
             _size = size;
             _maxHp = maxHp;
             _speed = speed;
         }
-        
+
         public void AddWeapon(IWeapon weapon)
         {
             if (_weapons == null)
