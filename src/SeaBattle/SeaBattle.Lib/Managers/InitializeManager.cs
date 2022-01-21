@@ -256,5 +256,47 @@ namespace SeaBattle.Lib.Managers
 
             return fields;
         }
+
+        /// <summary>
+        /// Getting a collection of ships, which players can buy by points.
+        /// </summary>
+        /// <returns>Collection of IShip, which players can buy by points</returns>
+        public ICollection<IShip> GetShips()
+        {
+            ICollection<IShip> ships = new List<IShip>();
+
+            ships.Add(new Ship(ShipType.Auxiliary, 1, 100, 4));
+            ships.Add(new Ship(ShipType.Mixed, 2, 200, 3));
+            ships.Add(new Ship(ShipType.Mixed, 3, 300, 2));
+            ships.Add(new Ship(ShipType.Military, 4, 400, 1));
+
+            return ships;
+        }
+
+        /// <summary>
+        /// Getting a collection of repairs, which players can equip on the ship.
+        /// </summary>
+        /// <returns>Collection of IRepair, which players can equip on the ship</returns>
+        public ICollection<IRepair> GetRepairs()
+        {
+            ICollection<IRepair> repairs = new List<IRepair>();
+
+            repairs.Add(new BasicRepair(40, 10));
+
+            return repairs;
+        }
+
+        /// <summary>
+        /// Getting a collection of repairs, which players can equip on the ship.
+        /// </summary>
+        /// <returns>Collection of IRepair, which players can equip on the ship</returns>
+        public ICollection<IWeapon> GetWeapons()
+        {
+            ICollection<IWeapon> weapons = new List<IWeapon>();
+
+            weapons.Add(new BasicWeapon(50, 10));
+
+            return weapons;
+        }
     }
 }
