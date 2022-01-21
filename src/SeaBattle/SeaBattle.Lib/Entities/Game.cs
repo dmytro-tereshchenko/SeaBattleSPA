@@ -5,56 +5,35 @@ namespace SeaBattle.Lib.Entities
 {
     public class Game : IGame
     {
-        private uint _id;
+        public uint Id { get; set; }
 
-        private uint _fieldId;
+        public uint FieldId { get; set; }
 
-        private string _currentTeamMove;
+        public byte NumberOfTeam { get => Convert.ToByte(TeamsId.Count); }
 
-        private IDictionary<uint, bool> _givenStartFields;
-
-        private bool _endGame;
-
-        private ICollection<uint> _teamsId;
-
-        //Dictionary of fields to stores data about fields for the allocation ships by players when the game is initializing.
-        //Key - teamId, Value - startFieldId.
-        private IDictionary<uint, uint> _startFieldsId;
-
-        private bool _searchPlayers;
-
-        public uint Id
-        {
-            get => _id;
-            private set => _id = value;
-        }
-
-        public uint FieldId { get => _fieldId; set => _fieldId = value; }
-
-        public byte NumberOfTeam { get => Convert.ToByte(_teamsId.Count); }
-
-        public string CurrentTeamMove { get => _currentTeamMove; set => _currentTeamMove = value; }
+        public string CurrentTeamMove { get; set; }
         
-        public IDictionary<uint, bool> GivenStartFields { get => _givenStartFields; }
+        public IDictionary<uint, bool> GivenStartFields { get; private set; }
         
-        public bool EndGame { get => _endGame; set => _endGame = value; }
+        public bool EndGame { get; set; }
         
-        public ICollection<uint> TeamsId { get => _teamsId; }
+        public ICollection<uint> TeamsId { get; private set; }
+
+        /// <summary>
+        /// Dictionary of fields to stores data about fields for the allocation ships by players when the game is initializing.
+        /// </summary>
+        /// <value>Dictionary: Key - teamId, Value - startFieldId</value>
+        public IDictionary<uint, uint> StartFieldsId { get; private set; }
         
-        public IDictionary<uint, uint> StartFieldsId { get => _startFieldsId; }
+        public bool SearchPlayers { get; set; }
         
-        public bool SearchPlayers { get => _searchPlayers; set => _searchPlayers = value; }
-        
-        public Game(uint id): this()
-        {
-            _id = id;
-        }
+        public Game(uint id): this() => Id = id;
 
         public Game()
         {
-            _givenStartFields = new Dictionary<uint, bool>();
-            _teamsId = new List<uint>();
-            _startFieldsId = new Dictionary<uint, uint>();
+            GivenStartFields = new Dictionary<uint, bool>();
+            TeamsId = new List<uint>();
+            StartFieldsId = new Dictionary<uint, uint>();
         }
     }
 }

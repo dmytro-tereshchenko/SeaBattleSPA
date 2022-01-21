@@ -46,29 +46,25 @@ namespace SeaBattle.Lib.Entities
         /// <param name="item">Entities object which implements IEntity.</param>
         public void Create(T item)
         {
-            Type type = item.GetType();
-            //Find property Id
-            PropertyInfo f = type.GetProperty("Id", BindingFlags.Instance | BindingFlags.Public);
-            //Find new id's number for new item
-            object newValue;
-            try
-            {
-                newValue = _data.Max(i => i.Id) + 1;
-            }
-            catch (InvalidOperationException ex)
+            if (_data.Count == 0)
             {
                 //If _data is empty then its first element
-                newValue = 1u;
+                item.Id = 1u;
             }
+            else
+            {
+                item.Id = _data.Max(i => i.Id) + 1;
+            }
+
             //Set new value Id to item
-            f.SetValue(item, newValue);
             _data.Add(item);
         }
-        
+
         /// <summary>
         /// Method for edit (update) object in the repository.
         /// </summary>
         /// <param name="item">Entities object which implements IEntity.</param>
+        /// <exception cref="ArgumentOutOfRangeException">There is no data for the given id.</exception>
         public void Update(T item)
         {
             foreach (var tempItem in _data)
@@ -80,6 +76,7 @@ namespace SeaBattle.Lib.Entities
                     return;
                 }
             }
+
             throw new ArgumentOutOfRangeException($"Not found {item} in data {this.ToString()}");
         }
 
@@ -87,6 +84,7 @@ namespace SeaBattle.Lib.Entities
         /// Method for delete object from the repository.
         /// </summary>
         /// <param name="id">Id of entities object.</param>
+        /// <exception cref="ArgumentOutOfRangeException">There is no data for the given id.</exception>
         public void Delete(uint id)
         {
             foreach (var tempItem in _data)
@@ -97,6 +95,7 @@ namespace SeaBattle.Lib.Entities
                     return;
                 }
             }
+
             throw new ArgumentOutOfRangeException($"Not found item with {id} in data {this.ToString()}");
         }
     }

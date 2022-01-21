@@ -4,32 +4,30 @@ namespace SeaBattle.Lib.Entities
 {
     internal class StartField : IStartField, IEntity
     {
-        private uint _id;
-
-        public uint Id
-        {
-            get => _id;
-            private set => _id = value;
-        }
+        public uint Id { get; set; }
 
         public IGameField GameField { get; set; }
 
-        //labels for gamefield when the player can put his own ships on start field (true - can; false - can't)
+        /// <summary>
+        /// Array labels for game field when the player can put his own ships on start field.
+        /// </summary>
+        /// <value>Array, when element = true - can put ship ; false - can't</value>
         public bool[,] FieldLabels { get; set; }
        
         public string Team { get; set; }
 
-        //points for buying ships
+        /// <summary>
+        /// Points for buying ships
+        /// </summary>
         public int Points { get; set; }
 
-        //ships that bought but don't put to the field
+        /// <summary>
+        /// Collection of ships that bought but don't put to the field
+        /// </summary>
         public ICollection<IGameShip> Ships { get; set; }
         
         public StartField(uint id, IGameField field, bool[,] fieldLabels, string team, int points, ICollection<IGameShip> gameShips)
-        :this(field, fieldLabels, team,  points,  gameShips)
-        {
-            _id = id;
-        }
+        :this(field, fieldLabels, team,  points,  gameShips) => Id = id;
 
         public StartField(IGameField field, bool[,] fieldLabels, string team, int points, ICollection<IGameShip> gameShips) 
             : this(field, team, points)

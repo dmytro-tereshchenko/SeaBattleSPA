@@ -2,32 +2,19 @@
 {
     public class BasicRepair : IRepair
     {
-        private uint _id;
+        public uint Id { get; set; }
 
-        private ushort _repairPower;
+        public ushort RepairPower { get; private set; }
 
-        private ushort _repairRange;
-
-        public uint Id
-        {
-            get => _id;
-            private set => _id = value;
-        }
-
-        public ushort RepairPower { get => _repairPower; }
-
-        public ushort RepairRange { get => _repairRange; }
+        public ushort RepairRange { get; private set; }
 
         public BasicRepair(uint id, ushort power, ushort range)
-        : this(power, range)
-        {
-            _id = id;
-        }
+            : this(power, range) => Id = id;
 
         public BasicRepair(ushort power, ushort range)
         {
-            _repairPower = power;
-            _repairRange = range;
+            RepairPower = power;
+            RepairRange = range;
         }
     }
 }

@@ -2,32 +2,19 @@
 {
     public class BasicWeapon : IWeapon
     {
-        private uint _id;
+        public uint Id { get; set; }
 
-        private ushort _damage;
+        public ushort Damage { get; private set; }
 
-        private ushort _attackRange;
-
-        public uint Id
-        {
-            get => _id;
-            private set => _id = value;
-        }
-
-        public ushort Damage { get => _damage; }
-
-        public ushort AttackRange { get => _attackRange; }
+        public ushort AttackRange { get; private set; }
 
         public BasicWeapon(uint id, ushort damage, ushort aRange)
-            : this(damage, aRange)
-        {
-            _id = id;
-        }
+            : this(damage, aRange) => Id = id;
 
         public BasicWeapon(ushort damage, ushort aRange)
         {
-            _damage = damage;
-            _attackRange = aRange;
+            Damage = damage;
+            AttackRange = aRange;
         }
     }
 }

@@ -20,7 +20,9 @@ namespace SeaBattle.Lib.Entities
 
         IRepository<ITeam> Teams { get; }
 
-        public Task Save();
+        public void Save();
+
+        public Task SaveAsync();
 
         public void Dispose();
     }

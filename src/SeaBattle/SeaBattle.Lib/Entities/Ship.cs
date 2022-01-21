@@ -6,25 +6,11 @@ namespace SeaBattle.Lib.Entities
 {
     public class Ship : IShip
     { 
-        private uint _id;
-
-        private ShipType _type;
-
-        private byte _size;
-
-        private ushort _maxHp;
-
-        private byte _speed;
-
         protected ICollection<IWeapon> _weapons;
 
         protected ICollection<IRepair> _repairs;
 
-        public uint Id
-        {
-            get => _id;
-            private set => _id = value;
-        }
+        public uint Id { get; set; }
 
         public ushort AttackRange { get => _weapons?.FirstOrDefault()?.AttackRange ?? 0; }
         
@@ -32,45 +18,58 @@ namespace SeaBattle.Lib.Entities
         
         public ushort Damage { get => Convert.ToUInt16(_weapons?.Sum(w => w.Damage) ?? 0); }
 
-        //amount of hp that ship can repair
+        /// <summary>
+        /// Amount of hp that ship can repair
+        /// </summary>
         public ushort RepairPower { get => Convert.ToUInt16(_repairs?.Sum(r => r.RepairPower) ?? 0); }
         
-        public ShipType Type { get => _type; }
+        public ShipType Type { get; private set; }
 
-        //length of the ship (cells) and amount of possible equipment slots, width = 1 cell
-        public byte Size { get => _size; }
-        
-        public ushort MaxHp { get => _maxHp; }
+        /// <summary>
+        /// Length of the ship (cells) and amount of possible equipment slots, width = 1 cell
+        /// </summary>
+        public byte Size { get; private set; }
 
-        //Max speed (amount of cells, that the ship can move in 1 turn)
-        public byte Speed { get => _speed; }
-       
+        public ushort MaxHp { get; private set; }
+
+        /// <summary>
+        /// Max speed (amount of cells, that the ship can move in 1 turn)
+        /// </summary>
+        public byte Speed { get; private set; }
+
         public Ship(uint id, ShipType type, byte size, ushort maxHp, byte speed)
-        : this(type, size, maxHp, speed)
-        {
-            _id = id;
-        }
+        : this(type, size, maxHp, speed) => Id = id;
 
         public Ship(ShipType type, byte size, ushort maxHp, byte speed)
         {
-            _type = type;
-            _size = size;
-            _maxHp = maxHp;
-            _speed = speed;
+            Type = type;
+            Size = size;
+            MaxHp = maxHp;
+            Speed = speed;
         }
 
         public void AddWeapon(IWeapon weapon)
         {
             if (_weapons == null)
+            {
                 _weapons = new List<IWeapon>();
+            }
+
             _weapons.Add(weapon);
         }
         
         public void AddRepair(IRepair repair)
         {
             if (_repairs == null)
+            {
                 _repairs = new List<IRepair>();
+            }
+
             _repairs.Add(repair);
         }
+
+        public bool RemoveWeapon(IWeapon weapon) => _weapons.Remove(weapon);
+
+        public bool RemoveRepair(IRepair repair) => _repairs.Remove(repair);
     }
 }

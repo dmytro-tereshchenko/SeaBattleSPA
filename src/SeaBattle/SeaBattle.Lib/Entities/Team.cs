@@ -2,35 +2,20 @@
 {
     public class Team : ITeam
     {
-        private uint _id;
+        public uint Id { get; set; }
 
-        private string _name;
+        public string Name { get; private set; }
 
-        private uint _gameId;
+        public uint GameId { get; private set; }
 
-        private bool _ready;
+        public bool Ready { get; set; }
 
-        public uint Id
-        {
-            get => _id;
-            private set => _id = value;
-        }
-
-        public string Name { get => _name; }
-
-        public uint GameId { get => _gameId; }
-
-        public bool Ready { get => _ready; set => _ready = value; }
-
-        public Team(uint id, string name, uint gameId) : this(name, gameId)
-        {
-            _id = id;
-        }
+        public Team(uint id, string name, uint gameId) : this(name, gameId) => Id = id;
 
         public Team(string name, uint gameId)
         {
-            _name = name;
-            _gameId = gameId;
+            Name = name;
+            GameId = gameId;
         }
     }
 }

@@ -23,24 +23,27 @@ namespace SeaBattle.Lib.Entities
 
         private bool disposed = false;
 
-        public IRepository<IGame> Games { get => _games; }
-        
-        public IRepository<IGameField> GameFields { get => _gameFields; }
+        public IRepository<IGame> Games => _games ??= new EntityRepository<IGame>();
 
-        public IRepository <IStartField> StartFields { get => _startFields; }
+        public IRepository<IGameField> GameFields => _gameFields ??= new EntityRepository<IGameField>();
 
-        public IRepository <IGameShip> GameShips { get => _gameShips; }
+        public IRepository <IStartField> StartFields => _startFields ??= new EntityRepository<IStartField>();
 
-        public IRepository<IShip> Ships { get => _ships; }
+        public IRepository <IGameShip> GameShips => _gameShips ??= new EntityRepository<IGameShip>();
 
-        public IRepository<IWeapon> Weapons { get => _weapons; }
+        public IRepository<IShip> Ships => _ships ??= new EntityRepository<IShip>();
 
-        public IRepository<IRepair> Repairs { get => _repairs; }
+        public IRepository<IWeapon> Weapons => _weapons ??= new EntityRepository<IWeapon>();
 
-        public IRepository<ITeam> Teams { get => _teams; }
+        public IRepository<IRepair> Repairs => _repairs ??= new EntityRepository<IRepair>();
 
-        //command save to external data storage when we use ORM
-        public async Task Save() => await Task.CompletedTask;
+        public IRepository<ITeam> Teams => _teams ??= new EntityRepository<ITeam>();
+
+        //Command save to external data storage when we use ORM
+        public void Save() {}
+
+        //Async command save to external data storage when we use ORM
+        public async Task SaveAsync() => await Task.CompletedTask;
 
         public virtual void Dispose(bool disposing)
         {
