@@ -1,9 +1,10 @@
-﻿using System;
+﻿using SeaBattle.Lib.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace SeaBattle.Lib.Entities
+namespace SeaBattle.Lib.Repositories
 {
     /// <summary>
     /// Generic class for a repository for storage Entities and CRUD-operations for manipulation of them

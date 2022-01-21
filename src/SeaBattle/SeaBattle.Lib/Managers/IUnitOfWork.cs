@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using SeaBattle.Lib.Entities;
+using SeaBattle.Lib.Repositories;
+using System.Threading.Tasks;
 
-namespace SeaBattle.Lib.Entities
+namespace SeaBattle.Lib.Managers
 {
     public interface IUnitOfWork
     { 
