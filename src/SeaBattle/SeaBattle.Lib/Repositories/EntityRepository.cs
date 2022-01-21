@@ -38,7 +38,8 @@ namespace SeaBattle.Lib.Repositories
         /// Method for finding and getting object from the repository by id.
         /// </summary>
         /// <param name="id">Id of entities object.</param>
-        /// <returns>Returns entities object which implements IEntity.</returns>
+        /// <returns>Entities object which implements IEntity
+        /// or a default value if the sequence contains no elements.</returns>
         public T Get(uint id) => _data.FirstOrDefault(t => t.Id == id);
 
         /// <summary>
