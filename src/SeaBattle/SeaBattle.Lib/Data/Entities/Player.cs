@@ -1,6 +1,6 @@
 ﻿namespace SeaBattle.Lib.Entities
 {
-    public class Team : ITeam
+    public class Player : IPlayer
     {
         public uint Id { get; set; }
 
@@ -10,9 +10,9 @@
 
         public bool Ready { get; set; }
 
-        public Team(uint id, string name, uint gameId) : this(name, gameId) => Id = id;
+        public Player(uint id, string name, uint gameId) : this(name, gameId) => Id = id;
 
-        public Team(string name, uint gameId)
+        public Player(string name, uint gameId)
         {
             Name = name;
             GameId = gameId;

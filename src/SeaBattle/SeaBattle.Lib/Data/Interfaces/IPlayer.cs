@@ -1,6 +1,6 @@
 ﻿namespace SeaBattle.Lib.Entities
 {
-    public interface ITeam : IEntity
+    public interface IPlayer : IEntity
     {
         public string Name { get; }
 
