@@ -13,17 +13,17 @@ namespace SeaBattle.Lib.Entities
 
         public string CurrentTeamMove { get; set; }
         
-        public IDictionary<uint, bool> GivenStartFields { get; private set; }
+        public IDictionary<uint, bool> GivenStartFields { get; set; }
         
         public bool EndGame { get; set; }
         
-        public ICollection<uint> TeamsId { get; private set; }
+        public ICollection<uint> TeamsId { get; set; }
 
         /// <summary>
         /// Dictionary of fields to stores data about fields for the allocation ships by players when the game is initializing.
         /// </summary>
         /// <value>Dictionary: Key - teamId, Value - startFieldId</value>
-        public IDictionary<uint, uint> StartFieldsId { get; private set; }
+        public IDictionary<uint, uint> StartFieldsId { get; set; }
         
         public bool SearchPlayers { get; set; }
         

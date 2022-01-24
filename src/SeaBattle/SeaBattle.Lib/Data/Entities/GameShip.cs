@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SeaBattle.Lib.Entities
+﻿namespace SeaBattle.Lib.Entities
 {
     public class GameShip : IGameShip
     {
