@@ -1,23 +1,47 @@
 ﻿using System.Collections.Generic;
+using SeaBattle.Lib.Infrastructure;
 
 namespace SeaBattle.Lib.Entities
 {
+    /// <summary>
+    /// Game (match) between players.
+    /// </summary>
     public interface IGame: IEntity
     {
+        /// <summary>
+        /// Id of game field <see cref="IGameField"/>
+        /// </summary>
+        /// <value><see cref="uint"/></value>
         uint FieldId { get; set; }
 
-        byte NumberOfTeam { get; }
+        /// <summary>
+        /// Current amount of players which connected to the game
+        /// </summary>
+        /// <value><see cref="byte"/></value>
+        public byte CurrentCountPlayers { get; set; }
 
-        string CurrentTeamMove { get; set; }
+        /// <summary>
+        /// Max amount of players
+        /// </summary>
+        /// <value><see cref="byte"/></value>
+        public byte MaxNumberOfPlayers { get; set; }
 
-        IDictionary<uint, bool> GivenStartFields { get; set; }
+        /// <summary>
+        /// Name of player, which needs to move this turn.
+        /// </summary>
+        /// <value><see cref="string"/> Team's name</value>
+        string CurrentPlayerMove { get; set; }
 
-        bool EndGame { get; set; }
+        /// <summary>
+        /// Current state of game
+        /// </summary>
+        /// <value><see cref="StateGame"/></value>
+        StateGame State { get; set; }
 
-        ICollection<uint> TeamsId { get; set; }
-
-        IDictionary<uint, uint> StartFieldsId { get; set; }
-
-        bool SearchPlayers { get; set; }
+        /// <summary>
+        /// Collection of players id for current game.
+        /// </summary>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="uint"/></value>
+        ICollection<uint> PlayersId { get; set; }
     }
 }

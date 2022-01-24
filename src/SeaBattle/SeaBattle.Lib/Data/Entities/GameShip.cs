@@ -9,7 +9,7 @@
         //current hp
         public ushort Hp { get; set; }
 
-        public uint TeamId { get; private set; }
+        public uint PlayerId { get; private set; }
 
         public int Points { get; private set; }
 
@@ -38,15 +38,15 @@
         public GameShip(uint id, IShip ship, uint teamId, int points) 
             : this(id, ship, teamId, points, ship.MaxHp) { }
 
-        public GameShip(IShip ship, uint teamId, int points, ushort hp)
+        public GameShip(IShip ship, uint playerId, int points, ushort hp)
         {
             Ship = ship;
-            TeamId = teamId;
+            PlayerId = playerId;
             Points = points;
             Hp = hp;
         }
 
-        public GameShip(IShip ship, uint teamId, int points)
-            : this(ship, teamId, points, ship.MaxHp) { }
+        public GameShip(IShip ship, uint playerId, int points)
+            : this(ship, playerId, points, ship.MaxHp) { }
     }
 }

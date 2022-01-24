@@ -7,7 +7,7 @@
         //current hp
         ushort Hp { get; set; }
 
-        uint TeamId { get; }
+        uint PlayerId { get; }
 
         int Points { get; }
     }

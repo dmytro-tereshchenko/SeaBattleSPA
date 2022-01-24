@@ -58,9 +58,9 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Method for getting status of game field.
         /// </summary>
-        /// <param name="teamId">Team's id for getting ships or null for getting ships all teams.</param>
+        /// <param name="playerId">Player's id for getting ships or null for getting ships all players.</param>
         /// <returns>Collection ships with its own parameters in string format.</returns>
-        public ICollection<string> GetFieldWithShips(uint? teamId=null)
+        public ICollection<string> GetFieldWithShips(uint? playerId=null)
         {
             //Dictionary of ships when Key=ship (IGameShip), Value=array of coordinates(X,Y) on field (List<(ushort, ushort)>)
             Dictionary<IGameShip, List<(ushort, ushort)>> ships = new Dictionary<IGameShip, List<(ushort, ushort)>>();
@@ -70,7 +70,7 @@ namespace SeaBattle.Lib.Entities
                 for(ushort j = 0; j < SizeY; j++)
                 {
                     //filtering by team and empty cell
-                    if (_gameShips[i, j] != null && (teamId == null || teamId.Value == _gameShips[i, j].TeamId))
+                    if (_gameShips[i, j] != null && (playerId == null || playerId.Value == _gameShips[i, j].PlayerId))
                     {
                         if (!ships.ContainsKey(_gameShips[i, j]))
                         {
@@ -90,7 +90,7 @@ namespace SeaBattle.Lib.Entities
                 .OrderBy(s => GetDistanceToCenterField(centerField, GetGeometricCenterOfShip(s.Value)))
                 .ToList();
 
-            return orderedShips.Select(s => $"id={s.Key.Id}, teamId={s.Key.TeamId}, " +
+            return orderedShips.Select(s => $"id={s.Key.Id}, playerId={s.Key.PlayerId}, " +
                                             $"coords={String.Join(", ", s.Value.Select(coord => $"[{coord.Item1 + 1};{coord.Item2 + 1}]"))}, " + //+1 as outside the entity, numbering starts from "1"
                                             $"type={s.Key.Type.ToString()}, size={s.Key.Size}, hp={s.Key.Hp}/{s.Key.MaxHp}")
                 .ToList();

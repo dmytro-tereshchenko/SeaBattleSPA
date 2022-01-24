@@ -11,6 +11,6 @@ namespace SeaBattle.Lib.Entities
         //numeration from "1"
         IGameShip this[ushort u, ushort y] { get; set; }
 
-        ICollection<string> GetFieldWithShips(uint? teamId = null);
+        ICollection<string> GetFieldWithShips(uint? playerId = null);
     }
 }

@@ -24,7 +24,7 @@ namespace SeaBattle.Lib.Managers
 
         private IRepository<IRepair> _repairs;
 
-        private IRepository<ITeam> _teams;
+        private IRepository<IPlayer> _teams;
 
         private bool disposed = false;
 
@@ -71,10 +71,10 @@ namespace SeaBattle.Lib.Managers
         public IRepository<IRepair> Repairs => _repairs ??= new EntityRepository<IRepair>();
 
         /// <summary>
-        /// Getting of repository of <see cref="ITeam"/>
+        /// Getting of repository of <see cref="IPlayer"/>
         /// </summary>
-        /// <value><see cref="IRepository{T}"/> whose generic type argument is <see cref="ITeam"/></value>
-        public IRepository<ITeam> Teams => _teams ??= new EntityRepository<ITeam>();
+        /// <value><see cref="IRepository{T}"/> whose generic type argument is <see cref="IPlayer"/></value>
+        public IRepository<IPlayer> Teams => _teams ??= new EntityRepository<IPlayer>();
 
         /// <summary>
         /// Command save to external data storage when we use ORM

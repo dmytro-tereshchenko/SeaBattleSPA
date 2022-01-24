@@ -12,6 +12,8 @@ namespace SeaBattle.Lib.Managers
     /// </summary>
     public class InitializeManager : IInitializeManager
     {
+        private const int PriceCoefficient = 1000;
+
         private IUnitOfWork _repository;
 
         private ushort _minSizeX;
@@ -141,14 +143,14 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Buy ship and add to <see cref="IStartField"/>
         /// </summary>
-        /// <param name="teamId">Id of team</param>
+        /// <param name="playerId">Id of team</param>
         /// <param name="gameShipId">Id of game ship</param>
         /// <param name="startFieldId">Id of start field</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        public async Task<StateCode> BuyShipAsync(uint teamId, uint gameShipId, uint startFieldId)
+        public async Task<StateCode> BuyShipAsync(uint playerId, uint gameShipId, uint startFieldId)
         {
             IStartField field = _repository.StartFields.Get(startFieldId);
-            ITeam team = _repository.Teams.Get(teamId);
+            IPlayer team = _repository.Teams.Get(playerId);
             IGameShip ship = _repository.GameShips.Get(gameShipId);
 
             if (field == null || team == null || ship == null)
@@ -156,7 +158,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidId;
             }
 
-            if (field.Team != team.Name)
+            if (field.PlayerId != playerId)
             {
                 return StateCode.InvalidTeam;
             }
@@ -178,14 +180,14 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Sell ship and remove from <see cref="IStartField"/>
         /// </summary>
-        /// <param name="teamId">Id of team</param>
+        /// <param name="playerId">Id of team</param>
         /// <param name="gameShipId">Id of game ship</param>
         /// <param name="startFieldId">Id of start field</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        public async Task<StateCode> SellShipAsync(uint teamId, uint gameShipId, uint startFieldId)
+        public async Task<StateCode> SellShipAsync(uint playerId, uint gameShipId, uint startFieldId)
         {
             IStartField field = _repository.StartFields.Get(startFieldId);
-            ITeam team = _repository.Teams.Get(teamId);
+            IPlayer team = _repository.Teams.Get(playerId);
             IGameShip ship = _repository.GameShips.Get(gameShipId);
 
             if (field == null || team == null || ship == null)
@@ -193,7 +195,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidId;
             }
 
-            if (field.Team != team.Name)
+            if (field.PlayerId != playerId)
             {
                 return StateCode.InvalidTeam;
             }
@@ -343,11 +345,11 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Add weapon to game ship.
         /// </summary>
-        /// <param name="teamId">Id of team</param>
+        /// <param name="playerId">Id of team</param>
         /// <param name="gameShipId">Id of the game ship which adds a weapon.</param>
         /// <param name="weapon">A weapon (<see cref="IWeapon"/>) which adds.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        public async Task<StateCode> AddWeaponAsync(uint teamId, uint gameShipId, IWeapon weapon)
+        public async Task<StateCode> AddWeaponAsync(uint playerId, uint gameShipId, IWeapon weapon)
         {
             IGameShip gameShip = _repository.GameShips.Get(gameShipId);
 
@@ -356,7 +358,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidId;
             }
 
-            if (gameShip.TeamId != teamId)
+            if (gameShip.PlayerId != playerId)
             {
                 return StateCode.InvalidTeam;
             }
@@ -387,7 +389,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidId;
             }
 
-            if (gameShip.TeamId != teamId)
+            if (gameShip.PlayerId != teamId)
             {
                 return StateCode.InvalidTeam;
             }
@@ -405,11 +407,11 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Remove weapon from game ship.
         /// </summary>
-        /// <param name="teamId">Id of team</param>
+        /// <param name="playerId">Id of team</param>
         /// <param name="gameShipId">Id of the game ship which removes a weapon.</param>
         /// <param name="weaponId">Id of weapon (<see cref="IWeapon"/>) which removes.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        public async Task<StateCode> RemoveWeaponAsync(uint teamId, uint gameShipId, uint weaponId)
+        public async Task<StateCode> RemoveWeaponAsync(uint playerId, uint gameShipId, uint weaponId)
         {
             IGameShip gameShip = _repository.GameShips.Get(gameShipId);
             IWeapon weapon = _repository.Weapons.Get(weaponId);
@@ -419,7 +421,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidId;
             }
 
-            if (gameShip.TeamId != teamId)
+            if (gameShip.PlayerId != playerId)
             {
                 return StateCode.InvalidTeam;
             }
@@ -437,11 +439,11 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Remove repair from game ship.
         /// </summary>
-        /// <param name="teamId">Id of team</param>
+        /// <param name="playerId">Id of team</param>
         /// <param name="gameShipId">Id of the game ship which removes a repair.</param>
         /// <param name="repairId">Id of repair (<see cref="IRepair"/>) which removes.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        public async Task<StateCode> RemoveRepairAsync(uint teamId, uint gameShipId, uint repairId)
+        public async Task<StateCode> RemoveRepairAsync(uint playerId, uint gameShipId, uint repairId)
         {
             IGameShip gameShip = _repository.GameShips.Get(gameShipId);
             IRepair repair = _repository.Repairs.Get(repairId);
@@ -451,7 +453,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidId;
             }
 
-            if (gameShip.TeamId != teamId)
+            if (gameShip.PlayerId != playerId)
             {
                 return StateCode.InvalidTeam;
             }
@@ -459,7 +461,6 @@ namespace SeaBattle.Lib.Managers
             gameShip.Ship.RemoveRepair(repair);
             _repository.Repairs.Delete(repair.Id);
             _repository.Ships.Update(gameShip.Ship);
-            _repository.GameShips.Update(gameShip);
 
             await _repository.SaveAsync();
 
@@ -506,19 +507,19 @@ namespace SeaBattle.Lib.Managers
             IGame game = new Game();
             _repository.Games.Create(game);
 
-            ITeam team;
-            List<ITeam> teams = new List<ITeam>();
+            IPlayer team;
+            List<IPlayer> players = new List<IPlayer>();
             foreach (var teamName in GetTeamNames(numberOfTeams))
             {
-                team = new Team(teamName, game.Id);
+                team = new Player(teamName, game.Id);
                 _repository.Teams.Create(team);
-                teams.Add(team);
+                players.Add(team);
             }
 
             //Save for generating ids in _repository
             await _repository.SaveAsync();
 
-            game.TeamsId = teams.Select(t => t.Id).ToList();
+            game.PlayersId = players.Select(t => t.Id).ToList();
 
             await _repository.SaveAsync();
 
@@ -530,6 +531,6 @@ namespace SeaBattle.Lib.Managers
         /// </summary>
         /// <param name="size">Size (length) of ship.</param>
         /// <returns>Amount of points of cost ship.</returns>
-        protected int GetShipCost(byte size) => size * 1000;
+        protected int GetShipCost(byte size) => size * PriceCoefficient;
     }
 }

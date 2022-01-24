@@ -29,20 +29,20 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Buy ship and add to <see cref="IStartField"/>
         /// </summary>
-        /// <param name="teamId">Id of team</param>
+        /// <param name="playerId">Id of team</param>
         /// <param name="gameShipId">Id of game ship</param>
         /// <param name="startFieldId">Id of start field</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        Task<StateCode> BuyShipAsync(uint teamId, uint gameShipId, uint startFieldId);
+        Task<StateCode> BuyShipAsync(uint playerId, uint gameShipId, uint startFieldId);
 
         /// <summary>
         /// Sell ship and remove from <see cref="IStartField"/>
         /// </summary>
-        /// <param name="teamId">Id of team</param>
+        /// <param name="playerId">Id of team</param>
         /// <param name="gameShipId">Id of game ship</param>
         /// <param name="startFieldId">Id of start field</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        Task<StateCode> SellShipAsync(uint teamId, uint gameShipId, uint startFieldId);
+        Task<StateCode> SellShipAsync(uint playerId, uint gameShipId, uint startFieldId);
 
         /// <summary>
         /// Method for generating a collection of fields with labels for possible placing ships on start field for teams.
@@ -83,11 +83,11 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Add weapon to game ship.
         /// </summary>
-        /// <param name="teamId">Id of team</param>
+        /// <param name="playerId">Id of team</param>
         /// <param name="gameShipId">Id of the game ship which adds a weapon.</param>
         /// <param name="weapon">A weapon (<see cref="IWeapon"/>) which adds.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        Task<StateCode> AddWeaponAsync(uint teamId, uint gameShipId, IWeapon weapon);
+        Task<StateCode> AddWeaponAsync(uint playerId, uint gameShipId, IWeapon weapon);
 
         /// <summary>
         /// Add repair to game ship.
@@ -101,20 +101,20 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Remove weapon from game ship.
         /// </summary>
-        /// <param name="teamId">Id of team</param>
+        /// <param name="playerId">Id of team</param>
         /// <param name="gameShipId">Id of the game ship which removes a weapon.</param>
         /// <param name="weaponId">Id of weapon (<see cref="IWeapon"/>) which removes.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        Task<StateCode> RemoveWeaponAsync(uint teamId, uint gameShipId, uint weaponId);
+        Task<StateCode> RemoveWeaponAsync(uint playerId, uint gameShipId, uint weaponId);
 
         /// <summary>
         /// Remove repair from game ship.
         /// </summary>
-        /// <param name="teamId">Id of team</param>
+        /// <param name="playerId">Id of team</param>
         /// <param name="gameShipId">Id of the game ship which removes a repair.</param>
         /// <param name="repairId">Id of repair (<see cref="IRepair"/>) which removes.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        Task<StateCode> RemoveRepairAsync(uint teamId, uint gameShipId, uint repairId);
+        Task<StateCode> RemoveRepairAsync(uint playerId, uint gameShipId, uint repairId);
 
         /// <summary>
         /// Getting border size of the game field.

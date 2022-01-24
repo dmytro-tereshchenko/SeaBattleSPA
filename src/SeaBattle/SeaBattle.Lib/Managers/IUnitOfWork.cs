@@ -52,10 +52,10 @@ namespace SeaBattle.Lib.Managers
         IRepository<IRepair> Repairs { get; }
 
         /// <summary>
-        /// Getting of repository of <see cref="ITeam"/>
+        /// Getting of repository of <see cref="IPlayer"/>
         /// </summary>
-        /// <value><see cref="IRepository{T}"/> whose generic type argument is <see cref="ITeam"/></value>
-        IRepository<ITeam> Teams { get; }
+        /// <value><see cref="IRepository{T}"/> whose generic type argument is <see cref="IPlayer"/></value>
+        IRepository<IPlayer> Teams { get; }
 
         /// <summary>
         /// Command save to external data storage when we use ORM
