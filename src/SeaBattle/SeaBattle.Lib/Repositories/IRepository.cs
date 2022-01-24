@@ -12,7 +12,7 @@ namespace SeaBattle.Lib.Repositories
         /// <summary>
         /// Method for get all objects from repository.
         /// </summary>
-        /// <param name="T">Entity which implements IEntity.</param>
+        /// <param name="T">Entity which implements <see cref="IEntity"/>.</param>
         /// <returns>Returns collection of Entities (ICollection).</returns>
         ICollection<T> GetAll();
 
@@ -20,26 +20,26 @@ namespace SeaBattle.Lib.Repositories
         /// Method for finding and getting object from the repository by id.
         /// </summary>
         /// <param name="id">Id of entities object.</param>
-        /// <returns>Entities object which implements IEntity
+        /// <returns>Entities object which implements <see cref="IEntity"/>
         /// or a default value if the sequence contains no elements.</returns>
         T Get(uint id);
 
         /// <summary>
         /// Method for create and add object to the repository.
         /// </summary>
-        /// <param name="item">Entities object which implements IEntity.</param>
-        void Create(T item);
+        /// <param name="item">Entities object which implements <see cref="IEntity"/>.</param>
+        T Create(T item);
 
         /// <summary>
         /// Method for edit (update) object in the repository.
         /// </summary>
-        /// <param name="item">Entities object which implements IEntity.</param>
-        void Update(T item);
+        /// <param name="item">Entities object which implements <see cref="IEntity"/>.</param>
+        T Update(T item);
 
         /// <summary>
         /// Method for delete object from the repository.
         /// </summary>
         /// <param name="id">Id of entities object.</param>
-        void Delete(uint id);
+        T Delete(uint id);
     }
 }

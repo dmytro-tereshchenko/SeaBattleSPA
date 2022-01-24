@@ -10,12 +10,12 @@ namespace SeaBattle.Lib.Repositories
     /// Implements generic interface IRepository
     /// </summary>
     /// <param name="T">Entity which implements IEntity.</param>
-    public class EntityRepository<T> : IRepository<T> where T : IEntity
+    public class EntityRepository<T> : IRepository<T> where T : class, IEntity
     {
         /// <summary>
         /// Generic private collection for storing data
         /// </summary>
-        /// <param name="T">Entity which implements IEntity.</param>
+        /// <param name="T">Entity which implements <see cref="IEntity"/>.</param>
         private ICollection<T> _data;
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace SeaBattle.Lib.Repositories
         /// <summary>
         /// Method for get all objects from repository.
         /// </summary>
-        /// <param name="T">Entity which implements IEntity.</param>
+        /// <param name="T">Entity which implements <see cref="IEntity"/>.</param>
         /// <returns>Returns collection of Entities (ICollection).</returns>
         public ICollection<T> GetAll() => _data;
 
@@ -37,15 +37,16 @@ namespace SeaBattle.Lib.Repositories
         /// Method for finding and getting object from the repository by id.
         /// </summary>
         /// <param name="id">Id of entities object.</param>
-        /// <returns>Entities object which implements IEntity
+        /// <returns>Entities object which implements <see cref="IEntity"/>
         /// or a default value if the sequence contains no elements.</returns>
         public T Get(uint id) => _data.FirstOrDefault(t => t.Id == id);
 
         /// <summary>
         /// Method for create and add object to the repository.
         /// </summary>
-        /// <param name="item">Entities object which implements IEntity.</param>
-        public void Create(T item)
+        /// <param name="item">Entities object which implements <see cref="IEntity"/>.</param>
+        /// <returns><paramref name="item"/> created entity, otherwise null (there is no data for the given id)</returns>
+        public T Create(T item)
         {
             if (_data.Count == 0)
             {
@@ -59,14 +60,16 @@ namespace SeaBattle.Lib.Repositories
 
             //Set new value Id to item
             _data.Add(item);
+
+            return item;
         }
 
         /// <summary>
         /// Method for edit (update) object in the repository.
         /// </summary>
-        /// <param name="item">Entities object which implements IEntity.</param>
-        /// <exception cref="ArgumentOutOfRangeException">There is no data for the given id.</exception>
-        public void Update(T item)
+        /// <param name="item">Entities object which implements <see cref="IEntity"/>.</param>
+        /// <returns><paramref name="item"/> deleted entity, otherwise null (there is no data for the given id)</returns>
+        public T Update(T item)
         {
             foreach (var tempItem in _data)
             {
@@ -74,30 +77,29 @@ namespace SeaBattle.Lib.Repositories
                 {
                     _data.Remove(tempItem);
                     _data.Add(item);
-                    return;
+                    return item;
                 }
             }
 
-            throw new ArgumentOutOfRangeException($"Not found {item} in data {this.ToString()}");
+            return null;
         }
 
         /// <summary>
         /// Method for delete object from the repository.
         /// </summary>
         /// <param name="id">Id of entities object.</param>
-        /// <exception cref="ArgumentOutOfRangeException">There is no data for the given id.</exception>
-        public void Delete(uint id)
+        public T Delete(uint id)
         {
             foreach (var tempItem in _data)
             {
                 if (tempItem.Id == id)
                 {
                     _data.Remove(tempItem);
-                    return;
+                    return tempItem;
                 }
             }
 
-            throw new ArgumentOutOfRangeException($"Not found item with {id} in data {this.ToString()}");
+            return null;
         }
     }
 }
