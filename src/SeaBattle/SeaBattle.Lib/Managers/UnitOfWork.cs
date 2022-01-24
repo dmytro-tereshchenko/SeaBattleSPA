@@ -18,7 +18,7 @@ namespace SeaBattle.Lib.Managers
 
         private IRepository<IGameShip> _gameShips;
 
-        private IRepository<IShip> _ships;
+        private IRepository<ICommonShip> _ships;
 
         private IRepository<IWeapon> _weapons;
 
@@ -56,7 +56,7 @@ namespace SeaBattle.Lib.Managers
         /// Getting of repository of <see cref="IShip"/>
         /// </summary>
         /// <value><see cref="IRepository{T}"/> whose generic type argument is <see cref="IShip"/></value>
-        public IRepository<IShip> Ships => _ships ??= new EntityRepository<IShip>();
+        public IRepository<ICommonShip> Ships => _ships ??= new EntityRepository<ICommonShip>();
 
         /// <summary>
         /// Getting of repository of <see cref="IWeapon"/>

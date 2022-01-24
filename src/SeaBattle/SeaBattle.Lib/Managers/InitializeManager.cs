@@ -287,9 +287,9 @@ namespace SeaBattle.Lib.Managers
         /// Getting a collection of ships, which players can buy by points.
         /// </summary>
         /// <returns>Collection of <see cref="IShip"/>, which players can buy by points</returns>
-        public ICollection<IShip> GetShips()
+        public ICollection<ICommonShip> GetShips()
         {
-            ICollection<IShip> ships = new List<IShip>();
+            ICollection<ICommonShip> ships = new List<ICommonShip>();
 
             ships.Add(new Ship(ShipType.Auxiliary, 1, 100, 4));
             ships.Add(new Ship(ShipType.Mixed, 2, 200, 3));
@@ -331,7 +331,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="teamId">id of the team</param>
         /// <param name="ship">Type of <see cref="IShip"/>, which player wants to buy.</param>
         /// <returns><see cref="IGameShip"/> Game ship.</returns>
-        public async Task<IGameShip> GetNewShipAsync(uint teamId, IShip ship)
+        public async Task<IGameShip> GetNewShipAsync(uint teamId, ICommonShip ship)
         {
             IGameShip gameShip = new GameShip(ship, teamId, GetShipCost(ship.Size));
 
@@ -363,10 +363,8 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidTeam;
             }
 
-            _repository.Weapons.Create(weapon);
-            gameShip.Ship.AddWeapon(weapon);
-            _repository.Ships.Update(gameShip.Ship);
-            _repository.GameShips.Update(gameShip);
+            weapon = _repository.Weapons.Create(weapon);
+            gameShip.Ship.Weapons.Add(weapon);
 
             await _repository.SaveAsync();
 
@@ -394,10 +392,8 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidTeam;
             }
 
-            _repository.Repairs.Create(repair);
-            gameShip.Ship.AddRepair(repair);
-            _repository.Ships.Update(gameShip.Ship);
-            _repository.GameShips.Update(gameShip);
+            repair = _repository.Repairs.Create(repair);
+            gameShip.Ship.Repairs.Add(repair);
 
             await _repository.SaveAsync();
 
@@ -426,10 +422,8 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidTeam;
             }
 
-            gameShip.Ship.RemoveWeapon(weapon);
+            gameShip.Ship.Weapons.Remove(weapon);
             _repository.Weapons.Delete(weapon.Id);
-            _repository.Ships.Update(gameShip.Ship);
-            _repository.GameShips.Update(gameShip);
 
             await _repository.SaveAsync();
 
@@ -458,9 +452,8 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidTeam;
             }
 
-            gameShip.Ship.RemoveRepair(repair);
+            gameShip.Ship.Repairs.Remove(repair);
             _repository.Repairs.Delete(repair.Id);
-            _repository.Ships.Update(gameShip.Ship);
 
             await _repository.SaveAsync();
 

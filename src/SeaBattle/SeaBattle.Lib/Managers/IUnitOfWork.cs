@@ -37,7 +37,7 @@ namespace SeaBattle.Lib.Managers
         /// Getting of repository of <see cref="IShip"/>
         /// </summary>
         /// <value><see cref="IRepository{T}"/> whose generic type argument is <see cref="IShip"/></value>
-        IRepository<IShip> Ships { get; }
+        IRepository<ICommonShip> Ships { get; }
 
         /// <summary>
         /// Getting of repository of <see cref="IWeapon"/>

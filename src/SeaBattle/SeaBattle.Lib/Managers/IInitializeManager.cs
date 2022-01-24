@@ -58,7 +58,7 @@ namespace SeaBattle.Lib.Managers
         /// Getting a collection of ships, which players can buy by points.
         /// </summary>
         /// <returns>Collection of <see cref="IShip"/>, which players can buy by points</returns>
-        ICollection<IShip> GetShips();
+        ICollection<ICommonShip> GetShips();
 
         /// <summary>
         /// Getting a collection of repairs, which players can equip on the ship.
@@ -78,7 +78,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="teamId">id of the team</param>
         /// <param name="ship">Type of <see cref="IShip"/>, which player wants to buy.</param>
         /// <returns><see cref="IGameShip"/> Game ship.</returns>
-        Task<IGameShip> GetNewShipAsync(uint teamId, IShip ship);
+        Task<IGameShip> GetNewShipAsync(uint teamId, ICommonShip ship);
 
         /// <summary>
         /// Add weapon to game ship.

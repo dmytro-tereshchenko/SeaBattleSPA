@@ -2,9 +2,12 @@
 {
     public interface IGameShip : ICommonShip
     { 
-        IShip Ship { get; }
+        ICommonShip Ship { get; }
 
-        //current hp
+        /// <summary>
+        /// Current hp of ship
+        /// </summary>
+        /// <value><see cref="ushort"/></value>
         ushort Hp { get; set; }
 
         uint PlayerId { get; }
