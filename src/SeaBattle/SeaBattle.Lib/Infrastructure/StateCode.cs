@@ -1,5 +1,8 @@
 ﻿namespace SeaBattle.Lib.Infrastructure
 {
+    /// <summary>
+    /// Enum possible states and Errors in the domain.
+    /// </summary>
     public enum StateCode
     {
         //OK

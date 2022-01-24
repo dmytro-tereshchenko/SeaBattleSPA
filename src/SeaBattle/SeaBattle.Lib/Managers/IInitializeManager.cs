@@ -6,6 +6,9 @@ using SeaBattle.Lib.Infrastructure;
 
 namespace SeaBattle.Lib.Managers
 {
+    /// <summary>
+    /// Manager which response for creating and initializing start entities.
+    /// </summary>
     public interface IInitializeManager
     {
         /// <summary>
