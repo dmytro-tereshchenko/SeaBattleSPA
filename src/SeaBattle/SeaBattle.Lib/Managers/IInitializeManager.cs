@@ -123,11 +123,20 @@ namespace SeaBattle.Lib.Managers
         ILimitSize GetLimitSizeField();
 
         /// <summary>
-        /// Generating and getting names for team members of the game.
+        /// Create and add player to the game
         /// </summary>
-        /// <param name="numberOfTeams">Amount of team members</param>
-        /// <returns><see cref="ICollection{T}" /> whose generic type argument is <see cref="string"/></returns>
-        ICollection<string> GetTeamNames(byte numberOfTeams);
+        /// <param name="gameId">Game's id</param>
+        /// <param name="playerName">Player's name</param>
+        /// <returns><see cref="IPlayer"/> created player, otherwise null.</returns>
+        Task<IPlayer> AddPlayerToGame(uint gameId, string playerName);
+
+        /// <summary>
+        /// Get start field by player and game. In case absence of starting fields, create them.
+        /// </summary>
+        /// <param name="gameId">Game's id of <see cref="IGame"/></param>
+        /// <param name="playerId">Player's id of <see cref="IPlayer"/></param>
+        /// <returns><see cref="IStartField"/> otherwise null</returns>
+        Task<IStartField> GetStartField(uint gameId, uint playerId);
 
         /// <summary>
         /// Create <see cref="IGame"/> by numberOfTeams

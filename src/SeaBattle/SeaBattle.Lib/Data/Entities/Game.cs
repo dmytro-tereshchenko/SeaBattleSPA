@@ -57,6 +57,7 @@ namespace SeaBattle.Lib.Entities
         {
             PlayersId = new List<uint>();
             State = StateGame.Created;
+            CurrentCountPlayers = 0;
         }
     }
 }

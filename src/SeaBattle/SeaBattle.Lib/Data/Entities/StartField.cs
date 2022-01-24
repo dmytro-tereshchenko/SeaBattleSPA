@@ -59,17 +59,17 @@ namespace SeaBattle.Lib.Entities
         :this(field, fieldLabels, player,  points,  gameShips, gameId) => Id = id;
 
         public StartField(IGameField field, bool[,] fieldLabels, string player, int points, ICollection<IGameShip> gameShips, uint gameId) 
-            : this(field, player, points, gameId)
+            : this(field, points, gameId)
         {
             FieldLabels = fieldLabels;
             Ships = gameShips;
+            Player = player;
         }
 
-        public StartField(IGameField field, string player, int points, uint gameId)
+        public StartField(IGameField field, int points, uint gameId)
         {
             GameField = field;
             FieldLabels = new bool[field.SizeX, field.SizeY];
-            Player = player;
             Points = points;
             GameId = gameId;
             Ships = new List<IGameShip>();

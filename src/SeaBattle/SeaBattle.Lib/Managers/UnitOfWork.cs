@@ -24,7 +24,7 @@ namespace SeaBattle.Lib.Managers
 
         private IRepository<IRepair> _repairs;
 
-        private IRepository<IPlayer> _teams;
+        private IRepository<IPlayer> _players;
 
         private bool disposed = false;
 
@@ -74,7 +74,7 @@ namespace SeaBattle.Lib.Managers
         /// Getting of repository of <see cref="IPlayer"/>
         /// </summary>
         /// <value><see cref="IRepository{T}"/> whose generic type argument is <see cref="IPlayer"/></value>
-        public IRepository<IPlayer> Teams => _teams ??= new EntityRepository<IPlayer>();
+        public IRepository<IPlayer> Players => _players ??= new EntityRepository<IPlayer>();
 
         /// <summary>
         /// Command save to external data storage when we use ORM
@@ -105,7 +105,7 @@ namespace SeaBattle.Lib.Managers
                     _ships = null;
                     _weapons = null;
                     _repairs = null;
-                    _teams = null;
+                    _players = null;
                 }
                 this.disposed = true;
             }

@@ -55,7 +55,7 @@ namespace SeaBattle.Lib.Managers
         /// Getting of repository of <see cref="IPlayer"/>
         /// </summary>
         /// <value><see cref="IRepository{T}"/> whose generic type argument is <see cref="IPlayer"/></value>
-        IRepository<IPlayer> Teams { get; }
+        IRepository<IPlayer> Players { get; }
 
         /// <summary>
         /// Command save to external data storage when we use ORM

@@ -150,7 +150,7 @@ namespace SeaBattle.Lib.Managers
         public async Task<StateCode> BuyShipAsync(uint playerId, uint gameShipId, uint startFieldId)
         {
             IStartField field = _repository.StartFields.Get(startFieldId);
-            IPlayer team = _repository.Teams.Get(playerId);
+            IPlayer team = _repository.Players.Get(playerId);
             IGameShip ship = _repository.GameShips.Get(gameShipId);
 
             if (field == null || team == null || ship == null)
@@ -187,7 +187,7 @@ namespace SeaBattle.Lib.Managers
         public async Task<StateCode> SellShipAsync(uint playerId, uint gameShipId, uint startFieldId)
         {
             IStartField field = _repository.StartFields.Get(startFieldId);
-            IPlayer team = _repository.Teams.Get(playerId);
+            IPlayer team = _repository.Players.Get(playerId);
             IGameShip ship = _repository.GameShips.Get(gameShipId);
 
             if (field == null || team == null || ship == null)
@@ -475,19 +475,87 @@ namespace SeaBattle.Lib.Managers
             new LimitSize(_maxSizeX, _maxSizeY, _minSizeX, _minSizeY);
 
         /// <summary>
-        /// Generating and getting names for team members of the game.
+        /// Create and add player to the game
         /// </summary>
-        /// <param name="numberOfTeams">Amount of team members</param>
-        /// <returns><see cref="ICollection{T}" /> whose generic type argument is <see cref="string"/></returns>
-        public ICollection<string> GetTeamNames(byte numberOfTeams)
+        /// <param name="gameId">Game's id</param>
+        /// <param name="playerName">Player's name</param>
+        /// <returns><see cref="IPlayer"/> created player, otherwise null.</returns>
+        public async Task<IPlayer> AddPlayerToGame(uint gameId, string playerName)
         {
-            List<string> names = new List<string>();
-            for (int i = 1; i <= numberOfTeams; i++)
+            IGame game = _repository.Games.Get(gameId);
+
+            if (game == null || game.CurrentCountPlayers == game.MaxNumberOfPlayers)
             {
-                names.Add($"Team {i}");
+                return null;
             }
 
-            return names;
+            game.CurrentCountPlayers++;
+            IPlayer player = _repository.Players.Create(new Player(playerName, gameId));
+            game.PlayersId.Add(player.Id);
+
+            await _repository.SaveAsync();
+
+            return player;
+        }
+
+        /// <summary>
+        /// Get start field by player and game. In case absence of starting fields, create them.
+        /// </summary>
+        /// <param name="gameId">Game's id of <see cref="IGame"/></param>
+        /// <param name="playerId">Player's id of <see cref="IPlayer"/></param>
+        /// <returns><see cref="IStartField"/> otherwise null</returns>
+        public async Task<IStartField> GetStartField(uint gameId, uint playerId)
+        {
+            IGame game = _repository.Games.Get(gameId);
+            IGameField gameField = _repository.GameFields.Get(game?.FieldId ?? 0);
+            IPlayer player = _repository.Players.Get(playerId);
+
+            if (game == null || gameField == null || player == null)
+            {
+                return null;
+            }
+
+            //Get startFields for current game
+            ICollection<IStartField> startFields =
+                _repository.StartFields.GetAll().Where(f => f.GameId == gameId).ToList();
+
+            //Variable for result
+            IStartField startField;
+
+            //in the case haven't created startFields - create them
+            if (startFields.Count == 0)
+            {
+                foreach (var labelField in GenerateStartFields(game.FieldId, game.MaxNumberOfPlayers))
+                {
+                    startFields.Add(_repository.StartFields.Create(
+                        new StartField(gameField, CalculateStartPoints(labelField), gameId)
+                        {
+                            GameId = gameId,
+                            FieldLabels = labelField
+                        }));
+                }
+
+                //get first of start fields for the current player
+                startField = startFields.FirstOrDefault();
+            }
+            //in the case bd have start field for current player and game return it
+            else if((startField=startFields.FirstOrDefault(f => f.PlayerId==playerId))!=null)
+            {
+                return startField;
+            }
+            //otherwise get first of free start fields.
+            else
+            {
+                startField = startFields.FirstOrDefault(f => f.Player == null);
+            }
+
+            //add current player to start field
+            startField.PlayerId = playerId;
+            startField.Player = player.Name;
+
+            await _repository.SaveAsync();
+
+            return startField;
         }
 
         /// <summary>
@@ -506,20 +574,6 @@ namespace SeaBattle.Lib.Managers
 
             IGame game = new Game();
             _repository.Games.Create(game);
-
-            IPlayer team;
-            List<IPlayer> players = new List<IPlayer>();
-            foreach (var teamName in GetTeamNames(numberOfTeams))
-            {
-                team = new Player(teamName, game.Id);
-                _repository.Teams.Create(team);
-                players.Add(team);
-            }
-
-            //Save for generating ids in _repository
-            await _repository.SaveAsync();
-
-            game.PlayersId = players.Select(t => t.Id).ToList();
 
             await _repository.SaveAsync();
 
