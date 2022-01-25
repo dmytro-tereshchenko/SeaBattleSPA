@@ -41,7 +41,7 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Collection of fields with initializing data and parameters for every player
         /// </summary>
-        /// <value><see cref="GameState"/></value>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IStartField"/></value>
         public ICollection<IStartField> StartFields { get; set; }
 
         /// <summary>
