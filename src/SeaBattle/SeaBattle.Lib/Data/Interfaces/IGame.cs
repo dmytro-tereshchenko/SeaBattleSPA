@@ -9,10 +9,10 @@ namespace SeaBattle.Lib.Entities
     public interface IGame: IEntity
     {
         /// <summary>
-        /// Id of game field <see cref="IGameField"/>
+        /// Field of the game
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint FieldId { get; set; }
+        /// <value><see cref="IGameField"/></value>
+        IGameField Field { get; set; }
 
         /// <summary>
         /// Current amount of players which connected to the game
@@ -24,13 +24,13 @@ namespace SeaBattle.Lib.Entities
         /// Max amount of players
         /// </summary>
         /// <value><see cref="byte"/></value>
-        public byte MaxNumberOfPlayers { get; set; }
+        public byte MaxNumberOfPlayers { get; }
 
         /// <summary>
-        /// Name of player, which needs to move this turn.
+        /// Player, which needs to move this turn.
         /// </summary>
-        /// <value><see cref="string"/> Team's name</value>
-        string CurrentPlayerMove { get; set; }
+        /// <value><see cref="IPlayer"/></value>
+        public IPlayer CurrentPlayerMove { get; set; }
 
         /// <summary>
         /// Current state of game
@@ -39,9 +39,15 @@ namespace SeaBattle.Lib.Entities
         StateGame State { get; set; }
 
         /// <summary>
-        /// Collection of players id for current game.
+        /// Collection of fields with initializing data and parameters for every player
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="uint"/></value>
-        ICollection<uint> PlayersId { get; set; }
+        /// <value><see cref="StateGame"/></value>
+        public ICollection<IStartField> StartFields { get; set; }
+
+        /// <summary>
+        /// Collection of players for current game.
+        /// </summary>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IPlayer"/></value>
+        public ICollection<IPlayer> Players { get; set; }
     }
 }

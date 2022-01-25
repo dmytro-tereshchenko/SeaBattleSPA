@@ -17,7 +17,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="sizeX">Size X of created game field.</param>
         /// <param name="sizeY">Size Y of created game field.</param>
         /// <returns><see cref="IResponseGameField"/> where Value is <see cref="IGameField"/>, State is <see cref="StateCode"/></returns>
-        Task<IResponseGameField> CreateGameFieldAsync(ushort sizeX, ushort sizeY);
+        IResponseGameField CreateGameField(ushort sizeX, ushort sizeY);
 
         /// <summary>
         /// Method for calculation points which need to purchase ships.
@@ -29,35 +29,35 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Buy ship and add to <see cref="IStartField"/>
         /// </summary>
-        /// <param name="playerId">Id of team</param>
-        /// <param name="gameShipId">Id of game ship</param>
-        /// <param name="startFieldId">Id of start field</param>
+        /// <param name="players">Collection of players in the game</param>
+        /// <param name="gameShip">Game ship</param>
+        /// <param name="startField">Start field with initializing data and parameters for the player</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        Task<StateCode> BuyShipAsync(uint playerId, uint gameShipId, uint startFieldId);
+        StateCode BuyShip(ICollection<IPlayer> players, IGameShip gameShip, IStartField startField);
 
         /// <summary>
         /// Sell ship and remove from <see cref="IStartField"/>
         /// </summary>
-        /// <param name="playerId">Id of team</param>
-        /// <param name="gameShipId">Id of game ship</param>
-        /// <param name="startFieldId">Id of start field</param>
+        /// <param name="players">Collection of players in the game</param>
+        /// <param name="gameShip">Game ship</param>
+        /// <param name="startField">Start field with initializing data and parameters for the player</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        Task<StateCode> SellShipAsync(uint playerId, uint gameShipId, uint startFieldId);
+        StateCode SellShip(ICollection<IPlayer> players, IGameShip gameShip, IStartField startField);
 
         /// <summary>
         /// Method for generating a collection of fields with labels for possible placing ships on start field for teams.
         /// </summary>
-        /// <param name="gameFieldId">id of gaming field.</param>
-        /// <param name="numberOfTeams">Amount of teams</param>
+        /// <param name="gameField">Field of the game</param>
+        /// <param name="numberOfPlayers">Amount of players</param>
         /// <returns>Collection of fields with ships - arrays with type bool, where true - placed boat, false - empty</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="numberOfTeams"/> out of range</exception>
-        /// <exception cref="ArgumentNullException">There is no gaming field for the given <paramref name="gameFieldId"/>.</exception>
-        ICollection<bool[,]> GenerateStartFields(uint gameFieldId, byte numberOfTeams);
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="numberOfPlayers"/> out of range</exception>
+        /// <exception cref="ArgumentNullException">There is no gaming field for the given <paramref name="gameField"/>.</exception>
+        ICollection<bool[,]> GenerateStartFields(IGameField gameField, byte numberOfPlayers);
 
         /// <summary>
         /// Getting a collection of ships, which players can buy by points.
         /// </summary>
-        /// <returns>Collection of <see cref="IShip"/>, which players can buy by points</returns>
+        /// <returns>Collection of <see cref="ICommonShip"/>, which players can buy by points</returns>
         ICollection<ICommonShip> GetShips();
 
         /// <summary>
@@ -75,46 +75,46 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Creation and getting a new game ship.
         /// </summary>
-        /// <param name="teamId">id of the team</param>
-        /// <param name="ship">Type of <see cref="IShip"/>, which player wants to buy.</param>
+        /// <param name="player">Player(user) in game</param>
+        /// <param name="ship">Type of <see cref="ICommonShip"/>, which player wants to buy.</param>
         /// <returns><see cref="IGameShip"/> Game ship.</returns>
-        Task<IGameShip> GetNewShipAsync(uint teamId, ICommonShip ship);
+        IGameShip GetNewShip(IPlayer player, ICommonShip ship);
 
         /// <summary>
         /// Add weapon to game ship.
         /// </summary>
-        /// <param name="playerId">Id of team</param>
-        /// <param name="gameShipId">Id of the game ship which adds a weapon.</param>
+        /// <param name="player">Current player</param>
+        /// <param name="gameShip">Game ship which adds a weapon.</param>
         /// <param name="weapon">A weapon (<see cref="IWeapon"/>) which adds.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        Task<StateCode> AddWeaponAsync(uint playerId, uint gameShipId, IWeapon weapon);
+        StateCode AddWeapon(IPlayer player, IGameShip gameShip, IWeapon weapon);
 
         /// <summary>
         /// Add repair to game ship.
         /// </summary>
-        /// <param name="teamId">Id of team</param>
-        /// <param name="gameShipId">Id of the game ship which adds a repair.</param>
+        /// <param name="player">Current player</param>
+        /// <param name="gameShip">Game ship which adds a repair.</param>
         /// <param name="repair">A repair (<see cref="IRepair"/>) which adds.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        Task<StateCode> AddRepairAsync(uint teamId, uint gameShipId, IRepair repair);
+        StateCode AddRepair(IPlayer player, IGameShip gameShip, IRepair repair);
 
         /// <summary>
         /// Remove weapon from game ship.
         /// </summary>
-        /// <param name="playerId">Id of team</param>
-        /// <param name="gameShipId">Id of the game ship which removes a weapon.</param>
-        /// <param name="weaponId">Id of weapon (<see cref="IWeapon"/>) which removes.</param>
+        /// <param name="player">Current player</param>
+        /// <param name="gameShip">Game ship which removes a weapon.</param>
+        /// <param name="weapon">Weapon (<see cref="IWeapon"/>) which removes.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        Task<StateCode> RemoveWeaponAsync(uint playerId, uint gameShipId, uint weaponId);
+        StateCode RemoveWeapon(IPlayer player, IGameShip gameShip, IWeapon weapon);
 
         /// <summary>
         /// Remove repair from game ship.
         /// </summary>
-        /// <param name="playerId">Id of team</param>
-        /// <param name="gameShipId">Id of the game ship which removes a repair.</param>
-        /// <param name="repairId">Id of repair (<see cref="IRepair"/>) which removes.</param>
+        /// <param name="player">Current player</param>
+        /// <param name="gameShip">Game ship which removes a repair.</param>
+        /// <param name="repair">Repair (<see cref="IRepair"/>) which removes.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        Task<StateCode> RemoveRepairAsync(uint playerId, uint gameShipId, uint repairId);
+        StateCode RemoveRepair(IPlayer player, IGameShip gameShip, IRepair repair);
 
         /// <summary>
         /// Getting border size of the game field.
@@ -125,25 +125,25 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Create and add player to the game
         /// </summary>
-        /// <param name="gameId">Game's id</param>
+        /// <param name="game">Current game</param>
         /// <param name="playerName">Player's name</param>
-        /// <returns><see cref="IPlayer"/> created player, otherwise null.</returns>
-        Task<IPlayer> AddPlayerToGame(uint gameId, string playerName);
+        /// <returns><see cref="StateCode"/> is result of operation</returns>
+        StateCode AddPlayerToGame(IGame game, string playerName);
 
         /// <summary>
         /// Get start field by player and game. In case absence of starting fields, create them.
         /// </summary>
-        /// <param name="gameId">Game's id of <see cref="IGame"/></param>
-        /// <param name="playerId">Player's id of <see cref="IPlayer"/></param>
+        /// <param name="game">Current game</param>
+        /// <param name="player">Current player</param>
         /// <returns><see cref="IStartField"/> otherwise null</returns>
-        Task<IStartField> GetStartField(uint gameId, uint playerId);
+        IStartField GetStartField(IGame game, IPlayer player);
 
         /// <summary>
-        /// Create <see cref="IGame"/> by numberOfTeams
+        /// Create <see cref="IGame"/> by <paramref name="numberOfPlayers"/>
         /// </summary>
-        /// <param name="numberOfTeams">Number of team members in the game</param>
-        /// <returns><see cref="uint"/> id of the created game</returns>
+        /// <param name="numberOfPlayers">Number of players in the game</param>
+        /// <returns><see cref="IGame"/> Created game</returns>
         /// <exception cref="ArgumentOutOfRangeException">A number of teams are out of possible values.</exception>
-        Task<uint> CreateGameAsync(byte numberOfTeams);
+        IGame CreateGame(byte numberOfPlayers);
     }
 }

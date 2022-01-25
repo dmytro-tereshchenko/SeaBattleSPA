@@ -4,14 +4,33 @@ using System.Linq;
 
 namespace SeaBattle.Lib.Entities
 {
+    /// <summary>
+    /// A field where ships are allocated
+    /// </summary>
     public class GameField : IGameField
     {
+        /// <summary>
+        /// Array of game field with <see cref="IGameShip"/> in cell
+        /// </summary>
+        /// <value><see cref="IGameShip"/>[,] with null in the cell when the ship is absent</value>
         protected IGameShip[,] _gameShips;
 
+        /// <summary>
+        /// Id Entity
+        /// </summary>
+        /// <value><see cref="uint"/></value>
         public uint Id { get; set; }
 
+        /// <summary>
+        /// Size X of game field
+        /// </summary>
+        /// <value><see cref="ushort"/></value>
         public ushort SizeX { get; private set; }
 
+        /// <summary>
+        /// Size Y of game field
+        /// </summary>
+        /// <value><see cref="ushort"/></value>
         public ushort SizeY { get; private set; }
 
         public GameField(ushort sizeX, ushort sizeY, uint id) : this(sizeX, sizeY) => Id = id;
@@ -70,7 +89,7 @@ namespace SeaBattle.Lib.Entities
                 for(ushort j = 0; j < SizeY; j++)
                 {
                     //filtering by team and empty cell
-                    if (_gameShips[i, j] != null && (playerId == null || playerId.Value == _gameShips[i, j].PlayerId))
+                    if (_gameShips[i, j] != null && (playerId == null || playerId.Value == _gameShips[i, j].Player.Id))
                     {
                         if (!ships.ContainsKey(_gameShips[i, j]))
                         {
@@ -90,7 +109,7 @@ namespace SeaBattle.Lib.Entities
                 .OrderBy(s => GetDistanceToCenterField(centerField, GetGeometricCenterOfShip(s.Value)))
                 .ToList();
 
-            return orderedShips.Select(s => $"id={s.Key.Id}, playerId={s.Key.PlayerId}, " +
+            return orderedShips.Select(s => $"id={s.Key.Id}, playerId={s.Key.Player.Id}, " +
                                             $"coords={String.Join(", ", s.Value.Select(coord => $"[{coord.Item1 + 1};{coord.Item2 + 1}]"))}, " + //+1 as outside the entity, numbering starts from "1"
                                             $"type={s.Key.Type.ToString()}, size={s.Key.Size}, hp={s.Key.Hp}/{s.Key.MaxHp}")
                 .ToList();

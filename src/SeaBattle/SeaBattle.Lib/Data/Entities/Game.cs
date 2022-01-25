@@ -16,16 +16,16 @@ namespace SeaBattle.Lib.Entities
         public uint Id { get; set; }
 
         /// <summary>
-        /// Id of game field <see cref="IGameField"/>
+        /// Field of the game
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        public uint FieldId { get; set; }
+        /// <value><see cref="IGameField"/></value>
+        public IGameField Field { get; set; }
 
         /// <summary>
-        /// Name of player, which needs to move this turn.
+        /// Player, which needs to move this turn.
         /// </summary>
-        /// <value><see cref="string"/> Team's name</value>
-        public string CurrentPlayerMove { get; set; }
+        /// <value><see cref="IPlayer"/></value>
+        public IPlayer CurrentPlayerMove { get; set; }
         
         /// <summary>
         /// Current amount of players which connected to the game
@@ -37,7 +37,7 @@ namespace SeaBattle.Lib.Entities
         /// Max amount of players
         /// </summary>
         /// <value><see cref="byte"/></value>
-        public byte MaxNumberOfPlayers { get; set; }
+        public byte MaxNumberOfPlayers { get; private set; }
         
         /// <summary>
         /// Current state of game
@@ -46,16 +46,24 @@ namespace SeaBattle.Lib.Entities
         public StateGame State { get; set; }
 
         /// <summary>
-        /// Collection of players id for current game.
+        /// Collection of fields with initializing data and parameters for every player
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="uint"/></value>
-        public ICollection<uint> PlayersId { get; set; }
+        /// <value><see cref="StateGame"/></value>
+        public ICollection<IStartField> StartFields { get; set; }
+
+        /// <summary>
+        /// Collection of players for current game.
+        /// </summary>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IPlayer"/></value>
+        public ICollection<IPlayer> Players { get; set; }
 
         public Game(uint id): this() => Id = id;
 
+        public Game(byte maxNumberOfPlayers) : this() => MaxNumberOfPlayers = maxNumberOfPlayers;
+
         public Game()
         {
-            PlayersId = new List<uint>();
+            Players = new List<IPlayer>();
             State = StateGame.Created;
             CurrentCountPlayers = 0;
         }

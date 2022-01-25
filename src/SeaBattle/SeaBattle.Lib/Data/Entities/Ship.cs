@@ -4,14 +4,33 @@ using System.Linq;
 
 namespace SeaBattle.Lib.Entities
 {
+    /// <summary>
+    /// Basic ship
+    /// </summary>
     public class Ship : ICommonShip
-    { 
+    {
+        /// <summary>
+        /// Id Entity
+        /// </summary>
+        /// <value><see cref="uint"/></value>
         public uint Id { get; set; }
 
+        /// <summary>
+        /// Distance to target ship which can be damaged.
+        /// </summary>
+        /// <value><see cref="ushort"/></value>
         public ushort AttackRange { get => Weapons?.FirstOrDefault()?.AttackRange ?? 0; }
-        
+
+        /// <summary>
+        /// Distance to target ship which can be repaired.
+        /// </summary>
+        /// <value><see cref="ushort"/></value>
         public ushort RepairRange { get => Repairs?.FirstOrDefault()?.RepairRange ?? 0; }
-        
+
+        /// <summary>
+        /// Amount of hp that target ship can be damaged
+        /// </summary>
+        /// <value><see cref="ushort"/></value>
         public ushort Damage { get => Convert.ToUInt16(Weapons?.Sum(w => w.Damage) ?? 0); }
 
         /// <summary>
@@ -20,6 +39,10 @@ namespace SeaBattle.Lib.Entities
         /// <value><see cref="ushort"/></value>
         public ushort RepairPower { get => Convert.ToUInt16(Repairs?.Sum(r => r.RepairPower) ?? 0); }
         
+        /// <summary>
+        /// Type of ship
+        /// </summary>
+        /// <value><see cref="ShipType"/></value>
         public ShipType Type { get; private set; }
 
         /// <summary>
@@ -28,6 +51,10 @@ namespace SeaBattle.Lib.Entities
         /// <value><see cref="byte"/></value>
         public byte Size { get; private set; }
 
+        /// <summary>
+        /// Max hp of the ship that he can be damaged
+        /// </summary>
+        /// <value><see cref="byte"/></value>
         public ushort MaxHp { get; private set; }
 
         /// <summary>

@@ -2,20 +2,39 @@
 
 namespace SeaBattle.Lib.Entities
 {
+    /// <summary>
+    /// Basic ship
+    /// </summary>
     public interface ICommonShip: IEntity
     {
+        /// <summary>
+        /// Distance to target ship which can be damaged.
+        /// </summary>
+        /// <value><see cref="ushort"/></value>
         ushort AttackRange { get; }
 
-        ushort RepairRange { get; } 
+        /// <summary>
+        /// Distance to target ship which can be repaired.
+        /// </summary>
+        /// <value><see cref="ushort"/></value>
+        ushort RepairRange { get; }
 
+        /// <summary>
+        /// Amount of hp that target ship can be damaged
+        /// </summary>
+        /// <value><see cref="ushort"/></value>
         ushort Damage { get; }
 
         /// <summary>
-        /// Amount of hp that ship can repair
+        /// Amount of hp that ship can be repaired
         /// </summary>
         /// <value><see cref="ushort"/></value>
         ushort RepairPower { get; }
 
+        /// <summary>
+        /// Type of ship
+        /// </summary>
+        /// <value><see cref="ShipType"/></value>
         ShipType Type { get; }
 
         /// <summary>
@@ -24,6 +43,10 @@ namespace SeaBattle.Lib.Entities
         /// <value><see cref="byte"/></value>
         byte Size { get; }
 
+        /// <summary>
+        /// Max hp of the ship that he can be damaged
+        /// </summary>
+        /// <value><see cref="byte"/></value>
         ushort MaxHp { get; }
 
         /// <summary>

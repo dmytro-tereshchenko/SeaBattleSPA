@@ -18,9 +18,12 @@
         InvalidFieldSize = 013,
 
         //Invalid Team, the team isn't matched with the field
-        InvalidTeam = 014,
+        InvalidPlayer = 014,
 
-        //Invalid id for data in a repository
-        InvalidId = 015
+        //Null reference instead of data
+        NullReference = 015,
+
+        //Exceeded max number of players
+        ExceededMaxNumberOfPlayers = 016
     }
 }

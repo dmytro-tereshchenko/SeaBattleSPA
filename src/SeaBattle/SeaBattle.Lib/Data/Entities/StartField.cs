@@ -32,16 +32,10 @@ namespace SeaBattle.Lib.Entities
         public bool[,] FieldLabels { get; set; }
 
         /// <summary>
-        /// Name of player
+        /// The player owning this starting
         /// </summary>
-        /// <value><see cref="string"/></value>
-        public string Player { get; set; }
-
-        /// <summary>
-        /// Player's Id
-        /// </summary>
-        /// <value><see cref="uint"/></value>
-        public uint PlayerId { get; set; }
+        /// <value><see cref="IPlayer"/></value>
+        public IPlayer Player { get; set; }
 
         /// <summary>
         /// Points for buying ships
@@ -52,13 +46,13 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Collection of ships that bought but don't put to the field
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGameShip"</value>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGameShip"></see></value>
         public ICollection<IGameShip> Ships { get; set; }
         
-        public StartField(uint id, IGameField field, bool[,] fieldLabels, string player, int points, ICollection<IGameShip> gameShips, uint gameId)
+        public StartField(uint id, IGameField field, bool[,] fieldLabels, IPlayer player, int points, ICollection<IGameShip> gameShips, uint gameId)
         :this(field, fieldLabels, player,  points,  gameShips, gameId) => Id = id;
 
-        public StartField(IGameField field, bool[,] fieldLabels, string player, int points, ICollection<IGameShip> gameShips, uint gameId) 
+        public StartField(IGameField field, bool[,] fieldLabels, IPlayer player, int points, ICollection<IGameShip> gameShips, uint gameId) 
             : this(field, points, gameId)
         {
             FieldLabels = fieldLabels;

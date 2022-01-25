@@ -26,16 +26,10 @@ namespace SeaBattle.Lib.Entities
         bool[,] FieldLabels { get; set; }
 
         /// <summary>
-        /// Name of player
+        /// The player owning this starting
         /// </summary>
-        /// <value><see cref="string"/></value>
-        string Player { get; set; }
-
-        /// <summary>
-        /// Player's Id
-        /// </summary>
-        /// <value><see cref="uint"/></value>
-        public uint PlayerId { get; set; }
+        /// <value><see cref="IPlayer"/></value>
+        public IPlayer Player { get; set; }
 
         /// <summary>
         /// Points for buying ships
