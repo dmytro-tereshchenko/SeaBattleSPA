@@ -18,9 +18,9 @@ namespace SeaBattle.Lib.Managers
         /// <value><see cref="int"/></value>
         private const int PriceCoefficient = 1000;
 
-        public StateCode BuyShip(ICollection<IPlayer> players, IGameShip gameShip, IStartField startField)
+        public StateCode BuyShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField)
         {
-            if (!players.Contains(startField.Player))
+            if (!players.Contains(startField.GamePlayer))
             {
                 return StateCode.InvalidPlayer;
             }
@@ -37,9 +37,9 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        public StateCode SellShip(ICollection<IPlayer> players, IGameShip gameShip, IStartField startField)
+        public StateCode SellShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField)
         {
-            if (!players.Contains(startField.Player))
+            if (!players.Contains(startField.GamePlayer))
             {
                 return StateCode.InvalidPlayer;
             }
@@ -80,17 +80,17 @@ namespace SeaBattle.Lib.Managers
             return weapons;
         }
 
-        public IGameShip GetNewShip(IPlayer player, ICommonShip ship) =>
-            new GameShip(ship, player, GetShipCost(ship.Size));
+        public IGameShip GetNewShip(IGamePlayer gamePlayer, ICommonShip ship) =>
+            new GameShip(ship, gamePlayer, GetShipCost(ship.Size));
 
-        public StateCode AddWeapon(IPlayer player, IGameShip gameShip, IWeapon weapon)
+        public StateCode AddWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon)
         {
-            if (gameShip == null || weapon == null || player == null)
+            if (gameShip == null || weapon == null || gamePlayer == null)
             {
                 return StateCode.NullReference;
             }
 
-            if (gameShip.Player != player)
+            if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
             }
@@ -100,14 +100,14 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        public StateCode AddRepair(IPlayer player, IGameShip gameShip, IRepair repair)
+        public StateCode AddRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair)
         {
-            if (gameShip == null || player == null || repair == null)
+            if (gameShip == null || gamePlayer == null || repair == null)
             {
                 return StateCode.NullReference;
             }
 
-            if (gameShip.Player != player)
+            if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
             }
@@ -117,14 +117,14 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        public StateCode RemoveWeapon(IPlayer player, IGameShip gameShip, IWeapon weapon)
+        public StateCode RemoveWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon)
         {
-            if (gameShip == null || weapon == null || player == null)
+            if (gameShip == null || weapon == null || gamePlayer == null)
             {
                 return StateCode.NullReference;
             }
 
-            if (gameShip.Player != player)
+            if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
             }
@@ -134,15 +134,15 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        public StateCode RemoveRepair(IPlayer player, IGameShip gameShip, IRepair repair)
+        public StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair)
         {
 
-            if (gameShip == null || repair == null || player == null)
+            if (gameShip == null || repair == null || gamePlayer == null)
             {
                 return StateCode.NullReference;
             }
 
-            if (gameShip.Player != player)
+            if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
             }

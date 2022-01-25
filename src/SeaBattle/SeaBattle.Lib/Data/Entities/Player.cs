@@ -1,44 +1,25 @@
-﻿namespace SeaBattle.Lib.Entities
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SeaBattle.Lib.Data
 {
     /// <summary>
-    /// Player (user) in the game
+    /// Common player (user)
     /// </summary>
-    public class Player : IPlayer
+    public class Player
     {
         public uint Id { get; set; }
 
-        public string Name { get; private set; }
-
-        public bool Ready { get; set; }
+        public string Name { get; protected set; }
 
         public Player(uint id, string name) : this(name) => Id = id;
 
         public Player(string name)
         {
             Name = name;
-        }
-
-        public static bool operator ==(Player obj1, Player obj2) =>
-            obj1?.Equals(obj2) ?? false;
-
-        public static bool operator !=(Player obj1, Player obj2) =>
-            !(obj1==obj2);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is null || obj is not Player)
-            {
-                return false;
-            }
-
-            Player player = (obj as Player)!;
-
-            return player?.Name == this.Name && player.Id == this.Id;
-        }
-
-        public override int GetHashCode()
-        {
-            return (Name + Id).GetHashCode() + base.GetHashCode();
         }
     }
 }

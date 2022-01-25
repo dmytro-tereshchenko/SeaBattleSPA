@@ -13,7 +13,7 @@ namespace SeaBattle.Lib.Entities
 
         public IGameField Field { get; set; }
 
-        public IPlayer CurrentPlayerMove { get; set; }
+        public IGamePlayer CurrentGamePlayerMove { get; set; }
         
         public byte CurrentCountPlayers
         {
@@ -26,7 +26,7 @@ namespace SeaBattle.Lib.Entities
 
         public ICollection<IStartField> StartFields { get; set; }
 
-        public ICollection<IPlayer> Players { get; set; }
+        public ICollection<IGamePlayer> Players { get; set; }
 
         public Game(uint id): this() => Id = id;
 
@@ -34,7 +34,7 @@ namespace SeaBattle.Lib.Entities
 
         public Game()
         {
-            Players = new List<IPlayer>();
+            Players = new List<IGamePlayer>();
             State = GameState.Created;
         }
     }

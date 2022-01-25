@@ -20,7 +20,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="gameShip">Game ship</param>
         /// <param name="startField">Start field with initializing data and parameters for the player</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode BuyShip(ICollection<IPlayer> players, IGameShip gameShip, IStartField startField);
+        StateCode BuyShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField);
 
         /// <summary>
         /// Sell ship and remove from <see cref="IStartField"/>
@@ -29,7 +29,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="gameShip">Game ship</param>
         /// <param name="startField">Start field with initializing data and parameters for the player</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode SellShip(ICollection<IPlayer> players, IGameShip gameShip, IStartField startField);
+        StateCode SellShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField);
 
         /// <summary>
         /// Getting a collection of ships, which players can buy by points.
@@ -52,45 +52,45 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Creation and getting a new game ship.
         /// </summary>
-        /// <param name="player">Player(user) in game</param>
+        /// <param name="gamePlayer">Player(user) in game</param>
         /// <param name="ship">Type of <see cref="ICommonShip"/>, which player wants to buy.</param>
         /// <returns><see cref="IGameShip"/> Game ship.</returns>
-        IGameShip GetNewShip(IPlayer player, ICommonShip ship);
+        IGameShip GetNewShip(IGamePlayer gamePlayer, ICommonShip ship);
 
         /// <summary>
         /// Add weapon to game ship.
         /// </summary>
-        /// <param name="player">Current player</param>
+        /// <param name="gamePlayer">Current player</param>
         /// <param name="gameShip">Game ship which adds a weapon.</param>
         /// <param name="weapon">A weapon (<see cref="IWeapon"/>) which adds.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        StateCode AddWeapon(IPlayer player, IGameShip gameShip, IWeapon weapon);
+        StateCode AddWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon);
 
         /// <summary>
         /// Add repair to game ship.
         /// </summary>
-        /// <param name="player">Current player</param>
+        /// <param name="gamePlayer">Current player</param>
         /// <param name="gameShip">Game ship which adds a repair.</param>
         /// <param name="repair">A repair (<see cref="IRepair"/>) which adds.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        StateCode AddRepair(IPlayer player, IGameShip gameShip, IRepair repair);
+        StateCode AddRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair);
 
         /// <summary>
         /// Remove weapon from game ship.
         /// </summary>
-        /// <param name="player">Current player</param>
+        /// <param name="gamePlayer">Current player</param>
         /// <param name="gameShip">Game ship which removes a weapon.</param>
         /// <param name="weapon">Weapon (<see cref="IWeapon"/>) which removes.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        StateCode RemoveWeapon(IPlayer player, IGameShip gameShip, IWeapon weapon);
+        StateCode RemoveWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon);
 
         /// <summary>
         /// Remove repair from game ship.
         /// </summary>
-        /// <param name="player">Current player</param>
+        /// <param name="gamePlayer">Current player</param>
         /// <param name="gameShip">Game ship which removes a repair.</param>
         /// <param name="repair">Repair (<see cref="IRepair"/>) which removes.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        StateCode RemoveRepair(IPlayer player, IGameShip gameShip, IRepair repair);
+        StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair);
     }
 }

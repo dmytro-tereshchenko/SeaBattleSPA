@@ -54,9 +54,9 @@ namespace SeaBattle.Lib.Managers
         /// Get start field by player and game. In case absence of starting fields, create them.
         /// </summary>
         /// <param name="game">Current game</param>
-        /// <param name="player">Current player</param>
+        /// <param name="gamePlayer">Current player</param>
         /// <returns><see cref="IStartField"/> otherwise null</returns>
-        IStartField GetStartField(IGame game, IPlayer player);
+        IStartField GetStartField(IGame game, IGamePlayer gamePlayer);
 
         /// <summary>
         /// Create <see cref="IGame"/> by <paramref name="numberOfPlayers"/>

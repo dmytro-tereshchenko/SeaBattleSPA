@@ -13,7 +13,7 @@ namespace SeaBattle.Lib.Entities
 
         public ushort Hp { get; set; }
 
-        public IPlayer Player { get; private set; }
+        public IGamePlayer GamePlayer { get; private set; }
 
         public int Points { get; private set; }
 
@@ -37,21 +37,21 @@ namespace SeaBattle.Lib.Entities
 
         public ICollection<IRepair> Repairs { get => Ship.Repairs; set => Ship.Repairs = value; }
 
-        public GameShip(uint id, ICommonShip ship, IPlayer player, int points, ushort hp)
-            : this(ship, player, points, hp) => Id = id;
+        public GameShip(uint id, ICommonShip ship, IGamePlayer gamePlayer, int points, ushort hp)
+            : this(ship, gamePlayer, points, hp) => Id = id;
 
-        public GameShip(uint id, ICommonShip ship, IPlayer player, int points) 
-            : this(id, ship, player, points, ship.MaxHp) { }
+        public GameShip(uint id, ICommonShip ship, IGamePlayer gamePlayer, int points) 
+            : this(id, ship, gamePlayer, points, ship.MaxHp) { }
 
-        public GameShip(ICommonShip ship, IPlayer player, int points, ushort hp)
+        public GameShip(ICommonShip ship, IGamePlayer gamePlayer, int points, ushort hp)
         {
             Ship = ship;
-            Player = player;
+            GamePlayer = gamePlayer;
             Points = points;
             Hp = hp;
         }
 
-        public GameShip(ICommonShip ship, IPlayer player, int points)
-            : this(ship, player, points, ship.MaxHp) { }
+        public GameShip(ICommonShip ship, IGamePlayer gamePlayer, int points)
+            : this(ship, gamePlayer, points, ship.MaxHp) { }
     }
 }

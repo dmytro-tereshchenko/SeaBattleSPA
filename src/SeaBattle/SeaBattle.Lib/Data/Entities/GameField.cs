@@ -65,7 +65,7 @@ namespace SeaBattle.Lib.Entities
                 for(ushort j = 0; j < SizeY; j++)
                 {
                     //filtering by team and empty cell
-                    if (_gameShips[i, j] != null && (playerId == null || playerId.Value == _gameShips[i, j].Player.Id))
+                    if (_gameShips[i, j] != null && (playerId == null || playerId.Value == _gameShips[i, j].GamePlayer.Id))
                     {
                         if (!ships.ContainsKey(_gameShips[i, j]))
                         {
@@ -85,7 +85,7 @@ namespace SeaBattle.Lib.Entities
                 .OrderBy(s => GetDistanceBetween2Points(centerField, GetGeometricCenterOfShip(s.Value)))
                 .ToList();
 
-            return orderedShips.Select(s => $"id={s.Key.Id}, playerId={s.Key.Player.Id}, " +
+            return orderedShips.Select(s => $"id={s.Key.Id}, playerId={s.Key.GamePlayer.Id}, " +
                                             $"coords={String.Join(", ", s.Value.Select(coord => $"[{coord.Item1 + 1};{coord.Item2 + 1}]"))}, " + //+1 as outside the entity, numbering starts from "1"
                                             $"type={s.Key.Type.ToString()}, size={s.Key.Size}, hp={s.Key.Hp}/{s.Key.MaxHp}")
                 .ToList();

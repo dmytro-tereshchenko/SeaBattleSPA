@@ -230,7 +230,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.ExceededMaxNumberOfPlayers;
             }
 
-            game.Players.Add(new Player(playerName));
+            game.Players.Add(new GamePlayer(playerName));
 
             return StateCode.Success;
         }
@@ -239,11 +239,11 @@ namespace SeaBattle.Lib.Managers
         /// Get start field by player and game. In case absence of starting fields, create them.
         /// </summary>
         /// <param name="game">Current game</param>
-        /// <param name="player">Current player</param>
+        /// <param name="gamePlayer">Current player</param>
         /// <returns><see cref="IStartField"/> otherwise null</returns>
-        public IStartField GetStartField(IGame game, IPlayer player)
+        public IStartField GetStartField(IGame game, IGamePlayer gamePlayer)
         {
-            if (game == null || player == null)
+            if (game == null || gamePlayer == null)
             {
                 return null;
             }
@@ -270,7 +270,7 @@ namespace SeaBattle.Lib.Managers
                 foreach (var labelField in fieldsOfLabels)
                 {
                     game.StartFields.Add(
-                        new StartField(game.Field, labelField, player, CalculateStartPoints(labelField), new List<IGameShip>(), game.Id)
+                        new StartField(game.Field, labelField, gamePlayer, CalculateStartPoints(labelField), new List<IGameShip>(), game.Id)
                         {
                             FieldLabels = labelField
                         });
@@ -280,21 +280,24 @@ namespace SeaBattle.Lib.Managers
                 startField = game.StartFields.FirstOrDefault();
             }
             //in the case bd have start field for current player and game return it
-            else if ((startField = game.StartFields.FirstOrDefault(f => f.Player == player)) != null)
+            else if ((startField = game.StartFields.FirstOrDefault(f => f.GamePlayer == gamePlayer)) != null)
             {
                 return startField;
             }
             //otherwise get first of free start fields.
             else
             {
-                startField = game.StartFields.FirstOrDefault(f => f.Player == null);
+                startField = game.StartFields.FirstOrDefault(f => f.GamePlayer == null);
             }
 
             //add current player to start field
             if (startField != null)
             {
-                startField.Player = player;
+                startField.GamePlayer = gamePlayer;
             }
+
+            //change status player
+            startField.GamePlayer.State = PlayerState.InitializeField;
 
             return startField;
         }

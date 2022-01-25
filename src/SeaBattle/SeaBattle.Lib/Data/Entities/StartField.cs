@@ -15,21 +15,21 @@ namespace SeaBattle.Lib.Entities
 
         public bool[,] FieldLabels { get; set; }
 
-        public IPlayer Player { get; set; }
+        public IGamePlayer GamePlayer { get; set; }
 
         public int Points { get; set; }
 
         public ICollection<IGameShip> Ships { get; set; }
         
-        public StartField(uint id, IGameField field, bool[,] fieldLabels, IPlayer player, int points, ICollection<IGameShip> gameShips, uint gameId)
-        :this(field, fieldLabels, player,  points,  gameShips, gameId) => Id = id;
+        public StartField(uint id, IGameField field, bool[,] fieldLabels, IGamePlayer gamePlayer, int points, ICollection<IGameShip> gameShips, uint gameId)
+        :this(field, fieldLabels, gamePlayer,  points,  gameShips, gameId) => Id = id;
 
-        public StartField(IGameField field, bool[,] fieldLabels, IPlayer player, int points, ICollection<IGameShip> gameShips, uint gameId) 
+        public StartField(IGameField field, bool[,] fieldLabels, IGamePlayer gamePlayer, int points, ICollection<IGameShip> gameShips, uint gameId) 
             : this(field, points, gameId)
         {
             FieldLabels = fieldLabels;
             Ships = gameShips;
-            Player = player;
+            GamePlayer = gamePlayer;
         }
 
         public StartField(IGameField field, int points, uint gameId)

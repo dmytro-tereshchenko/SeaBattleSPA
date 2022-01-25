@@ -29,8 +29,8 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Player, which needs to move this turn.
         /// </summary>
-        /// <value><see cref="IPlayer"/></value>
-        public IPlayer CurrentPlayerMove { get; set; }
+        /// <value><see cref="IGamePlayer"/></value>
+        public IGamePlayer CurrentGamePlayerMove { get; set; }
 
         /// <summary>
         /// Current state of game
@@ -47,7 +47,7 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Collection of players for current game.
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IPlayer"/></value>
-        public ICollection<IPlayer> Players { get; set; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGamePlayer"/></value>
+        public ICollection<IGamePlayer> Players { get; set; }
     }
 }

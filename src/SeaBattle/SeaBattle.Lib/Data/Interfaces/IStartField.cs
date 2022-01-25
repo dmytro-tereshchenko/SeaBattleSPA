@@ -28,8 +28,8 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// The player owning this starting
         /// </summary>
-        /// <value><see cref="IPlayer"/></value>
-        public IPlayer Player { get; set; }
+        /// <value><see cref="IGamePlayer"/></value>
+        public IGamePlayer GamePlayer { get; set; }
 
         /// <summary>
         /// Points for buying ships

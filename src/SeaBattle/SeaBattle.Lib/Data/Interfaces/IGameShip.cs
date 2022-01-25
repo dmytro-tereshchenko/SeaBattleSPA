@@ -20,8 +20,8 @@
         /// <summary>
         /// The player who owns this ship
         /// </summary>
-        /// <value><see cref="IPlayer"/></value>
-        IPlayer Player { get; }
+        /// <value><see cref="IGamePlayer"/></value>
+        IGamePlayer GamePlayer { get; }
 
         /// <summary>
         /// Number of ship cost points
