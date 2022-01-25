@@ -18,7 +18,7 @@ namespace SeaBattle.Lib.Entities
         /// Current amount of players which connected to the game
         /// </summary>
         /// <value><see cref="byte"/></value>
-        public byte CurrentCountPlayers { get; set; }
+        public byte CurrentCountPlayers { get; }
 
         /// <summary>
         /// Max amount of players
@@ -35,13 +35,13 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Current state of game
         /// </summary>
-        /// <value><see cref="StateGame"/></value>
-        StateGame State { get; set; }
+        /// <value><see cref="GameState"/></value>
+        GameState State { get; set; }
 
         /// <summary>
         /// Collection of fields with initializing data and parameters for every player
         /// </summary>
-        /// <value><see cref="StateGame"/></value>
+        /// <value><see cref="GameState"/></value>
         public ICollection<IStartField> StartFields { get; set; }
 
         /// <summary>

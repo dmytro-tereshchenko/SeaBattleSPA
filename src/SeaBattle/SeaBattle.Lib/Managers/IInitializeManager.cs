@@ -40,7 +40,7 @@ namespace SeaBattle.Lib.Managers
         /// Getting border size of the game field.
         /// </summary>
         /// <returns><see cref="ILimitSize"/></returns>
-        ILimitSize GetLimitSizeField();
+        LimitSize GetLimitSizeField();
 
         /// <summary>
         /// Create and add player to the game

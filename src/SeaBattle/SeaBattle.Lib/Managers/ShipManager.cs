@@ -12,15 +12,12 @@ namespace SeaBattle.Lib.Managers
     /// </summary>
     public class ShipManager : IShipManager
     {
+        /// <summary>
+        /// Price for 1 cell of ship
+        /// </summary>
+        /// <value><see cref="int"/></value>
         private const int PriceCoefficient = 1000;
 
-        /// <summary>
-        /// Buy ship and add to <see cref="IStartField"/>
-        /// </summary>
-        /// <param name="players">Collection of players in the game</param>
-        /// <param name="gameShip">Game ship</param>
-        /// <param name="startField">Start field with initializing data and parameters for the player</param>
-        /// <returns><see cref="StateCode"/> result of operation</returns>
         public StateCode BuyShip(ICollection<IPlayer> players, IGameShip gameShip, IStartField startField)
         {
             if (!players.Contains(startField.Player))
@@ -40,13 +37,6 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        /// <summary>
-        /// Sell ship and remove from <see cref="IStartField"/>
-        /// </summary>
-        /// <param name="players">Collection of players in the game</param>
-        /// <param name="gameShip">Game ship</param>
-        /// <param name="startField">Start field with initializing data and parameters for the player</param>
-        /// <returns><see cref="StateCode"/> result of operation</returns>
         public StateCode SellShip(ICollection<IPlayer> players, IGameShip gameShip, IStartField startField)
         {
             if (!players.Contains(startField.Player))
@@ -60,10 +50,6 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        /// <summary>
-        /// Getting a collection of ships, which players can buy by points.
-        /// </summary>
-        /// <returns>Collection of <see cref="ICommonShip"/>, which players can buy by points</returns>
         public ICollection<ICommonShip> GetShips()
         {
             ICollection<ICommonShip> ships = new List<ICommonShip>();
@@ -76,10 +62,6 @@ namespace SeaBattle.Lib.Managers
             return ships;
         }
 
-        /// <summary>
-        /// Getting a collection of repairs, which players can equip on the ship.
-        /// </summary>
-        /// <returns>Collection of <see cref="IRepair"/>, which players can equip on the ship</returns>
         public ICollection<IRepair> GetRepairs()
         {
             ICollection<IRepair> repairs = new List<IRepair>();
@@ -89,10 +71,6 @@ namespace SeaBattle.Lib.Managers
             return repairs;
         }
 
-        /// <summary>
-        /// Getting a collection of weapons, which players can equip on the ship.
-        /// </summary>
-        /// <returns>Collection of <see cref="IWeapon"/>, which players can equip on the ship</returns>
         public ICollection<IWeapon> GetWeapons()
         {
             ICollection<IWeapon> weapons = new List<IWeapon>();
@@ -102,22 +80,9 @@ namespace SeaBattle.Lib.Managers
             return weapons;
         }
 
-        /// <summary>
-        /// Creation and getting a new game ship.
-        /// </summary>
-        /// <param name="player">Player(user) in game</param>
-        /// <param name="ship">Type of <see cref="ICommonShip"/>, which player wants to buy.</param>
-        /// <returns><see cref="IGameShip"/> Game ship.</returns>
         public IGameShip GetNewShip(IPlayer player, ICommonShip ship) =>
             new GameShip(ship, player, GetShipCost(ship.Size));
 
-        /// <summary>
-        /// Add weapon to game ship.
-        /// </summary>
-        /// <param name="player">Current player</param>
-        /// <param name="gameShip">Game ship which adds a weapon.</param>
-        /// <param name="weapon">A weapon (<see cref="IWeapon"/>) which adds.</param>
-        /// <returns><see cref="StateCode"/> is result of operation</returns>
         public StateCode AddWeapon(IPlayer player, IGameShip gameShip, IWeapon weapon)
         {
             if (gameShip == null || weapon == null || player == null)
@@ -135,13 +100,6 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        /// <summary>
-        /// Add repair to game ship.
-        /// </summary>
-        /// <param name="player">Current player</param>
-        /// <param name="gameShip">Game ship which adds a repair.</param>
-        /// <param name="repair">A repair (<see cref="IRepair"/>) which adds.</param>
-        /// <returns><see cref="StateCode"/> is result of operation</returns>
         public StateCode AddRepair(IPlayer player, IGameShip gameShip, IRepair repair)
         {
             if (gameShip == null || player == null || repair == null)
@@ -159,13 +117,6 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        /// <summary>
-        /// Remove weapon from game ship.
-        /// </summary>
-        /// <param name="player">Current player</param>
-        /// <param name="gameShip">Game ship which removes a weapon.</param>
-        /// <param name="weapon">Weapon (<see cref="IWeapon"/>) which removes.</param>
-        /// <returns><see cref="StateCode"/> is result of operation</returns>
         public StateCode RemoveWeapon(IPlayer player, IGameShip gameShip, IWeapon weapon)
         {
             if (gameShip == null || weapon == null || player == null)
@@ -183,13 +134,6 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        /// <summary>
-        /// Remove repair from game ship.
-        /// </summary>
-        /// <param name="player">Current player</param>
-        /// <param name="gameShip">Game ship which removes a repair.</param>
-        /// <param name="repair">Repair (<see cref="IRepair"/>) which removes.</param>
-        /// <returns><see cref="StateCode"/> is result of operation</returns>
         public StateCode RemoveRepair(IPlayer player, IGameShip gameShip, IRepair repair)
         {
 

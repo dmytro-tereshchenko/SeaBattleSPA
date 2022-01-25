@@ -7,16 +7,8 @@ namespace SeaBattle.Lib.Infrastructure
     /// </summary>
     public class ResponseGameField :IResponseGameField
     {
-        /// <summary>
-        /// Game field of game
-        /// </summary>
-        /// <value><see cref="IGameField"/></value>
         public IGameField Value { get; private set; }
 
-        /// <summary>
-        /// State of the response
-        /// </summary>
-        /// <value><see cref="StateCode"/></value>
         public StateCode State { get; private set; }
 
         public ResponseGameField(IGameField value, StateCode state)

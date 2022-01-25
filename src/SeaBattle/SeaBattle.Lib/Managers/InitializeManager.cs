@@ -209,7 +209,7 @@ namespace SeaBattle.Lib.Managers
         /// Getting border size of the game field.
         /// </summary>
         /// <returns><see cref="ILimitSize"/></returns>
-        public ILimitSize GetLimitSizeField() =>
+        public LimitSize GetLimitSizeField() =>
             new LimitSize(_maxSizeX, _maxSizeY, _minSizeX, _minSizeY);
 
         /// <summary>
@@ -230,7 +230,6 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.ExceededMaxNumberOfPlayers;
             }
 
-            game.CurrentCountPlayers++;
             game.Players.Add(new Player(playerName));
 
             return StateCode.Success;
