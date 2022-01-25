@@ -5,7 +5,7 @@ namespace SeaBattle.Lib.Infrastructure
     /// <summary>
     /// Dto for getting border size of the game field (<see cref="IGameField"/>)
     /// </summary>
-    public class LimitSize : ILimitSize
+    public class LimitSize
     {
         /// <summary>
         /// Max size X of <see cref="IGameField"/>
