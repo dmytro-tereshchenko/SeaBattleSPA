@@ -1,4 +1,5 @@
-﻿using SeaBattle.Lib.Entities;
+﻿using System.Collections.Generic;
+using SeaBattle.Lib.Entities;
 
 namespace SeaBattle.Lib.Infrastructure
 {
@@ -11,6 +12,11 @@ namespace SeaBattle.Lib.Infrastructure
 
         public StateCode State { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResponseGameField"/> class
+        /// </summary>
+        /// <param name="value">Game field</param>
+        /// <param name="state">State of response</param>
         public ResponseGameField(IGameField value, StateCode state)
         {
             Value = value;

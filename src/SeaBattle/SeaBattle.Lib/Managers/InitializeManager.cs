@@ -79,7 +79,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="field">Field with ships - array with type bool, where true - placed ship, false - empty.</param>
         /// <param name="x">Coordinate X where placed ship which we relatively check free area.</param>
         /// <param name="y">Coordinate Y where placed ship which we relatively check free area.</param>
-        /// <returns>true - there is ship around target cell, otherwise false - around area is free.</returns>
+        /// <returns>false - there is ship around target cell, otherwise true - around area is free.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="x"/>, <paramref name="y"/> is out of range game field.</exception>
         private bool CheckFreeAreaAroundShip(bool[,] field, int x, int y)
         {
