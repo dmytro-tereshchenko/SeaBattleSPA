@@ -1,4 +1,6 @@
-﻿namespace SeaBattle.Lib.Entities
+﻿using System.Collections.Generic;
+
+namespace SeaBattle.Lib.Entities
 {
     /// <summary>
     /// An expanded ship that is used in the game
@@ -28,5 +30,41 @@
         /// </summary>
         /// <value><see cref="int"/></value>
         int Points { get; }
+
+        /// <summary>
+        /// Distance to target ship which can be damaged.
+        /// </summary>
+        /// <value><see cref="ushort"/></value>
+        ushort AttackRange { get; }
+
+        /// <summary>
+        /// Distance to target ship which can be repaired.
+        /// </summary>
+        /// <value><see cref="ushort"/></value>
+        ushort RepairRange { get; }
+
+        /// <summary>
+        /// Amount of hp that target ship can be damaged
+        /// </summary>
+        /// <value><see cref="ushort"/></value>
+        ushort Damage { get; }
+
+        /// <summary>
+        /// Amount of hp that ship can be repaired
+        /// </summary>
+        /// <value><see cref="ushort"/></value>
+        ushort RepairPower { get; }
+
+        /// <summary>
+        /// Collection of weapons on ship
+        /// </summary>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IWeapon"/></value>
+        ICollection<IWeapon> Weapons { get; }
+
+        /// <summary>
+        /// Collection of weapons on ship
+        /// </summary>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IRepair"/></value>
+        ICollection<IRepair> Repairs { get; }
     }
 }

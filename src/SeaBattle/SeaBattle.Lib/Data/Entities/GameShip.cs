@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -17,14 +19,14 @@ namespace SeaBattle.Lib.Entities
 
         public int Points { get; private set; }
 
-        public ushort AttackRange { get => Ship.AttackRange; }
+        public ushort AttackRange { get => Weapons?.FirstOrDefault()?.AttackRange ?? 0; }
 
-        public ushort RepairRange { get => Ship.RepairRange; }
+        public ushort RepairRange { get => Repairs?.FirstOrDefault()?.RepairRange ?? 0; }
 
-        public ushort Damage { get => Ship.Damage; }
+        public ushort Damage { get => Convert.ToUInt16(Weapons?.Sum(w => w.Damage) ?? 0); }
 
-        public ushort RepairPower { get => Ship.RepairPower; }
-        
+        public ushort RepairPower { get => Convert.ToUInt16(Repairs?.Sum(r => r.RepairPower) ?? 0); }
+
         public ShipType Type { get => Ship.Type; }
 
         public byte Size { get => Ship.Size; }
@@ -33,9 +35,9 @@ namespace SeaBattle.Lib.Entities
 
         public byte Speed { get => Ship.Speed; }
 
-        public ICollection<IWeapon> Weapons { get=>Ship.Weapons; set=>Ship.Weapons=value; }
+        public ICollection<IWeapon> Weapons { get; private set; }
 
-        public ICollection<IRepair> Repairs { get => Ship.Repairs; set => Ship.Repairs = value; }
+        public ICollection<IRepair> Repairs { get; private set; }
 
         public GameShip(uint id, ICommonShip ship, IGamePlayer gamePlayer, int points, ushort hp)
             : this(ship, gamePlayer, points, hp) => Id = id;
@@ -49,6 +51,8 @@ namespace SeaBattle.Lib.Entities
             GamePlayer = gamePlayer;
             Points = points;
             Hp = hp;
+            Weapons = new List<IWeapon>();
+            Repairs = new List<IRepair>();
         }
 
         public GameShip(ICommonShip ship, IGamePlayer gamePlayer, int points)

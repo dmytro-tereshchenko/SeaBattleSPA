@@ -95,7 +95,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            gameShip.Ship.Weapons.Add(weapon);
+            gameShip.Weapons.Add(weapon);
 
             return StateCode.Success;
         }
@@ -112,7 +112,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            gameShip.Ship.Repairs.Add(repair);
+            gameShip.Repairs.Add(repair);
 
             return StateCode.Success;
         }
@@ -129,7 +129,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            gameShip.Ship.Weapons.Remove(weapon);
+            gameShip.Weapons.Remove(weapon);
 
             return StateCode.Success;
         }
@@ -147,7 +147,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            gameShip.Ship.Repairs.Remove(repair);
+            gameShip.Repairs.Remove(repair);
 
             return StateCode.Success;
         }

@@ -294,10 +294,10 @@ namespace SeaBattle.Lib.Managers
             if (startField != null)
             {
                 startField.GamePlayer = gamePlayer;
-            }
 
-            //change status player
-            startField.GamePlayer.State = PlayerState.InitializeField;
+                //change status player
+                startField.GamePlayer.State = PlayerState.InitializeField;
+            }
 
             return startField;
         }
