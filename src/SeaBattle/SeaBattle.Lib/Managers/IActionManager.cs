@@ -48,8 +48,8 @@ namespace SeaBattle.Lib.Managers
         /// Put <see cref="IGameShip"/> from collection of <see cref="IStartField.Ships"/> to <see cref="IGameField"/>
         /// </summary>
         /// <param name="player">Current player</param>
-        /// <param name="tPosX">X coordinate of removed ship</param>
-        /// <param name="tPosY">Y coordinate of removed ship</param>
+        /// <param name="tPosX">X coordinate of the ship's stern</param>
+        /// <param name="tPosY">Y coordinate of the ship's stern</param>
         /// <param name="direction">The direction of placement ship</param>
         /// <param name="startField">Start field with game field and collection of unused ships</param>
         /// <param name="ship">Current ship</param>
@@ -62,8 +62,8 @@ namespace SeaBattle.Lib.Managers
         /// </summary>
         /// <param name="player">Current player</param>
         /// <param name="ship">Current ship</param>
-        /// <param name="tPosX">X coordinate of removed ship</param>
-        /// <param name="tPosY">Y coordinate of removed ship</param>
+        /// <param name="tPosX">X coordinate of new position of the ship's stern</param>
+        /// <param name="tPosY">Y coordinate of new position of the ship's stern</param>
         /// <param name="direction">The direction of placement ship</param>
         /// <param name="field">Game field</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>

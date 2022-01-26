@@ -228,6 +228,13 @@ namespace SeaBattle.Lib.Managers
                 }
             }
 
+            //check distance between target point and furthest cell of current ship.
+            if (locOfShip.Select(s => GetDistanceBetween2Points((tPosX, tPosY), s)).OrderByDescending(d => d).First() >
+                ship.Speed)
+            {
+                return StateCode.OutOfDistance;
+            }
+
             StateCode result;
 
             try
