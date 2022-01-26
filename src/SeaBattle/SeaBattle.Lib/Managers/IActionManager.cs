@@ -12,26 +12,18 @@ namespace SeaBattle.Lib.Managers
     public interface IActionManager
     {
         /// <summary>
+        /// Utility for actions on <see cref="IGameField"/>
+        /// </summary>
+        /// <value><see cref="IGameFieldActionUtility"/></value>
+        IGameFieldActionUtility ActionUtility { get; }
+
+        /// <summary>
         /// Get actual game field
         /// </summary>
         /// <param name="player">The player who request game field</param>
         /// <param name="game">Current game</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
         IResponseGameField GetGameField(IGamePlayer player, IGame game);
-
-        /// <summary>
-        /// Place ship on game field
-        /// </summary>
-        /// <param name="player">Current player</param>
-        /// <param name="ship">Target ship</param>
-        /// <param name="posX">X coordinate of the ship's stern</param>
-        /// <param name="posY">Y coordinate of the ship's stern</param>
-        /// <param name="direction">The direction of placement ship</param>
-        /// <param name="field">Game field</param>
-        /// <returns><see cref="StateCode"/> result of operation</returns>
-        /// <exception cref="InvalidEnumArgumentException">Used direction not planned by the game</exception>
-        StateCode PutShipOnField(IGamePlayer player, IGameShip ship, ushort posX, ushort posY,
-            DirectionOfShipPosition direction, IGameField field);
 
         /// <summary>
         /// Remove <see cref="IGameShip"/> from <see cref="IGameField"/> to collection in <see cref="IStartField.Ships"/>
@@ -89,9 +81,10 @@ namespace SeaBattle.Lib.Managers
         /// </summary>
         /// <param name="field">Game field</param>
         /// <param name="player">Current player for filtering <see cref="IGameShip"/>, if null - get all ships without filter.</param>
-        /// <returns><see cref="ICollection{T}"/> whose generic type argument is <see cref="string"/></returns>
+        /// <returns><see cref="IDictionary{TKey,TValue}"/> whose generic key argument is <see cref="IGameShip"/>, generic type argument
+        /// is <see cref="ICollection{T}"/> whose generic type argument is (<see cref="ushort"/>, <see cref="ushort"/>) coordinates (X,Y)</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        ICollection<string> GetFieldWithShips(IGameField field, IGamePlayer player = null);
+        IDictionary<IGameShip, ICollection<(ushort, ushort)>> GetFieldWithShips(IGameField field, IGamePlayer player = null);
 
         /// <summary>
         /// Attack cell by ship
