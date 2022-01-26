@@ -27,10 +27,21 @@ namespace SeaBattle.Lib.Entities
 
         public ICollection<IGamePlayer> Players { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Game"/> class
+        /// </summary>
+        /// <param name="id">Id of game</param>
         public Game(uint id): this() => Id = id;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Game"/> class
+        /// </summary>
+        /// <param name="maxNumberOfPlayers">Max amount of players</param>
         public Game(byte maxNumberOfPlayers) : this() => MaxNumberOfPlayers = maxNumberOfPlayers;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Game"/> class
+        /// </summary>
         public Game()
         {
             Players = new List<IGamePlayer>();

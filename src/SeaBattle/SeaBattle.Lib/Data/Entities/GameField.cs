@@ -19,8 +19,19 @@ namespace SeaBattle.Lib.Entities
 
         public ushort SizeY { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameField"/> class
+        /// </summary>
+        /// <param name="sizeX">Size X of game field</param>
+        /// <param name="sizeY">Size Y of game field</param>
+        /// <param name="id">Id of game field</param>
         public GameField(ushort sizeX, ushort sizeY, uint id) : this(sizeX, sizeY) => Id = id;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameField"/> class
+        /// </summary>
+        /// <param name="sizeX">Size X of game field</param>
+        /// <param name="sizeY">Size Y of game field</param>
         public GameField(ushort sizeX, ushort sizeY)
         {
             SizeX = sizeX;
