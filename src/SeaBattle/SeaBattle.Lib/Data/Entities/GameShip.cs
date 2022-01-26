@@ -39,12 +39,34 @@ namespace SeaBattle.Lib.Entities
 
         public ICollection<IRepair> Repairs { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameShip"/> class
+        /// </summary>
+        /// <param name="id">Id of ship</param>
+        /// <param name="ship">Basic ship</param>
+        /// <param name="gamePlayer">The player who owns the ship</param>
+        /// <param name="points">Ship's cost</param>
+        /// <param name="hp">Current hp of ship</param>
         public GameShip(uint id, ICommonShip ship, IGamePlayer gamePlayer, int points, ushort hp)
             : this(ship, gamePlayer, points, hp) => Id = id;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameShip"/> class
+        /// </summary>
+        /// <param name="id">Id of ship</param>
+        /// <param name="ship">Basic ship</param>
+        /// <param name="gamePlayer">The player who owns the ship</param>
+        /// <param name="points">Ship's cost</param>
         public GameShip(uint id, ICommonShip ship, IGamePlayer gamePlayer, int points) 
             : this(id, ship, gamePlayer, points, ship.MaxHp) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameShip"/> class
+        /// </summary>
+        /// <param name="ship">Basic ship</param>
+        /// <param name="gamePlayer">The player who owns the ship</param>
+        /// <param name="points">Ship's cost</param>
+        /// <param name="hp">Current hp of ship</param>
         public GameShip(ICommonShip ship, IGamePlayer gamePlayer, int points, ushort hp)
         {
             Ship = ship;
@@ -55,7 +77,37 @@ namespace SeaBattle.Lib.Entities
             Repairs = new List<IRepair>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameShip"/> class
+        /// </summary>
+        /// <param name="ship">Basic ship</param>
+        /// <param name="gamePlayer">The player who owns the ship</param>
+        /// <param name="points">Ship's cost</param>
         public GameShip(ICommonShip ship, IGamePlayer gamePlayer, int points)
             : this(ship, gamePlayer, points, ship.MaxHp) { }
+
+        public static bool operator ==(GameShip obj1, GameShip obj2) =>
+            obj1?.Equals(obj2) ?? false;
+
+        public static bool operator !=(GameShip obj1, GameShip obj2) =>
+            !(obj1 == obj2);
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is null || obj is not GameShip)
+            {
+                return false;
+            }
+
+            GameShip gameShip = (obj as GameShip)!;
+
+            return gameShip?.Type == this.Type && gameShip.Id == this.Id && gameShip.Speed == this.Speed &&
+                   gameShip.Size == this.Size;
+        }
+
+        public override int GetHashCode()
+        {
+            return (Id + Type.ToString() + Speed + Size + MaxHp).GetHashCode() + base.GetHashCode();
+        }
     }
 }

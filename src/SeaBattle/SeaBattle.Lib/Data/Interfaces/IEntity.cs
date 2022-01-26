@@ -1,9 +1,7 @@
-﻿using SeaBattle.Lib.Repositories;
-
-namespace SeaBattle.Lib.Entities
+﻿namespace SeaBattle.Lib.Entities
 {
     /// <summary>
-    /// Common Entity used in <see cref="IRepository{T}"/>
+    /// Common Entity
     /// </summary>
     public interface IEntity
     {
