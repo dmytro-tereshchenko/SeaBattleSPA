@@ -259,7 +259,7 @@ namespace SeaBattle.Lib.Managers
         }
 
         public ICollection<IGameShip> GetVisibleTargetsForShip(IGamePlayer player, IGameShip ship, IGameField field,
-            TypeOfAction action)
+            ActionType action)
         {
             if (player == null || field == null || ship == null)
             {
@@ -279,8 +279,8 @@ namespace SeaBattle.Lib.Managers
 
             ushort distance = action switch
             {
-                TypeOfAction.Attack => ship.AttackRange,
-                TypeOfAction.Repair => ship.RepairRange,
+                ActionType.Attack => ship.AttackRange,
+                ActionType.Repair => ship.RepairRange,
                 _ => throw new InvalidEnumArgumentException()
             };
 
@@ -294,8 +294,8 @@ namespace SeaBattle.Lib.Managers
             //                      repair -> only friendly targets)
             filteringShips = action switch
             {
-                TypeOfAction.Attack => filteringShips.Where(s=>s.GamePlayer!=player),
-                TypeOfAction.Repair => filteringShips.Where(s => s.GamePlayer == player),
+                ActionType.Attack => filteringShips.Where(s=>s.GamePlayer!=player),
+                ActionType.Repair => filteringShips.Where(s => s.GamePlayer == player),
                 _ => throw new InvalidEnumArgumentException()
             };
 
@@ -345,7 +345,7 @@ namespace SeaBattle.Lib.Managers
             (float, float) centerOfTargetPoint = ((float) tPosX - 0.5f, (float) tPosY - 0.5f);
 
             if (GetDistanceBetween2Points(centerOfTargetPoint,
-                    GetGeometricCenterOfShip(GetCoordinatesByShip(ship, field))) > ship.AttackRange)
+                    GetGeometricCenterOfShip(GetShipCoordinates(ship, field))) > ship.AttackRange)
             {
                 return StateCode.OutOfDistance;
             }
@@ -390,7 +390,7 @@ namespace SeaBattle.Lib.Managers
             (float, float) centerOfTargetPoint = ((float)tPosX - 0.5f, (float)tPosY - 0.5f);
 
             if (GetDistanceBetween2Points(centerOfTargetPoint,
-                    GetGeometricCenterOfShip(GetCoordinatesByShip(ship, field))) > ship.RepairRange)
+                    GetGeometricCenterOfShip(GetShipCoordinates(ship, field))) > ship.RepairRange)
             {
                 return StateCode.OutOfDistance;
             }
@@ -416,7 +416,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            ICollection<IGameShip> targetShips = GetVisibleTargetsForShip(player, ship, field, TypeOfAction.Repair);
+            ICollection<IGameShip> targetShips = GetVisibleTargetsForShip(player, ship, field, ActionType.Repair);
 
             if (targetShips.Count == 0)
             {
@@ -441,7 +441,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="ship">Current ship</param>
         /// <param name="field">Game field</param>
         /// <returns><see cref="ICollection{T}"/> whose generic type argument is (<see cref="ushort"/>, <see cref="ushort"/>) coordinates (X, Y)</returns>
-        private ICollection<(ushort, ushort)> GetCoordinatesByShip(IGameShip ship, IGameField field)
+        private ICollection<(ushort, ushort)> GetShipCoordinates(IGameShip ship, IGameField field)
         {
             ICollection<(ushort, ushort)> coordinates = new List<(ushort, ushort)>(ship.Size);
 
@@ -482,7 +482,7 @@ namespace SeaBattle.Lib.Managers
         /// <returns><see cref="IDictionary{TKey,TValue}"/> whose generic key argument is <see cref="IGameShip"/>, generic type argument
         /// is <see cref="ICollection{T}"/> whose generic type argument is (<see cref="ushort"/>, <see cref="ushort"/>) coordinates (X,Y)</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        private IDictionary<IGameShip, ICollection<(ushort, ushort)>> GetCoordinateOfShip(IGameField field,
+        private IDictionary<IGameShip, ICollection<(ushort, ushort)>> GetAllShipsCoordinates(IGameField field,
             IGamePlayer player = null)
         {
             if (field == null)

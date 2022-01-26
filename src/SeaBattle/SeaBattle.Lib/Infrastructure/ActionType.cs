@@ -3,7 +3,7 @@
     /// <summary>
     /// Types of possible interaction between ships
     /// </summary>
-    public enum TypeOfAction
+    public enum ActionType
     {
         /// <summary>
         /// Attack target ship (reduce his hp)

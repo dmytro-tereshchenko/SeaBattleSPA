@@ -76,13 +76,13 @@ namespace SeaBattle.Lib.Managers
         /// <param name="player">Current player</param>
         /// <param name="ship">Current ship</param>
         /// <param name="field">Game field</param>
-        /// <param name="action">Type of possible actions (<see cref="TypeOfAction.Attack"/>, <see cref="TypeOfAction.Repair"/>)</param>
+        /// <param name="action">Type of possible actions (<see cref="ActionType.Attack"/>, <see cref="ActionType.Repair"/>)</param>
         /// <returns><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGameShip"/></returns>
         /// <exception cref="NullReferenceException"></exception>
         /// <exception cref="ArgumentException">Wrong player</exception>
         /// <exception cref="InvalidEnumArgumentException">Used action not planned by the game</exception>
         ICollection<IGameShip> GetVisibleTargetsForShip(IGamePlayer player, IGameShip ship, IGameField field,
-            TypeOfAction action);
+            ActionType action);
 
         /// <summary>
         /// Get in <see cref="string"/> format sorted collection of the ship by distance to the center of the field.
