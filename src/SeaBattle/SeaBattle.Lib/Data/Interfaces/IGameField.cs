@@ -28,7 +28,5 @@ namespace SeaBattle.Lib.Entities
         /// <returns>object of GameShip</returns>
         /// <exception cref="IndexOutOfRangeException"><paramref name="x"/>, <paramref name="y"/>out of range game field</exception>
         IGameShip this[ushort u, ushort y] { get; set; }
-
-        ICollection<string> GetFieldWithShips(uint? playerId = null);
     }
 }

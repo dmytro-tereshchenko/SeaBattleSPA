@@ -26,7 +26,7 @@
         InvalidFieldSize = 013,
 
         /// <summary>
-        /// Invalid Team, the team isn't matched with the field
+        /// Invalid player, the player isn't matched with the field
         /// </summary>
         InvalidPlayer = 014,
 
@@ -41,8 +41,23 @@
         ExceededMaxNumberOfPlayers = 016,
 
         /// <summary>
+        /// Invalid ship in start field
+        /// </summary>
+        InvalidShip = 017,
+
+        /// <summary>
         /// Invalid place for ship (there is around another ship or out of game field
         /// </summary>
-        InvalidPlaceForShip = 020
+        InvalidPlaceForShip = 020,
+
+        /// <summary>
+        /// Absence of a ship by coordinates
+        /// </summary>
+        AbsentOfShip = 021,
+
+        /// <summary>
+        /// Invalid operation
+        /// </summary>
+        InvalidOperation = 0
     }
 }
