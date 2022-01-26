@@ -252,7 +252,10 @@ namespace SeaBattle.Lib.Managers
 
             if (field[tPosX, tPosY].Hp < ship.Damage)
             {
-                field[tPosX, tPosY] = null;
+                foreach (var shipsCell in ActionUtility.GetShipCoordinates(field[tPosX, tPosY], field))
+                {
+                    field[shipsCell.Item1, shipsCell.Item2] = null;
+                }
                 return StateCode.TargetDestroyed;
             }
 
