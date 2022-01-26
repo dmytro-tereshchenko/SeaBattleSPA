@@ -335,11 +335,22 @@ namespace SeaBattle.Lib.Managers
                 _ => throw new InvalidEnumArgumentException()
             };
 
-            return ships
+            //Filtering by distance
+            var filteringShips = ships
                 .Where(s => GetDistanceBetween2Points(centerOfCurrentShip, GetGeometricCenterOfShip(s.Value)) <=
                             distance)
-                .Select(s => s.Key)
-                .ToList();
+                .Select(s => s.Key);
+
+            //Filtering by player   (attack -> only not friendly targets;
+            //                      repair -> only friendly targets)
+            filteringShips = action switch
+            {
+                TypeOfAction.Attack => filteringShips.Where(s=>s.GamePlayer!=player),
+                TypeOfAction.Repair => filteringShips.Where(s => s.GamePlayer == player),
+                _ => throw new InvalidEnumArgumentException()
+            };
+
+            return filteringShips.ToList();
         }
 
         /// <summary>
@@ -370,6 +381,171 @@ namespace SeaBattle.Lib.Managers
                                             $"coords={String.Join(", ", s.Value.Select(coord => $"[{coord.Item1};{coord.Item2}]"))}, " + //+1 as outside the entity, numbering starts from "1"
                                             $"type={s.Key.Type.ToString()}, size={s.Key.Size}, hp={s.Key.Hp}/{s.Key.MaxHp}")
                 .ToList();
+        }
+
+        /// <summary>
+        /// Attack cell by ship
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <param name="ship">Current ship</param>
+        /// <param name="tPosX">X coordinate of target cell</param>
+        /// <param name="tPosY">Y coordinate of target cell</param>
+        /// <param name="field">Game field</param>
+        /// <returns><see cref="StateCode"/> result of operation</returns>
+        public StateCode AttackShip(IGamePlayer player, IGameShip ship, ushort tPosX, ushort tPosY, IGameField field)
+        {
+            if (player == null || field == null || ship == null)
+            {
+                return StateCode.NullReference;
+            }
+
+            if (ship.GamePlayer != player)
+            {
+                return StateCode.InvalidPlayer;
+            }
+
+            if (field[tPosX, tPosY] == null || field[tPosX, tPosY] == ship)
+            {
+                return StateCode.MissTarget;
+            }
+
+            (float, float) centerOfTargetPoint = ((float) tPosX - 0.5f, (float) tPosY - 0.5f);
+
+            if (GetDistanceBetween2Points(centerOfTargetPoint,
+                    GetGeometricCenterOfShip(GetCoordinatesByShip(ship, field))) > ship.AttackRange)
+            {
+                return StateCode.OutOfDistance;
+            }
+
+            if (field[tPosX, tPosY].Hp < ship.Damage)
+            {
+                field[tPosX, tPosY] = null;
+                return StateCode.TargetDestroyed;
+            }
+
+            field[tPosX, tPosY].Hp -= ship.Damage;
+
+            return StateCode.Success;
+        }
+
+        /// <summary>
+        /// Repair cell by ship
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <param name="ship">Current ship</param>
+        /// <param name="tPosX">X coordinate of target cell</param>
+        /// <param name="tPosY">Y coordinate of target cell</param>
+        /// <param name="field">Game field</param>
+        /// <returns><see cref="StateCode"/> result of operation</returns>
+        public StateCode RepairShip(IGamePlayer player, IGameShip ship, ushort tPosX, ushort tPosY, IGameField field)
+        {
+            if (player == null || field == null || ship == null)
+            {
+                return StateCode.NullReference;
+            }
+
+            if (ship.GamePlayer != player)
+            {
+                return StateCode.InvalidPlayer;
+            }
+
+            if (field[tPosX, tPosY] == null || field[tPosX, tPosY] == ship)
+            {
+                return StateCode.MissTarget;
+            }
+
+            (float, float) centerOfTargetPoint = ((float)tPosX - 0.5f, (float)tPosY - 0.5f);
+
+            if (GetDistanceBetween2Points(centerOfTargetPoint,
+                    GetGeometricCenterOfShip(GetCoordinatesByShip(ship, field))) > ship.RepairRange)
+            {
+                return StateCode.OutOfDistance;
+            }
+
+            field[tPosX, tPosY].Hp += ship.RepairPower;
+            if (field[tPosX, tPosY].Hp > field[tPosX, tPosY].MaxHp)
+            {
+                field[tPosX, tPosY].Hp = field[tPosX, tPosY].MaxHp;
+            }
+
+            return StateCode.Success;
+        }
+
+        /// <summary>
+        /// Repair all friendly ship on distance
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <param name="ship">Current ship</param>
+        /// <param name="field">Game field</param>
+        /// <returns><see cref="StateCode"/> result of operation</returns>
+        public StateCode RepairAllShip(IGamePlayer player, IGameShip ship, IGameField field)
+        {
+            if (player == null || field == null || ship == null)
+            {
+                return StateCode.NullReference;
+            }
+
+            if (ship.GamePlayer != player)
+            {
+                return StateCode.InvalidPlayer;
+            }
+
+            ICollection<IGameShip> targetShips = GetVisibleTargetsForShip(player, ship, field, TypeOfAction.Repair);
+
+            if (targetShips.Count == 0)
+            {
+                return StateCode.OutOfDistance;
+            }
+
+            foreach (var tShip in targetShips)
+            {
+                tShip.Hp += Convert.ToUInt16(ship.RepairPower / targetShips.Count);
+                if (tShip.Hp > tShip.MaxHp)
+                {
+                    tShip.Hp = tShip.MaxHp;
+                }
+            }
+
+            return StateCode.Success;
+        }
+
+        /// <summary>
+        /// Get coordinates of cells of the ship
+        /// </summary>
+        /// <param name="ship">Current ship</param>
+        /// <param name="field">Game field</param>
+        /// <returns><see cref="ICollection{T}"/> whose generic type argument is (<see cref="ushort"/>, <see cref="ushort"/>) coordinates (X, Y)</returns>
+        private ICollection<(ushort, ushort)> GetCoordinatesByShip(IGameShip ship, IGameField field)
+        {
+            ICollection<(ushort, ushort)> coordinates = new List<(ushort, ushort)>(ship.Size);
+
+            for (ushort i = 1; i <= field.SizeX; i++)
+            {
+                for (ushort j = 1; j <= field.SizeY; j++)
+                {
+                    if (field[i, j] == ship)
+                    {
+                        //add first founded cell of the ship
+                        coordinates.Add((i,j));
+
+                        //add other vertical cells of the ship
+                        ushort tempCoordinate = i;
+                        while (field[++tempCoordinate, j] == ship)
+                        {
+                            coordinates.Add((i, j));
+                        }
+
+                        //add other horizontal cells of the ship
+                        tempCoordinate = j;
+                        while (field[i, ++tempCoordinate] == ship)
+                        {
+                            coordinates.Add((i, j));
+                        }
+                    }
+                }
+            }
+
+            return coordinates;
         }
 
         /// <summary>

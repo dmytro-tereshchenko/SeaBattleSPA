@@ -46,14 +46,24 @@
         InvalidShip = 017,
 
         /// <summary>
-        /// Invalid place for ship (there is around another ship or out of game field
-        /// </summary>
-        InvalidPlaceForShip = 020,
-
-        /// <summary>
         /// Absence of a ship by coordinates
         /// </summary>
-        AbsentOfShip = 021,
+        AbsentOfShip = 020,
+
+        /// <summary>
+        /// Target out of distance
+        /// </summary>
+        OutOfDistance = 021,
+
+        /// <summary>
+        /// Action on target was missed
+        /// </summary>
+        MissTarget = 022,
+
+        /// <summary>
+        /// Target was destroyed
+        /// </summary>
+        TargetDestroyed = 023,
 
         /// <summary>
         /// Invalid operation
