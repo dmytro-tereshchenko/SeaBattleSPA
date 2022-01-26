@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using SeaBattle.Lib.Entities;
+﻿using SeaBattle.Lib.Entities;
 
 namespace SeaBattle.Lib.Infrastructure
 {

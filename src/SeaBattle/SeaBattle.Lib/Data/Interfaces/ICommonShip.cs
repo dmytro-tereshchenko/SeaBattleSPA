@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SeaBattle.Lib.Entities
+﻿namespace SeaBattle.Lib.Entities
 {
     /// <summary>
     /// Basic ship
