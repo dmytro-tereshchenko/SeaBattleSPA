@@ -170,6 +170,44 @@ namespace SeaBattle.Lib.Managers
                 : _shipManager.SellShip(_game.Players, ship, response.Value);
         }
 
+        /// <summary>
+        /// Add weapon to game ship.
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <param name="ship">Game ship which adds a weapon.</param>
+        /// <param name="weapon">A weapon (<see cref="IWeapon"/>) which adds.</param>
+        /// <returns><see cref="StateCode"/> is result of operation</returns>
+        public StateCode AddWeapon(IGamePlayer player, IGameShip ship, IWeapon weapon) =>
+            _shipManager.AddWeapon(player, ship, weapon);
 
+        /// <summary>
+        /// Add repair to game ship.
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <param name="ship">Game ship which adds a repair.</param>
+        /// <param name="repair">A repair (<see cref="IRepair"/>) which adds.</param>
+        /// <returns><see cref="StateCode"/> is result of operation</returns>
+        public StateCode AddRepair(IGamePlayer player, IGameShip ship, IRepair repair) =>
+            _shipManager.AddRepair(player, ship, repair);
+
+        /// <summary>
+        /// Remove weapon from game ship.
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <param name="ship">Game ship which removes a weapon.</param>
+        /// <param name="weapon">Weapon (<see cref="IWeapon"/>) which removes.</param>
+        /// <returns><see cref="StateCode"/> is result of operation</returns>
+        public StateCode RemoveWeapon(IGamePlayer player, IGameShip ship, IWeapon weapon) =>
+            _shipManager.RemoveWeapon(player, ship, weapon);
+
+        /// <summary>
+        /// Remove repair from game ship.
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <param name="ship">Game ship which removes a repair.</param>
+        /// <param name="repair">Repair (<see cref="IRepair"/>) which removes.</param>
+        /// <returns><see cref="StateCode"/> is result of operation</returns>
+        public StateCode RemoveRepair(IGamePlayer player, IGameShip ship, IRepair repair) =>
+            _shipManager.RemoveRepair(player, ship, repair);
     }
 }
