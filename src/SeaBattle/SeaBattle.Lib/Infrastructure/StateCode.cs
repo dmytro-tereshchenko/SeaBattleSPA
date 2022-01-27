@@ -66,6 +66,11 @@
         TargetDestroyed = 023,
 
         /// <summary>
+        /// Error of initialization
+        /// </summary>
+        ErrorInitialization = 030,
+
+        /// <summary>
         /// Invalid operation
         /// </summary>
         InvalidOperation = 0
