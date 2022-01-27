@@ -77,7 +77,7 @@ namespace SeaBattle.Lib.Managers
             ActionType action);
 
         /// <summary>
-        /// Get in <see cref="string"/> format sorted collection of the ship by distance to the center of the field.
+        /// Get sorted collection of the ship by distance to the center of the field.
         /// </summary>
         /// <param name="field">Game field</param>
         /// <param name="player">Current player for filtering <see cref="IGameShip"/>, if null - get all ships without filter.</param>

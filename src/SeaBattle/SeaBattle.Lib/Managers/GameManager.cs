@@ -142,6 +142,15 @@ namespace SeaBattle.Lib.Managers
         public ICollection<IRepair> GetRepairs() => _shipManager.GetRepairs();
 
         /// <summary>
+        /// Get sorted collection of the ship by distance to the center of the field.
+        /// </summary>
+        /// <param name="player">Current player for filtering <see cref="IGameShip"/>, if null - get all ships without filter.</param>
+        /// <returns><see cref="IDictionary{TKey,TValue}"/> whose generic key argument is <see cref="IGameShip"/>, generic type argument
+        /// is <see cref="ICollection{T}"/> whose generic type argument is (<see cref="ushort"/>, <see cref="ushort"/>) coordinates (X,Y)</returns>
+        IDictionary<IGameShip, ICollection<(ushort, ushort)>> GetSortedShipsFromField(IGamePlayer player = null) =>
+            _actionManager.GetFieldWithShips(_game.Field, player);
+
+        /// <summary>
         /// Buy ship and save in <see cref="IStartField"/>
         /// </summary>
         /// <param name="player">The player who request buying ship</param>
@@ -249,6 +258,74 @@ namespace SeaBattle.Lib.Managers
             return (response.State != StateCode.Success)
                 ? response.State
                 : _actionManager.TransferShipFromGameField(player, posX, posY, response.Value);
+        }
+
+        /// <summary>
+        /// Set state ready for player (finished buying ships and placing them on the game field)
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <returns><see cref="StateCode"/> result of operation</returns>
+        public StateCode ReadyPlayer(IGamePlayer player)
+        {
+            if (!_game.Players.Contains(player))
+            {
+                return StateCode.InvalidPlayer;
+            }
+
+            player.State = PlayerState.Ready;
+
+            if (_game.Players.All(p => p.State == PlayerState.Ready))
+            {
+                foreach (var gamePlayer in _game.Players)
+                {
+                    gamePlayer.State = PlayerState.Process;
+                }
+
+                _game.State = GameState.Process;
+
+                //first player who get startField - first moves
+                _game.CurrentGamePlayerMove = _game.StartFields.First().GamePlayer;
+            }
+
+            return StateCode.Success;
+        }
+
+        /// <summary>
+        /// Get <see cref="ICollection{T}"/> of <see cref="IGameShip"/> on distance of action.
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <param name="ship">Current ship</param>
+        /// <param name="action">Type of possible actions (<see cref="ActionType.Attack"/>, <see cref="ActionType.Repair"/>)</param>
+        /// <returns><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGameShip"/>, otherwise default</returns>
+        public ICollection<IGameShip> GetVisibletargetsforShip(IGamePlayer player, IGameShip ship, ActionType action)
+        {
+            ICollection<IGameShip> result;
+
+            try
+            {
+                result = _actionManager.GetVisibleTargetsForShip(player, ship, _game.Field, action);
+            }
+            catch (Exception ex)
+            {
+                result = new List<IGameShip>();
+            }
+
+            return result;
+        }
+
+        protected void NextMove()
+        {
+            ICollection<IGamePlayer> players = _game.Players;
+
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (players.ElementAt(i) == _game.CurrentGamePlayerMove)
+                {
+                    _game.CurrentGamePlayerMove =
+                        i + 1 < players.Count ? players.ElementAt(i + 1) : players.ElementAt(0);
+                    return;
+                }
+            }
         }
     }
 }

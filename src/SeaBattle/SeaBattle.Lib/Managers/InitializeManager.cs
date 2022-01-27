@@ -249,7 +249,7 @@ namespace SeaBattle.Lib.Managers
                 foreach (var labelField in fieldsOfLabels)
                 {
                     game.StartFields.Add(
-                        new StartField(++_entityCount, game.Field, labelField, gamePlayer, CalculateStartPoints(labelField), new List<IGameShip>(), game.Id)
+                        new StartField(++_entityCount, game.Field, labelField, null, CalculateStartPoints(labelField), new List<IGameShip>(), game.Id)
                         {
                             FieldLabels = labelField
                         });
