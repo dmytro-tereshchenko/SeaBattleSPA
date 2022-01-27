@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using SeaBattle.Lib.Infrastructure;
 
 namespace SeaBattle.Lib.Managers
@@ -24,6 +23,14 @@ namespace SeaBattle.Lib.Managers
 
         private byte _maxNumberOfPlayers;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InitializeManager"/> class
+        /// </summary>
+        /// <param name="minSizeX">Min size X of <see cref="IGameField"/></param>
+        /// <param name="maxSizeX">Max size X of <see cref="IGameField"/></param>
+        /// <param name="minSizeY">Min size Y of <see cref="IGameField"/></param>
+        /// <param name="maxSizeY">Max size Y of <see cref="IGameField"/></param>
+        /// <param name="maxNumberOfPlayers">Max number of players for <see cref="IGame"/></param>
         public InitializeManager(ushort minSizeX, ushort maxSizeX, ushort minSizeY, ushort maxSizeY, byte maxNumberOfPlayers)
         {
             _minSizeX = minSizeX;
@@ -79,7 +86,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="field">Field with ships - array with type bool, where true - placed ship, false - empty.</param>
         /// <param name="x">Coordinate X where placed ship which we relatively check free area.</param>
         /// <param name="y">Coordinate Y where placed ship which we relatively check free area.</param>
-        /// <returns>true - there is ship around target cell, otherwise false - around area is free.</returns>
+        /// <returns>false - there is ship around target cell, otherwise true - around area is free.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="x"/>, <paramref name="y"/> is out of range game field.</exception>
         private bool CheckFreeAreaAroundShip(bool[,] field, int x, int y)
         {
@@ -128,11 +135,6 @@ namespace SeaBattle.Lib.Managers
             if (numberOfPlayers > _maxNumberOfPlayers || numberOfPlayers <= 0)
             {
                 throw new ArgumentOutOfRangeException("Wrong value of the number of players");
-            }
-
-            if (gameField == null)
-            {
-                throw new ArgumentNullException();
             }
 
             //List for result of method
@@ -191,11 +193,6 @@ namespace SeaBattle.Lib.Managers
 
         public StateCode AddPlayerToGame(IGame game, string playerName)
         {
-            if (game == null || string.IsNullOrWhiteSpace(playerName))
-            {
-                return StateCode.NullReference;
-            }
-
             if (game.CurrentCountPlayers == game.MaxNumberOfPlayers)
             {
                 return StateCode.ExceededMaxNumberOfPlayers;
@@ -208,11 +205,6 @@ namespace SeaBattle.Lib.Managers
 
         public IStartField GetStartField(IGame game, IGamePlayer gamePlayer)
         {
-            if (game == null || gamePlayer == null)
-            {
-                return null;
-            }
-
             //Variable for result
             IStartField startField;
 
@@ -223,10 +215,6 @@ namespace SeaBattle.Lib.Managers
                 try
                 {
                     fieldsOfLabels = GenerateStartFields(game.Field, game.MaxNumberOfPlayers);
-                }
-                catch (ArgumentNullException)
-                {
-                    return null;
                 }
                 catch (ArgumentOutOfRangeException)
                 {

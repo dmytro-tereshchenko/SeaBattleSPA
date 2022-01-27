@@ -10,8 +10,17 @@ namespace SeaBattle.Lib.Entities
     {
         public PlayerState State { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GamePlayer"/> class
+        /// </summary>
+        /// <param name="id">Id of game player</param>
+        /// <param name="name">Players name</param>
         public GamePlayer(uint id, string name) : this(name) => Id = id;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GamePlayer"/> class
+        /// </summary>
+        /// <param name="name">Players name</param>
         public GamePlayer(string name) : base(name)
         {
             Name = name;

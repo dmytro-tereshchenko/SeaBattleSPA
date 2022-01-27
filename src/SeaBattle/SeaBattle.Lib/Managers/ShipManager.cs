@@ -1,8 +1,5 @@
 ﻿using SeaBattle.Lib.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using SeaBattle.Lib.Infrastructure;
 
 namespace SeaBattle.Lib.Managers
@@ -16,7 +13,23 @@ namespace SeaBattle.Lib.Managers
         /// Price for 1 cell of ship
         /// </summary>
         /// <value><see cref="int"/></value>
-        private const int PriceCoefficient = 1000;
+        protected const int PriceCoefficient = 1000;
+
+        /// <summary>
+        /// Collection of basic types of common ships
+        /// </summary>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="ICommonShip"/></value>
+        protected readonly ICollection<ICommonShip> Ships;
+
+        public ShipManager()
+        {
+            Ships = new List<ICommonShip>();
+
+            Ships.Add(new Ship(ShipType.Auxiliary, 1, 100, 4));
+            Ships.Add(new Ship(ShipType.Mixed, 2, 200, 3));
+            Ships.Add(new Ship(ShipType.Mixed, 3, 300, 2));
+            Ships.Add(new Ship(ShipType.Military, 4, 400, 1));
+        }
 
         public StateCode BuyShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField)
         {
@@ -50,19 +63,9 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        public ICollection<ICommonShip> GetShips()
-        {
-            ICollection<ICommonShip> ships = new List<ICommonShip>();
+        public ICollection<ICommonShip> GetShips() => Ships;
 
-            ships.Add(new Ship(ShipType.Auxiliary, 1, 100, 4));
-            ships.Add(new Ship(ShipType.Mixed, 2, 200, 3));
-            ships.Add(new Ship(ShipType.Mixed, 3, 300, 2));
-            ships.Add(new Ship(ShipType.Military, 4, 400, 1));
-
-            return ships;
-        }
-
-        public ICollection<IRepair> GetRepairs()
+            public ICollection<IRepair> GetRepairs()
         {
             ICollection<IRepair> repairs = new List<IRepair>();
 
@@ -85,11 +88,6 @@ namespace SeaBattle.Lib.Managers
 
         public StateCode AddWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon)
         {
-            if (gameShip == null || weapon == null || gamePlayer == null)
-            {
-                return StateCode.NullReference;
-            }
-
             if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
@@ -102,11 +100,6 @@ namespace SeaBattle.Lib.Managers
 
         public StateCode AddRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair)
         {
-            if (gameShip == null || gamePlayer == null || repair == null)
-            {
-                return StateCode.NullReference;
-            }
-
             if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
@@ -119,11 +112,6 @@ namespace SeaBattle.Lib.Managers
 
         public StateCode RemoveWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon)
         {
-            if (gameShip == null || weapon == null || gamePlayer == null)
-            {
-                return StateCode.NullReference;
-            }
-
             if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
@@ -136,12 +124,6 @@ namespace SeaBattle.Lib.Managers
 
         public StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair)
         {
-
-            if (gameShip == null || repair == null || gamePlayer == null)
-            {
-                return StateCode.NullReference;
-            }
-
             if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
