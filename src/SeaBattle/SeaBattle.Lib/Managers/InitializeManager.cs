@@ -217,6 +217,11 @@ namespace SeaBattle.Lib.Managers
 
         public IResponseGamePlayer AddPlayerToGame(IGame game, string playerName)
         {
+            if (game.Players.Count == 0)
+            {
+                game.State = GameState.SearchPlayers;
+            }
+            
             if (game.CurrentCountPlayers == game.MaxNumberOfPlayers)
             {
                 return new ResponseGamePlayer(null, StateCode.ExceededMaxNumberOfPlayers);
@@ -225,6 +230,11 @@ namespace SeaBattle.Lib.Managers
             IGamePlayer player = new GamePlayer(++_entityCount, playerName);
 
             game.Players.Add(player);
+
+            if (game.Players.Count == game.MaxNumberOfPlayers)
+            {
+                game.State = GameState.Init;
+            }
 
             return new ResponseGamePlayer(player, StateCode.Success);
         }

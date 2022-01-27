@@ -76,6 +76,11 @@
         ErrorInitialization = 030,
 
         /// <summary>
+        /// Game finished
+        /// </summary>
+        GameFinished = 031,
+
+        /// <summary>
         /// Invalid operation
         /// </summary>
         InvalidOperation = 0

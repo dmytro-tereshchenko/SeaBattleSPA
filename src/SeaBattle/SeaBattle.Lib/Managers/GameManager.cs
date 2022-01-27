@@ -151,6 +151,18 @@ namespace SeaBattle.Lib.Managers
             _actionManager.GetFieldWithShips(_game.Field, player);
 
         /// <summary>
+        /// Get player who win the game;
+        /// </summary>
+        /// <returns><see cref="IGamePlayer"/>, otherwise null</returns>
+        public IGamePlayer GetResultGame() => _game.Winner;
+
+        /// <summary>
+        /// Getting border size of the game field.
+        /// </summary>
+        /// <returns><see cref="LimitSize"/></returns>
+        public LimitSize GetLimitSizeField() => _initializeManager.GetLimitSizeField();
+
+        /// <summary>
         /// Buy ship and save in <see cref="IStartField"/>
         /// </summary>
         /// <param name="player">The player who request buying ship</param>
@@ -158,6 +170,11 @@ namespace SeaBattle.Lib.Managers
         /// <returns><see cref="StateCode"/> is result of operation</returns>
         public StateCode BuyShip(IGamePlayer player, ICommonShip ship)
         {
+            if (_game.State == GameState.Finished)
+            {
+                return StateCode.GameFinished;
+            }
+
             IResponseStartField response = _initializeManager.GetStartField(_game, player);
 
             return (response.State != StateCode.Success)
@@ -173,6 +190,11 @@ namespace SeaBattle.Lib.Managers
         /// <returns><see cref="StateCode"/> is result of operation</returns>
         public StateCode SellShip(IGamePlayer player, IGameShip ship)
         {
+            if (_game.State == GameState.Finished)
+            {
+                return StateCode.GameFinished;
+            }
+
             IResponseStartField response = _initializeManager.GetStartField(_game, player);
 
             return (response.State != StateCode.Success)
@@ -187,8 +209,15 @@ namespace SeaBattle.Lib.Managers
         /// <param name="ship">Game ship which adds a weapon.</param>
         /// <param name="weapon">A weapon (<see cref="IWeapon"/>) which adds.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        public StateCode AddWeapon(IGamePlayer player, IGameShip ship, IWeapon weapon) =>
-            _shipManager.AddWeapon(player, ship, weapon);
+        public StateCode AddWeapon(IGamePlayer player, IGameShip ship, IWeapon weapon)
+        {
+            if (_game.State == GameState.Finished)
+            {
+                return StateCode.GameFinished;
+            }
+
+            return _shipManager.AddWeapon(player, ship, weapon);
+        }
 
         /// <summary>
         /// Add repair to game ship.
@@ -197,8 +226,15 @@ namespace SeaBattle.Lib.Managers
         /// <param name="ship">Game ship which adds a repair.</param>
         /// <param name="repair">A repair (<see cref="IRepair"/>) which adds.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        public StateCode AddRepair(IGamePlayer player, IGameShip ship, IRepair repair) =>
-            _shipManager.AddRepair(player, ship, repair);
+        public StateCode AddRepair(IGamePlayer player, IGameShip ship, IRepair repair)
+        {
+            if (_game.State == GameState.Finished)
+            {
+                return StateCode.GameFinished;
+            }
+
+            return _shipManager.AddRepair(player, ship, repair);
+        }
 
         /// <summary>
         /// Remove weapon from game ship.
@@ -207,8 +243,15 @@ namespace SeaBattle.Lib.Managers
         /// <param name="ship">Game ship which removes a weapon.</param>
         /// <param name="weapon">Weapon (<see cref="IWeapon"/>) which removes.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        public StateCode RemoveWeapon(IGamePlayer player, IGameShip ship, IWeapon weapon) =>
-            _shipManager.RemoveWeapon(player, ship, weapon);
+        public StateCode RemoveWeapon(IGamePlayer player, IGameShip ship, IWeapon weapon)
+        {
+            if (_game.State == GameState.Finished)
+            {
+                return StateCode.GameFinished;
+            }
+
+            return _shipManager.RemoveWeapon(player, ship, weapon);
+        }
 
         /// <summary>
         /// Remove repair from game ship.
@@ -217,8 +260,15 @@ namespace SeaBattle.Lib.Managers
         /// <param name="ship">Game ship which removes a repair.</param>
         /// <param name="repair">Repair (<see cref="IRepair"/>) which removes.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        public StateCode RemoveRepair(IGamePlayer player, IGameShip ship, IRepair repair) =>
-            _shipManager.RemoveRepair(player, ship, repair);
+        public StateCode RemoveRepair(IGamePlayer player, IGameShip ship, IRepair repair)
+        {
+            if (_game.State == GameState.Finished)
+            {
+                return StateCode.GameFinished;
+            }
+
+            return _shipManager.RemoveRepair(player, ship, repair);
+        }
 
         /// <summary>
         /// Place ship on game field
@@ -232,6 +282,11 @@ namespace SeaBattle.Lib.Managers
         public StateCode PutShipOnField(IGamePlayer player, IGameShip ship, ushort posX, ushort posY,
             DirectionOfShipPosition direction)
         {
+            if (_game.State == GameState.Finished)
+            {
+                return StateCode.GameFinished;
+            }
+
             IResponseStartField response = _initializeManager.GetStartField(_game, player);
 
             if (response.State != StateCode.Success)
@@ -253,6 +308,11 @@ namespace SeaBattle.Lib.Managers
         /// <returns><see cref="StateCode"/> result of operation</returns>
         public StateCode RemoveShipFromField(IGamePlayer player, ushort posX, ushort posY)
         {
+            if (_game.State == GameState.Finished)
+            {
+                return StateCode.GameFinished;
+            }
+
             IResponseStartField response = _initializeManager.GetStartField(_game, player);
 
             return (response.State != StateCode.Success)
@@ -267,6 +327,11 @@ namespace SeaBattle.Lib.Managers
         /// <returns><see cref="StateCode"/> result of operation</returns>
         public StateCode ReadyPlayer(IGamePlayer player)
         {
+            if (_game.State == GameState.Finished)
+            {
+                return StateCode.GameFinished;
+            }
+
             if (!_game.Players.Contains(player))
             {
                 return StateCode.InvalidPlayer;
@@ -321,8 +386,16 @@ namespace SeaBattle.Lib.Managers
         /// <param name="posX">X coordinate of target cell</param>
         /// <param name="posY">Y coordinate of target cell</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        public StateCode AttackShip(IGamePlayer player, IGameShip ship, ushort posX, ushort posY) =>
-            _actionManager.AttackShip(player, ship, posX, posY, _game.Field);
+        public StateCode AttackShip(IGamePlayer player, IGameShip ship, ushort posX, ushort posY)
+        {
+            if (_game.State == GameState.Finished)
+            {
+                return StateCode.GameFinished;
+            }
+
+            StateCode state = _actionManager.AttackShip(player, ship, posX, posY, _game.Field);
+            return CheckEndGame() ? StateCode.GameFinished : state;
+        }
 
         /// <summary>
         /// Repair ship by cell
@@ -332,8 +405,15 @@ namespace SeaBattle.Lib.Managers
         /// <param name="posX">X coordinate of target cell</param>
         /// <param name="posY">Y coordinate of target cell</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        public StateCode RepairShip(IGamePlayer player, IGameShip ship, ushort posX, ushort posY) =>
-            _actionManager.RepairShip(player, ship, posX, posY, _game.Field);
+        public StateCode RepairShip(IGamePlayer player, IGameShip ship, ushort posX, ushort posY)
+        {
+            if (_game.State == GameState.Finished)
+            {
+                return StateCode.GameFinished;
+            }
+
+            return _actionManager.RepairShip(player, ship, posX, posY, _game.Field);
+        }
 
         /// <summary>
         /// Repair all friendly ship on distance
@@ -341,9 +421,19 @@ namespace SeaBattle.Lib.Managers
         /// <param name="player">Current player</param>
         /// <param name="ship">Current ship</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        public StateCode RepairAllShip(IGamePlayer player, IGameShip ship) =>
-            _actionManager.RepairAllShip(player, ship, _game.Field);
+        public StateCode RepairAllShip(IGamePlayer player, IGameShip ship)
+        {
+            if (_game.State == GameState.Finished)
+            {
+                return StateCode.GameFinished;
+            }
 
+            return _actionManager.RepairAllShip(player, ship, _game.Field);
+        }
+
+        /// <summary>
+        /// Change state <see cref="IGame"/> to next move
+        /// </summary>
         protected void NextMove()
         {
             ICollection<IGamePlayer> players = _game.Players;
@@ -357,6 +447,37 @@ namespace SeaBattle.Lib.Managers
                     return;
                 }
             }
+        }
+
+        /// <summary>
+        /// Check end game after action and change state <see cref="IGame"/>
+        /// </summary>
+        /// <returns>true if game finished, otherwise false</returns>
+        protected bool CheckEndGame()
+        {
+            IGamePlayer player = null;
+            for (ushort i = 1; i <= _game.Field.SizeX; i++)
+            {
+                for (ushort j = 1; j < _game.Field.SizeY; j++)
+                {
+                    if (_game.Field[i, j] != null)
+                    {
+                        if (player != null && _game.Field[i, j].GamePlayer != player)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            player = _game.Field[i, j].GamePlayer;
+                        }
+                    }
+                }
+            }
+
+            _game.State = GameState.Finished;
+            _game.Winner = player;
+
+            return true;
         }
     }
 }
