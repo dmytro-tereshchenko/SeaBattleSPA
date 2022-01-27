@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;
 
@@ -14,11 +12,6 @@ namespace SeaBattle.Lib.Managers
         public StateCode PutShipOnField(IGamePlayer player, IGameShip ship, ushort posX, ushort posY,
             DirectionOfShipPosition direction, IGameField field)
         {
-            if (player == null || ship == null || field == null)
-            {
-                return StateCode.NullReference;
-            }
-
             if (ship.GamePlayer != player)
             {
                 return StateCode.InvalidPlayer;
@@ -150,11 +143,6 @@ namespace SeaBattle.Lib.Managers
         public IDictionary<IGameShip, ICollection<(ushort, ushort)>> GetAllShipsCoordinates(IGameField field,
             IGamePlayer player = null)
         {
-            if (field == null)
-            {
-                throw new ArgumentNullException();
-            }
-
             //Dictionary of ships when Key=ship (IGameShip), Value=array of coordinates(X,Y) on field (List<(ushort, ushort)>)
             IDictionary<IGameShip, ICollection<(ushort, ushort)>> ships = new Dictionary<IGameShip, ICollection<(ushort, ushort)>>();
 
@@ -181,11 +169,6 @@ namespace SeaBattle.Lib.Managers
 
         public (float, float) GetGeometricCenterOfShip(ICollection<(ushort, ushort)> ship)
         {
-            if (ship == null)
-            {
-                throw new ArgumentNullException();
-            }
-
             float maxX = ship.Max(s => s.Item1);
             float minX = ship.Min(s => s.Item1);
 
@@ -201,5 +184,15 @@ namespace SeaBattle.Lib.Managers
         public float GetDistanceBetween2Points((float, float) point1, (float, float) point2) =>
             Convert.ToSingle(Math.Sqrt(Math.Pow(Convert.ToDouble(point1.Item1 - point2.Item1), 2)
                                        + Math.Pow(Convert.ToDouble(point1.Item2 - point2.Item2), 2)));
+
+        public StateCode RemoveShipFromField(IGameShip ship, IGameField field)
+        {
+            foreach (var shipsCell in GetShipCoordinates(ship, field))
+            {
+                field[shipsCell.Item1, shipsCell.Item2] = null;
+            }
+
+            return StateCode.Success;
+        }
     }
 }

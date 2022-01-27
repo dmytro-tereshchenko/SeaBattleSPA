@@ -33,7 +33,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="tPosY">Y coordinate of removed ship</param>
         /// <param name="startField">Start field with game field and collection of unused ships</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode RemoveShipFromFieldToStartField(IPlayer player, ushort tPosX, ushort tPosY,
+        StateCode TransferShipFromGameField(IPlayer player, ushort tPosX, ushort tPosY,
             IStartField startField);
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="startField">Start field with game field and collection of unused ships</param>
         /// <param name="ship">Current ship</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode PutShipFromStartFieldToField(IGamePlayer player, ushort tPosX, ushort tPosY,
+        StateCode TransferShipToGameField(IGamePlayer player, ushort tPosX, ushort tPosY,
             DirectionOfShipPosition direction, IStartField startField, IGameShip ship);
 
         /// <summary>
@@ -70,7 +70,6 @@ namespace SeaBattle.Lib.Managers
         /// <param name="field">Game field</param>
         /// <param name="action">Type of possible actions (<see cref="ActionType.Attack"/>, <see cref="ActionType.Repair"/>)</param>
         /// <returns><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGameShip"/></returns>
-        /// <exception cref="NullReferenceException"></exception>
         /// <exception cref="ArgumentException">Wrong player</exception>
         /// <exception cref="InvalidEnumArgumentException">Used action not planned by the game</exception>
         ICollection<IGameShip> GetVisibleTargetsForShip(IGamePlayer player, IGameShip ship, IGameField field,
@@ -83,7 +82,6 @@ namespace SeaBattle.Lib.Managers
         /// <param name="player">Current player for filtering <see cref="IGameShip"/>, if null - get all ships without filter.</param>
         /// <returns><see cref="IDictionary{TKey,TValue}"/> whose generic key argument is <see cref="IGameShip"/>, generic type argument
         /// is <see cref="ICollection{T}"/> whose generic type argument is (<see cref="ushort"/>, <see cref="ushort"/>) coordinates (X,Y)</returns>
-        /// <exception cref="ArgumentNullException"></exception>
         IDictionary<IGameShip, ICollection<(ushort, ushort)>> GetFieldWithShips(IGameField field, IGamePlayer player = null);
 
         /// <summary>

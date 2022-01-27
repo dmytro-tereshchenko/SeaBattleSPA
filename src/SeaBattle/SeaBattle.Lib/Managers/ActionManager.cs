@@ -21,13 +21,9 @@ namespace SeaBattle.Lib.Managers
         public ActionManager(IGameFieldActionUtility actionUtility) => ActionUtility = actionUtility;
         
         #region Getting data from GameField
+
         public IResponseGameField GetGameField(IGamePlayer player, IGame game)
         {
-            if (player == null || game == null || game.Field == null)
-            {
-                return new ResponseGameField(null, StateCode.NullReference);
-            }
-
             if (!game.Players.Contains(player))
             {
                 return new ResponseGameField(null, StateCode.InvalidPlayer);
@@ -38,11 +34,6 @@ namespace SeaBattle.Lib.Managers
 
         public IDictionary<IGameShip, ICollection<(ushort, ushort)>> GetFieldWithShips(IGameField field, IGamePlayer player = null)
         {
-            if (field == null)
-            {
-                throw new ArgumentNullException();
-            }
-
             //Search coordinates of ships
             IDictionary<IGameShip, ICollection<(ushort, ushort)>> ships =
                 ActionUtility.GetAllShipsCoordinates(field, player);
@@ -60,14 +51,9 @@ namespace SeaBattle.Lib.Managers
         public ICollection<IGameShip> GetVisibleTargetsForShip(IGamePlayer player, IGameShip ship, IGameField field,
             ActionType action)
         {
-            if (player == null || field == null || ship == null)
-            {
-                throw new NullReferenceException();
-            }
-
             if (ship.GamePlayer != player)
             {
-                throw new ArgumentException();
+                throw new ArgumentException($"Wrong ship for player {player.Name}");
             }
 
             //Search coordinates of ships
@@ -100,17 +86,14 @@ namespace SeaBattle.Lib.Managers
 
             return filteringShips.ToList();
         }
+
         #endregion
 
         #region Actions with StartField
-        public StateCode RemoveShipFromFieldToStartField(IPlayer player, ushort tPosX, ushort tPosY,
+
+        public StateCode TransferShipFromGameField(IPlayer player, ushort tPosX, ushort tPosY,
             IStartField startField)
         {
-            if (player == null || startField == null)
-            {
-                return StateCode.NullReference;
-            }
-
             IGameShip ship = startField.GameField[tPosX, tPosY];
 
             if (ship == null)
@@ -124,19 +107,14 @@ namespace SeaBattle.Lib.Managers
             }
 
             startField.Ships.Add(ship);
-            startField.GameField[tPosX, tPosY] = null;
+            ActionUtility.RemoveShipFromField(ship, startField.GameField);
 
             return StateCode.Success;
         }
 
-        public StateCode PutShipFromStartFieldToField(IGamePlayer player, ushort tPosX, ushort tPosY,
+        public StateCode TransferShipToGameField(IGamePlayer player, ushort tPosX, ushort tPosY,
             DirectionOfShipPosition direction, IStartField startField, IGameShip ship)
         {
-            if (player == null || startField == null || ship == null)
-            {
-                return StateCode.NullReference;
-            }
-
             if (!startField.Ships.Contains(ship))
             {
                 return StateCode.InvalidShip;
@@ -164,35 +142,21 @@ namespace SeaBattle.Lib.Managers
 
             return result;
         }
+
         #endregion
 
         #region Actions with ship
+
         public StateCode MoveShip(IGamePlayer player, IGameShip ship, ushort tPosX, ushort tPosY,
             DirectionOfShipPosition direction, IGameField field)
         {
-            if (player == null || field == null || ship == null)
-            {
-                return StateCode.NullReference;
-            }
-            
             if (ship.GamePlayer != player)
             {
                 return StateCode.InvalidPlayer;
             }
 
             //Ship's coordinates on game field
-            List<(ushort, ushort)> locOfShip = new List<(ushort, ushort)>(ship.Size);
-
-            for (ushort i = 1; i <= field.SizeX; i++)
-            {
-                for (ushort j = 1; j <= field.SizeY; j++)
-                {
-                    if (field[i, j] == ship)
-                    {
-                        locOfShip.Add((i,j));
-                    }
-                }
-            }
+            ICollection<(ushort, ushort)> locOfShip = ActionUtility.GetShipCoordinates(ship, field);
 
             //check distance between target point and furthest cell of current ship.
             if (locOfShip.Select(s => ActionUtility.GetDistanceBetween2Points((tPosX, tPosY), s)).OrderByDescending(d => d).First() >
@@ -226,11 +190,6 @@ namespace SeaBattle.Lib.Managers
 
         public StateCode AttackShip(IGamePlayer player, IGameShip ship, ushort tPosX, ushort tPosY, IGameField field)
         {
-            if (player == null || field == null || ship == null)
-            {
-                return StateCode.NullReference;
-            }
-
             if (ship.GamePlayer != player)
             {
                 return StateCode.InvalidPlayer;
@@ -252,10 +211,8 @@ namespace SeaBattle.Lib.Managers
 
             if (field[tPosX, tPosY].Hp < ship.Damage)
             {
-                foreach (var shipsCell in ActionUtility.GetShipCoordinates(field[tPosX, tPosY], field))
-                {
-                    field[shipsCell.Item1, shipsCell.Item2] = null;
-                }
+                ActionUtility.RemoveShipFromField(field[tPosX, tPosY], field);
+
                 return StateCode.TargetDestroyed;
             }
 
@@ -266,11 +223,6 @@ namespace SeaBattle.Lib.Managers
 
         public StateCode RepairShip(IGamePlayer player, IGameShip ship, ushort tPosX, ushort tPosY, IGameField field)
         {
-            if (player == null || field == null || ship == null)
-            {
-                return StateCode.NullReference;
-            }
-
             if (ship.GamePlayer != player)
             {
                 return StateCode.InvalidPlayer;
@@ -301,11 +253,6 @@ namespace SeaBattle.Lib.Managers
 
         public StateCode RepairAllShip(IGamePlayer player, IGameShip ship, IGameField field)
         {
-            if (player == null || field == null || ship == null)
-            {
-                return StateCode.NullReference;
-            }
-
             if (ship.GamePlayer != player)
             {
                 return StateCode.InvalidPlayer;
@@ -329,6 +276,7 @@ namespace SeaBattle.Lib.Managers
 
             return StateCode.Success;
         }
+
         #endregion
     }
 }

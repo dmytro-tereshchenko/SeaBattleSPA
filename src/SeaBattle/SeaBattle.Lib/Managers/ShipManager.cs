@@ -88,11 +88,6 @@ namespace SeaBattle.Lib.Managers
 
         public StateCode AddWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon)
         {
-            if (gameShip == null || weapon == null || gamePlayer == null)
-            {
-                return StateCode.NullReference;
-            }
-
             if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
@@ -105,11 +100,6 @@ namespace SeaBattle.Lib.Managers
 
         public StateCode AddRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair)
         {
-            if (gameShip == null || gamePlayer == null || repair == null)
-            {
-                return StateCode.NullReference;
-            }
-
             if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
@@ -122,11 +112,6 @@ namespace SeaBattle.Lib.Managers
 
         public StateCode RemoveWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon)
         {
-            if (gameShip == null || weapon == null || gamePlayer == null)
-            {
-                return StateCode.NullReference;
-            }
-
             if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
@@ -139,12 +124,6 @@ namespace SeaBattle.Lib.Managers
 
         public StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair)
         {
-
-            if (gameShip == null || repair == null || gamePlayer == null)
-            {
-                return StateCode.NullReference;
-            }
-
             if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;

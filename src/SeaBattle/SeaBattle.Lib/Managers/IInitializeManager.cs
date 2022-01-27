@@ -32,13 +32,12 @@ namespace SeaBattle.Lib.Managers
         /// <param name="numberOfPlayers">Amount of players</param>
         /// <returns>Collection of fields with ships - arrays with type bool, where true - placed boat, false - empty</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="numberOfPlayers"/> out of range</exception>
-        /// <exception cref="ArgumentNullException">There is no gaming field for the given <paramref name="gameField"/>.</exception>
         ICollection<bool[,]> GenerateStartFields(IGameField gameField, byte numberOfPlayers);
 
         /// <summary>
         /// Getting border size of the game field.
         /// </summary>
-        /// <returns><see cref="ILimitSize"/></returns>
+        /// <returns><see cref="LimitSize"/></returns>
         LimitSize GetLimitSizeField();
 
         /// <summary>
