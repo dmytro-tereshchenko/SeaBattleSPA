@@ -46,6 +46,11 @@
         InvalidShip = 017,
 
         /// <summary>
+        /// Equipment limit reached
+        /// </summary>
+        LimitEquipment = 018,
+
+        /// <summary>
         /// Absence of a ship by coordinates
         /// </summary>
         AbsentOfShip = 020,

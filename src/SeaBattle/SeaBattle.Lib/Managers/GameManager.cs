@@ -140,6 +140,36 @@ namespace SeaBattle.Lib.Managers
         /// <returns>Collection of <see cref="IRepair"/>, which players can equip on the ship</returns>
         public ICollection<IRepair> GetRepairs() => _shipManager.GetRepairs();
 
+        /// <summary>
+        /// Buy ship and save in <see cref="IStartField"/>
+        /// </summary>
+        /// <param name="player">The player who request buying ship</param>
+        /// <param name="ship">The base ship that is buying</param>
+        /// <returns><see cref="StateCode"/> is result of operation</returns>
+        public StateCode BuyShip(IGamePlayer player, ICommonShip ship)
+        {
+            IResponseStartField response = _initializeManager.GetStartField(_game, player);
+
+            return (response.State != StateCode.Success)
+                ? response.State
+                : _shipManager.BuyShip(_game.Players, _shipManager.GetNewShip(player, ship), response.Value);
+        }
+
+        /// <summary>
+        /// Sell ship and save in <see cref="IStartField"/>
+        /// </summary>
+        /// <param name="player">The player who request selling ship</param>
+        /// <param name="ship">The ship that is selling</param>
+        /// <returns><see cref="StateCode"/> is result of operation</returns>
+        public StateCode SellShip(IGamePlayer player, IGameShip ship)
+        {
+            IResponseStartField response = _initializeManager.GetStartField(_game, player);
+
+            return (response.State != StateCode.Success)
+                ? response.State
+                : _shipManager.SellShip(_game.Players, ship, response.Value);
+        }
+
 
     }
 }

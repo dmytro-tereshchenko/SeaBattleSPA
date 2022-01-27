@@ -1,5 +1,6 @@
 ﻿using SeaBattle.Lib.Entities;
 using System.Collections.Generic;
+using System.Linq;
 using SeaBattle.Lib.Infrastructure;
 
 namespace SeaBattle.Lib.Managers
@@ -94,14 +95,38 @@ namespace SeaBattle.Lib.Managers
 
         public ICollection<IWeapon> GetWeapons() => Weapons;
 
-        public IGameShip GetNewShip(IGamePlayer gamePlayer, ICommonShip ship) =>
-            new GameShip(++_entityCount, ship, gamePlayer, GetShipCost(ship.Size));
+        public IGameShip GetNewShip(IGamePlayer gamePlayer, ICommonShip ship)
+        {
+            IGameShip gameShip = new GameShip(++_entityCount, ship, gamePlayer, GetShipCost(ship.Size));
+            switch (ship.Type)
+            {
+                case ShipType.Military:
+                    for (int i = 0; i < ship.Size; i++)
+                    {
+                        AddWeapon(gamePlayer, gameShip, Weapons.First());
+                    }
+                    break;
+                case ShipType.Auxiliary:
+                    for (int i = 0; i < ship.Size; i++)
+                    {
+                        AddRepair(gamePlayer, gameShip, Repairs.First());
+                    }
+                    break;
+            }
+
+            return gameShip;
+        }
 
         public StateCode AddWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon)
         {
             if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
+            }
+
+            if (gameShip.Weapons.Count + gameShip.Repairs.Count == gameShip.Size)
+            {
+                return StateCode.LimitEquipment;
             }
 
             gameShip.Weapons.Add(weapon);
@@ -114,6 +139,11 @@ namespace SeaBattle.Lib.Managers
             if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
+            }
+
+            if (gameShip.Weapons.Count + gameShip.Repairs.Count == gameShip.Size)
+            {
+                return StateCode.LimitEquipment;
             }
 
             gameShip.Repairs.Add(repair);
