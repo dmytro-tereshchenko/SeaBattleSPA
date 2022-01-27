@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;
+using SeaBattle.Lib.Responses;
 
 namespace SeaBattle.Lib.Managers
 {
@@ -22,7 +23,7 @@ namespace SeaBattle.Lib.Managers
         /// </summary>
         /// <param name="player">The player who request game field</param>
         /// <param name="game">Current game</param>
-        /// <returns><see cref="StateCode"/> result of operation</returns>
+        /// <returns><see cref="IResponseGameField"/></returns>
         IResponseGameField GetGameField(IGamePlayer player, IGame game);
 
         /// <summary>

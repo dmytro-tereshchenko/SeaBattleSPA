@@ -1,4 +1,6 @@
-﻿namespace SeaBattle.Lib.Infrastructure
+﻿using SeaBattle.Lib.Infrastructure;
+
+namespace SeaBattle.Lib.Responses
 {
     /// <summary>
     /// Basic interface for a response of the state

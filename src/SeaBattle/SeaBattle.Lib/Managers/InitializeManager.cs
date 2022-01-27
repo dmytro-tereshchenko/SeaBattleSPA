@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SeaBattle.Lib.Infrastructure;
+using SeaBattle.Lib.Responses;
 
 namespace SeaBattle.Lib.Managers
 {
@@ -11,17 +12,40 @@ namespace SeaBattle.Lib.Managers
     /// </summary>
     public class InitializeManager : IInitializeManager
     {
+        /// <summary>
+        /// Price (amount of points) for 1 cell of ship
+        /// </summary>
         private const int PriceCoefficient = 1000;
 
+        /// <summary>
+        /// Min size X of <see cref="IGameField"/>
+        /// </summary>
         private ushort _minSizeX;
 
+        /// <summary>
+        /// Max size X of <see cref="IGameField"/>
+        /// </summary>
         private ushort _maxSizeX;
 
+        /// <summary>
+        /// Min size Y of <see cref="IGameField"/>
+        /// </summary>
         private ushort _minSizeY;
 
+        /// <summary>
+        /// Max size Y of <see cref="IGameField"/>
+        /// </summary>
         private ushort _maxSizeY;
 
+        /// <summary>
+        /// Max number of players in <see cref="IGame"/>
+        /// </summary>
         private byte _maxNumberOfPlayers;
+
+        /// <summary>
+        /// Count of created entities.
+        /// </summary>
+        private uint _entityCount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InitializeManager"/> class
@@ -47,7 +71,7 @@ namespace SeaBattle.Lib.Managers
                 return new ResponseGameField(null, StateCode.InvalidFieldSize);
             }
 
-            GameField field = new GameField(sizeX, sizeY);
+            GameField field = new GameField(sizeX, sizeY, ++_entityCount);
 
             return new ResponseGameField(field, StateCode.Success);
         }
@@ -191,19 +215,21 @@ namespace SeaBattle.Lib.Managers
         public LimitSize GetLimitSizeField() =>
             new LimitSize(_maxSizeX, _maxSizeY, _minSizeX, _minSizeY);
 
-        public StateCode AddPlayerToGame(IGame game, string playerName)
+        public IResponseGamePlayer AddPlayerToGame(IGame game, string playerName)
         {
             if (game.CurrentCountPlayers == game.MaxNumberOfPlayers)
             {
-                return StateCode.ExceededMaxNumberOfPlayers;
+                return new ResponseGamePlayer(null, StateCode.ExceededMaxNumberOfPlayers);
             }
 
-            game.Players.Add(new GamePlayer(playerName));
+            IGamePlayer player = new GamePlayer(++_entityCount, playerName);
 
-            return StateCode.Success;
+            game.Players.Add(player);
+
+            return new ResponseGamePlayer(player, StateCode.Success);
         }
 
-        public IStartField GetStartField(IGame game, IGamePlayer gamePlayer)
+        public IResponseStartField GetStartField(IGame game, IGamePlayer gamePlayer)
         {
             //Variable for result
             IStartField startField;
@@ -218,12 +244,12 @@ namespace SeaBattle.Lib.Managers
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    return null;
+                    return new ResponseStartField(null, StateCode.ExceededMaxNumberOfPlayers);
                 }
                 foreach (var labelField in fieldsOfLabels)
                 {
                     game.StartFields.Add(
-                        new StartField(game.Field, labelField, gamePlayer, CalculateStartPoints(labelField), new List<IGameShip>(), game.Id)
+                        new StartField(++_entityCount, game.Field, labelField, gamePlayer, CalculateStartPoints(labelField), new List<IGameShip>(), game.Id)
                         {
                             FieldLabels = labelField
                         });
@@ -235,7 +261,7 @@ namespace SeaBattle.Lib.Managers
             //in the case bd have start field for current player and game return it
             else if ((startField = game.StartFields.FirstOrDefault(f => f.GamePlayer == gamePlayer)) != null)
             {
-                return startField;
+                return new ResponseStartField(startField, StateCode.Success);
             }
             //otherwise get first of free start fields.
             else
@@ -250,9 +276,11 @@ namespace SeaBattle.Lib.Managers
 
                 //change status player
                 startField.GamePlayer.State = PlayerState.InitializeField;
+
+                return new ResponseStartField(startField, StateCode.Success);
             }
 
-            return startField;
+            return new ResponseStartField(null, StateCode.InvalidPlayer);
         }
 
         public IGame CreateGame(byte numberOfPlayers)
@@ -263,7 +291,7 @@ namespace SeaBattle.Lib.Managers
                     $"{nameof(numberOfPlayers)} is out of range [0;{_maxNumberOfPlayers}]");
             }
 
-            return new Game(numberOfPlayers);
+            return new Game(numberOfPlayers) {Id = ++_entityCount};
         }
 
         /// <summary>
