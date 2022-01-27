@@ -313,6 +313,37 @@ namespace SeaBattle.Lib.Managers
             return result;
         }
 
+        /// <summary>
+        /// Attack cell by ship
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <param name="ship">Current ship</param>
+        /// <param name="posX">X coordinate of target cell</param>
+        /// <param name="posY">Y coordinate of target cell</param>
+        /// <returns><see cref="StateCode"/> result of operation</returns>
+        public StateCode AttackShip(IGamePlayer player, IGameShip ship, ushort posX, ushort posY) =>
+            _actionManager.AttackShip(player, ship, posX, posY, _game.Field);
+
+        /// <summary>
+        /// Repair ship by cell
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <param name="ship">Current ship</param>
+        /// <param name="posX">X coordinate of target cell</param>
+        /// <param name="posY">Y coordinate of target cell</param>
+        /// <returns><see cref="StateCode"/> result of operation</returns>
+        public StateCode RepairShip(IGamePlayer player, IGameShip ship, ushort posX, ushort posY) =>
+            _actionManager.RepairShip(player, ship, posX, posY, _game.Field);
+
+        /// <summary>
+        /// Repair all friendly ship on distance
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <param name="ship">Current ship</param>
+        /// <returns><see cref="StateCode"/> result of operation</returns>
+        public StateCode RepairAllShip(IGamePlayer player, IGameShip ship) =>
+            _actionManager.RepairAllShip(player, ship, _game.Field);
+
         protected void NextMove()
         {
             ICollection<IGamePlayer> players = _game.Players;
