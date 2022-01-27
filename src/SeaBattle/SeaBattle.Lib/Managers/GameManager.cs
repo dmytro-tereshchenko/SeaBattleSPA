@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;
 using SeaBattle.Lib.Responses;
@@ -209,5 +210,45 @@ namespace SeaBattle.Lib.Managers
         /// <returns><see cref="StateCode"/> is result of operation</returns>
         public StateCode RemoveRepair(IGamePlayer player, IGameShip ship, IRepair repair) =>
             _shipManager.RemoveRepair(player, ship, repair);
+
+        /// <summary>
+        /// Place ship on game field
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <param name="ship">Target ship</param>
+        /// <param name="posX">X coordinate of the ship's stern</param>
+        /// <param name="posY">Y coordinate of the ship's stern</param>
+        /// <param name="direction">The direction of placement ship</param>
+        /// <returns><see cref="StateCode"/> result of operation</returns>
+        public StateCode PutShipOnField(IGamePlayer player, IGameShip ship, ushort posX, ushort posY,
+            DirectionOfShipPosition direction)
+        {
+            IResponseStartField response = _initializeManager.GetStartField(_game, player);
+
+            if (response.State != StateCode.Success)
+            {
+                return response.State;
+            }
+
+            return (response.Value.Ships.Contains(ship))
+                ? _actionManager.TransferShipToGameField(player, posX, posY, direction, response.Value, ship)
+                : _actionManager.MoveShip(player, ship, posX, posY, direction, _game.Field);
+        }
+
+        /// <summary>
+        /// Remove <see cref="IGameShip"/> from <see cref="IGameField"/> to collection in <see cref="IStartField.Ships"/>
+        /// </summary>
+        /// <param name="player">Current player</param>
+        /// <param name="posX">X coordinate of removed ship</param>
+        /// <param name="posY">Y coordinate of removed ship</param>
+        /// <returns><see cref="StateCode"/> result of operation</returns>
+        public StateCode RemoveShipFromField(IGamePlayer player, ushort posX, ushort posY)
+        {
+            IResponseStartField response = _initializeManager.GetStartField(_game, player);
+
+            return (response.State != StateCode.Success)
+                ? response.State
+                : _actionManager.TransferShipFromGameField(player, posX, posY, response.Value);
+        }
     }
 }
