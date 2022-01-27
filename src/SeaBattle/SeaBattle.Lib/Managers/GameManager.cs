@@ -122,6 +122,24 @@ namespace SeaBattle.Lib.Managers
         /// <returns><see cref="IResponseGameField"/></returns>
         public IResponseGameField GetGameField(IGamePlayer player) => _actionManager.GetGameField(player, _game);
 
+        /// <summary>
+        /// Getting a collection of ships, which players can buy by points.
+        /// </summary>
+        /// <returns>Collection of <see cref="ICommonShip"/>, which players can buy by points</returns>
+        public ICollection<ICommonShip> GetShips() => _shipManager.GetShips();
+
+        /// <summary>
+        /// Getting a collection of weapons, which players can equip on the ship.
+        /// </summary>
+        /// <returns>Collection of <see cref="IWeapon"/>, which players can equip on the ship</returns>
+        public ICollection<IWeapon> GetWeapons() => _shipManager.GetWeapons();
+
+        /// <summary>
+        /// Getting a collection of repairs, which players can equip on the ship.
+        /// </summary>
+        /// <returns>Collection of <see cref="IRepair"/>, which players can equip on the ship</returns>
+        public ICollection<IRepair> GetRepairs() => _shipManager.GetRepairs();
+
 
     }
 }
