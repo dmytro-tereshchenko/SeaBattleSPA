@@ -247,8 +247,9 @@ namespace SeaBattle.Lib.Managers
             IStartField startField;
 
             //in the case haven't created startFields - create them
-            if (game.StartFields.Count == 0)
+            if (game.StartFields == null)
             {
+                game.StartFields = new List<IStartField>(game.MaxNumberOfPlayers);
                 ICollection<bool[,]> fieldsOfLabels;
                 try
                 {

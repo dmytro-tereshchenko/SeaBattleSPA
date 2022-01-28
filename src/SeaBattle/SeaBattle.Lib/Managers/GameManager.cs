@@ -129,7 +129,7 @@ namespace SeaBattle.Lib.Managers
 
         public LimitSize GetLimitSizeField() => _initializeManager.GetLimitSizeField();
 
-        public byte GetMaxNumberOfPlayers() => _initializeManager.GetMaxNumberOfPlayers();
+        public byte GetMaxNumberOfPlayers() => _game?.MaxNumberOfPlayers ?? _initializeManager.GetMaxNumberOfPlayers();
 
         #endregion
 
