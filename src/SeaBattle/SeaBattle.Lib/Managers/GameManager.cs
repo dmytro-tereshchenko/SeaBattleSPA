@@ -55,7 +55,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="factory">Abstract factory for initializing</param>
         public GameManager(IAbstractGameFactory factory, IGame game) : this(factory) => _game = game;
 
-        #region Create and get
+        #region Data access
 
         public StateCode CreateGame(byte numberOfPlayers)
         {
