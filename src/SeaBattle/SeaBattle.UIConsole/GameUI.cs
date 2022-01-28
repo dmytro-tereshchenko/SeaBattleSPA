@@ -27,6 +27,14 @@ namespace SeaBattle.UIConsole
             CreateGame();
             CreateGameField();
             CreatePlayers();
+
+            //testing
+            /*_manager.CreateGame(2);
+            _manager.CreateGameField(10, 10);
+            _players = new List<IGamePlayer>();
+            _players.Add(_manager.AddGamePlayer("player 1").Value);
+            _players.Add(_manager.AddGamePlayer("player 2").Value);*/
+
             CreateStartFields();
             
             Console.ReadKey();
@@ -134,14 +142,41 @@ namespace SeaBattle.UIConsole
 
         private void InitializeField(IStartField startField)
         {
-            /*IGameShip ship = new GameShip(new Ship(ShipType.Military, 2, 100, 10), _players.ElementAt(0), 50); //testing
+            //testing
+            /*IGameShip ship = new GameShip(new Ship(ShipType.Military, 2, 100, 10), _players.ElementAt(0), 50);
             IGameShip ship2 = new GameShip(new Ship(ShipType.Military, 2, 100, 10), _players.ElementAt(1), 50);
             startField.GameField[2, 2] = ship;
             startField.GameField[2, 3] = ship;
             startField.GameField[9, 9] = ship2;
             startField.GameField[10, 9] = ship2;*/
-            _presenter.ShowGameField(startField.GameField, _players, startField.GamePlayer);
-            Console.ReadKey();
+
+            int choice = 0;
+            while (choice != -1)
+            {
+                List<string> options = startField.Ships.Select(ship =>
+                        $"{ship.Ship.Type}, size: {ship.Size}, weapons: {ship.Weapons.Count}, repairs: {ship.Repairs.Count}")
+                    .ToList();
+                options.InsertRange(0, new string[]{"Ready", "Buy ship", "Remove ship from field"});
+                choice = _presenter.MenuMultipleChoice(true, "Choose ship or buy:", () =>
+                {
+                    _presenter.ShowGameField(startField.GameField, _players, startField.GamePlayer, true, startField.FieldLabels);
+                    _presenter.ShowMessage($"Player: {startField.GamePlayer.Name}, Points: {startField.Points}", false, false);
+                }, options.ToArray());
+                switch (choice)
+                {
+                    case 0:
+                        //ready and exit
+                        choice = -1;
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    default:
+
+                        break;
+                }
+            }
         }
     }
 }

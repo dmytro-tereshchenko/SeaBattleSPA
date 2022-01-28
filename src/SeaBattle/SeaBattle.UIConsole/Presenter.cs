@@ -43,7 +43,7 @@ namespace SeaBattle.UIConsole
             return data;
         }
 
-        public void ShowMessage(string message, bool clear = true)
+        public void ShowMessage(string message, bool clear = true, bool pause = true)
         {
             if (clear)
             {
@@ -52,8 +52,11 @@ namespace SeaBattle.UIConsole
 
             Console.WriteLine(message);
 
-            Console.Write("Press button...");
-            Console.ReadLine();
+            if (pause)
+            {
+                Console.Write("Press button...");
+                Console.ReadLine();
+            }
         }
 
         public string GetString(string message, bool clear = true)
@@ -68,7 +71,7 @@ namespace SeaBattle.UIConsole
             return Console.ReadLine();
         }
 
-        public void ShowGameField(IGameField field, ICollection<IGamePlayer> players, IGamePlayer player = null, bool clear = true)
+        public void ShowGameField(IGameField field, ICollection<IGamePlayer> players, IGamePlayer player = null, bool clear = true, bool[,]startFieldLabels=null)
         {
             if (clear)
             {
@@ -115,6 +118,13 @@ namespace SeaBattle.UIConsole
                         PrintSymbol(' ', sizeNumberY);
                         Console.BackgroundColor = ConsoleColor.Black;
                     }
+                    else if (startFieldLabels != null && startFieldLabels[i - 1, j - 1])
+                    {
+                        //If show StartField than mark this zone
+                        Console.BackgroundColor = ConsoleColor.DarkGray;
+                        PrintSymbol(' ', sizeNumberY);
+                        Console.BackgroundColor = ConsoleColor.Black;
+                    }
                     else
                     {
                         PrintSymbol(' ', sizeNumberY);
@@ -129,6 +139,63 @@ namespace SeaBattle.UIConsole
             Console.Write('+');
             PrintSymbol('-', sizeNumberY * field.SizeY);
             Console.WriteLine('+');
+        }
+
+        public int MenuMultipleChoice(bool canCancel, string message, Action action, params string[] options)
+        {
+            int optionsPerLine = options.Length;
+            int currentSelection = 0;
+            ConsoleKey key;
+            Console.CursorVisible = false;
+            do
+            {
+                action?.Invoke();
+
+                if (message != null)
+                {
+                    Console.WriteLine(message);
+                }
+
+                for (int i = 0; i < options.Length; i++)
+                {
+                    if (i == currentSelection)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
+
+                    Console.WriteLine(options[i]);
+
+                    Console.ResetColor();
+                }
+                key = Console.ReadKey(true).Key;
+                switch (key)
+                {
+                    case ConsoleKey.UpArrow:
+                        if (currentSelection > 0)
+                        {
+                            currentSelection--;
+                        }
+
+                        break;
+                    case ConsoleKey.DownArrow:
+                        if (currentSelection < optionsPerLine - 1)
+                        {
+                            currentSelection++;
+                        }
+
+                        break;
+                    case ConsoleKey.Escape:
+                        if (canCancel)
+                        {
+                            return -1;
+                        }
+
+                        break;
+                }
+            } while (key != ConsoleKey.Enter);
+
+            Console.CursorVisible = true;
+            return currentSelection;
         }
 
         /// <summary>

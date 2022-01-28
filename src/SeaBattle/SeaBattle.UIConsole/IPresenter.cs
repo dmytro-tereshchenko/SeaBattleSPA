@@ -25,8 +25,9 @@ namespace SeaBattle.UIConsole
         /// Output message
         /// </summary>
         /// <param name="message">Message</param>
-        /// <param name="clear">true - clear previous output, false - not action</param>
-        void ShowMessage(string message, bool clear = true);
+        /// <param name="clear">true - clear previous output, false - no action</param>
+        /// <param name="pause">true - pause for read message, false - no action</param>
+        void ShowMessage(string message, bool clear = true, bool pause = true);
 
         /// <summary>
         /// Input string
@@ -43,7 +44,18 @@ namespace SeaBattle.UIConsole
         /// <param name="players">Collection of players in game</param>
         /// <param name="player">Current player</param>
         /// <param name="clear">true - clear previous output, false - not action</param>
+        /// <param name="startFieldLabels">Array labels for game field when the player can put his own ships on start field</param>
         void ShowGameField(IGameField field, ICollection<IGamePlayer> players, IGamePlayer player = null,
-            bool clear = true);
+            bool clear = true, bool[,] startFieldLabels = null);
+
+        /// <summary>
+        /// Show menu
+        /// </summary>
+        /// <param name="canCancel">Can quit with press button "Escape"</param>
+        /// <param name="message">Output previous message</param>
+        /// <param name="action">Action which call in menu</param>
+        /// <param name="options">Options of menu</param>
+        /// <returns>result of choice</returns>
+        int MenuMultipleChoice(bool canCancel, string message, Action action, params string[] options);
     }
 }
