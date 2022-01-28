@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;
+using SeaBattle.Lib.Responses;
 
 namespace SeaBattle.Lib.Managers
 {

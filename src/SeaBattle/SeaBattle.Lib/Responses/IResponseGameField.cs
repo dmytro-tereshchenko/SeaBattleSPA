@@ -1,6 +1,6 @@
 ﻿using SeaBattle.Lib.Entities;
 
-namespace SeaBattle.Lib.Infrastructure
+namespace SeaBattle.Lib.Responses
 {
     /// <summary>
     /// Response with game field
@@ -11,6 +11,6 @@ namespace SeaBattle.Lib.Infrastructure
         /// Game field of game
         /// </summary>
         /// <value><see cref="IGameField"/></value>
-        public IGameField Value { get; }
+        IGameField Value { get; }
     }
 }

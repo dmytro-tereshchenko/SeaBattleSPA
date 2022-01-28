@@ -1,5 +1,6 @@
 ﻿using SeaBattle.Lib.Entities;
 using System.Collections.Generic;
+using System.Linq;
 using SeaBattle.Lib.Infrastructure;
 
 namespace SeaBattle.Lib.Managers
@@ -21,14 +22,39 @@ namespace SeaBattle.Lib.Managers
         /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="ICommonShip"/></value>
         protected readonly ICollection<ICommonShip> Ships;
 
+        /// <summary>
+        /// Collection of basic weapons
+        /// </summary>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IWeapon"/></value>
+        protected readonly ICollection<IWeapon> Weapons;
+
+        /// <summary>
+        /// Collection of basic repairs
+        /// </summary>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IRepair"/></value>
+        protected readonly ICollection<IRepair> Repairs;
+
+        /// <summary>
+        /// Count of created entities.
+        /// </summary>
+        private uint _entityCount;
+
         public ShipManager()
         {
             Ships = new List<ICommonShip>();
 
-            Ships.Add(new Ship(ShipType.Auxiliary, 1, 100, 4));
-            Ships.Add(new Ship(ShipType.Mixed, 2, 200, 3));
-            Ships.Add(new Ship(ShipType.Mixed, 3, 300, 2));
-            Ships.Add(new Ship(ShipType.Military, 4, 400, 1));
+            Ships.Add(new Ship(++_entityCount, ShipType.Auxiliary, 1, 100, 4));
+            Ships.Add(new Ship(++_entityCount, ShipType.Mixed, 2, 200, 3));
+            Ships.Add(new Ship(++_entityCount, ShipType.Mixed, 3, 300, 2));
+            Ships.Add(new Ship(++_entityCount, ShipType.Military, 4, 400, 1));
+
+            Repairs = new List<IRepair>();
+
+            Repairs.Add(new BasicRepair(++_entityCount, 40, 10));
+
+            Weapons = new List<IWeapon>();
+
+            Weapons.Add(new BasicWeapon(++_entityCount, 50, 10));
         }
 
         public StateCode BuyShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField)
@@ -65,32 +91,42 @@ namespace SeaBattle.Lib.Managers
 
         public ICollection<ICommonShip> GetShips() => Ships;
 
-            public ICollection<IRepair> GetRepairs()
+        public ICollection<IRepair> GetRepairs() => Repairs;
+
+        public ICollection<IWeapon> GetWeapons() => Weapons;
+
+        public IGameShip GetNewShip(IGamePlayer gamePlayer, ICommonShip ship)
         {
-            ICollection<IRepair> repairs = new List<IRepair>();
+            IGameShip gameShip = new GameShip(++_entityCount, ship, gamePlayer, GetShipCost(ship.Size));
+            switch (ship.Type)
+            {
+                case ShipType.Military:
+                    for (int i = 0; i < ship.Size; i++)
+                    {
+                        AddWeapon(gamePlayer, gameShip, Weapons.First());
+                    }
+                    break;
+                case ShipType.Auxiliary:
+                    for (int i = 0; i < ship.Size; i++)
+                    {
+                        AddRepair(gamePlayer, gameShip, Repairs.First());
+                    }
+                    break;
+            }
 
-            repairs.Add(new BasicRepair(40, 10));
-
-            return repairs;
+            return gameShip;
         }
-
-        public ICollection<IWeapon> GetWeapons()
-        {
-            ICollection<IWeapon> weapons = new List<IWeapon>();
-
-            weapons.Add(new BasicWeapon(50, 10));
-
-            return weapons;
-        }
-
-        public IGameShip GetNewShip(IGamePlayer gamePlayer, ICommonShip ship) =>
-            new GameShip(ship, gamePlayer, GetShipCost(ship.Size));
 
         public StateCode AddWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon)
         {
             if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
+            }
+
+            if (gameShip.Weapons.Count + gameShip.Repairs.Count == gameShip.Size)
+            {
+                return StateCode.LimitEquipment;
             }
 
             gameShip.Weapons.Add(weapon);
@@ -103,6 +139,11 @@ namespace SeaBattle.Lib.Managers
             if (gameShip.GamePlayer != gamePlayer)
             {
                 return StateCode.InvalidPlayer;
+            }
+
+            if (gameShip.Weapons.Count + gameShip.Repairs.Count == gameShip.Size)
+            {
+                return StateCode.LimitEquipment;
             }
 
             gameShip.Repairs.Add(repair);

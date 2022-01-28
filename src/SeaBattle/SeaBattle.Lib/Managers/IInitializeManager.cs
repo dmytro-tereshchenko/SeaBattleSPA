@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;
+using SeaBattle.Lib.Responses;
 
 namespace SeaBattle.Lib.Managers
 {
@@ -45,16 +46,16 @@ namespace SeaBattle.Lib.Managers
         /// </summary>
         /// <param name="game">Current game</param>
         /// <param name="playerName">Player's name</param>
-        /// <returns><see cref="StateCode"/> is result of operation</returns>
-        StateCode AddPlayerToGame(IGame game, string playerName);
+        /// <returns><see cref="IResponseGamePlayer"/></returns>
+        IResponseGamePlayer AddPlayerToGame(IGame game, string playerName);
 
         /// <summary>
         /// Get start field by player and game. In case absence of starting fields, create them.
         /// </summary>
         /// <param name="game">Current game</param>
         /// <param name="gamePlayer">Current player</param>
-        /// <returns><see cref="IStartField"/> otherwise null</returns>
-        IStartField GetStartField(IGame game, IGamePlayer gamePlayer);
+        /// <returns><see cref="IResponseStartField"/></returns>
+        IResponseStartField GetStartField(IGame game, IGamePlayer gamePlayer);
 
         /// <summary>
         /// Create <see cref="IGame"/> by <paramref name="numberOfPlayers"/>

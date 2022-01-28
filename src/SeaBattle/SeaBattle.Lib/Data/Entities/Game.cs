@@ -23,6 +23,8 @@ namespace SeaBattle.Lib.Entities
         
         public GameState State { get; set; }
 
+        public IGamePlayer Winner { get; set; }
+
         public ICollection<IStartField> StartFields { get; set; }
 
         public ICollection<IGamePlayer> Players { get; set; }

@@ -39,6 +39,11 @@ namespace SeaBattle.Lib.Entities
         GameState State { get; set; }
 
         /// <summary>
+        /// Winner of the game
+        /// </summary>
+        public IGamePlayer Winner { get; set; }
+
+        /// <summary>
         /// Collection of fields with initializing data and parameters for every player
         /// </summary>
         /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IStartField"/></value>

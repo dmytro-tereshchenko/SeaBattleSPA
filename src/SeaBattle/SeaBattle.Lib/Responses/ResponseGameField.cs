@@ -1,6 +1,7 @@
 ﻿using SeaBattle.Lib.Entities;
+using SeaBattle.Lib.Infrastructure;
 
-namespace SeaBattle.Lib.Infrastructure
+namespace SeaBattle.Lib.Responses
 {
     /// <summary>
     /// Response with game field

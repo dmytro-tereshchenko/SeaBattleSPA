@@ -46,6 +46,11 @@
         InvalidShip = 017,
 
         /// <summary>
+        /// Equipment limit reached
+        /// </summary>
+        LimitEquipment = 018,
+
+        /// <summary>
         /// Absence of a ship by coordinates
         /// </summary>
         AbsentOfShip = 020,
@@ -64,6 +69,16 @@
         /// Target was destroyed
         /// </summary>
         TargetDestroyed = 023,
+
+        /// <summary>
+        /// Error of initialization
+        /// </summary>
+        ErrorInitialization = 030,
+
+        /// <summary>
+        /// Game finished
+        /// </summary>
+        GameFinished = 031,
 
         /// <summary>
         /// Invalid operation
