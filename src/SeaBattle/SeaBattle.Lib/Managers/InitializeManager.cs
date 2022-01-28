@@ -259,10 +259,14 @@ namespace SeaBattle.Lib.Managers
                 {
                     return new ResponseStartField(null, StateCode.ExceededMaxNumberOfPlayers);
                 }
+
+                //calculate start points for minimum size fields
+                int startPoints = fieldsOfLabels.Select(CalculateStartPoints).Min();
+
                 foreach (var labelField in fieldsOfLabels)
                 {
                     game.StartFields.Add(
-                        new StartField(++_entityCount, game.Field, labelField, null, CalculateStartPoints(labelField), new List<IGameShip>(), game.Id)
+                        new StartField(++_entityCount, game.Field, labelField, null, startPoints, new List<IGameShip>(), game.Id)
                         {
                             FieldLabels = labelField
                         });
