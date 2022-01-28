@@ -100,7 +100,7 @@ namespace SeaBattle.Lib.Managers
 
         public IResponseGameField GetGameField(IGamePlayer player) => _actionManager.GetGameField(player, _game);
 
-        public ICollection<ICommonShip> GetShips() => _shipManager.GetShips();
+        public ICollection<(ICommonShip, int)> GetShips() => _shipManager.GetShips();
 
         public ICollection<IWeapon> GetWeapons() => _shipManager.GetWeapons();
 

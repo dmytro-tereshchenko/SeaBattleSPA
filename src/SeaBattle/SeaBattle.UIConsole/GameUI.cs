@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;
@@ -164,16 +165,54 @@ namespace SeaBattle.UIConsole
                 }, options.ToArray());
                 switch (choice)
                 {
+                    case -1:
                     case 0:
                         //ready and exit
                         choice = -1;
                         break;
                     case 1:
+                        BuyShip(startField);
                         break;
                     case 2:
                         break;
                     default:
 
+                        break;
+                }
+            }
+        }
+
+        private void BuyShip(IStartField startField)
+        {
+            int choice = 0;
+            string message = "";
+            while (choice != -1)
+            {
+                ICollection<(ICommonShip, int)> commonShips = _manager.GetShips();
+                List<string> options = commonShips.Select(ship =>
+                        $"{ship.Item1.Type}, size: {ship.Item1.Size}, max hp: {ship.Item1.MaxHp}, speed: {ship.Item1.Speed}, cost: {ship.Item2}")
+                    .ToList();
+                options.Insert(0, "Quite");
+                choice = _presenter.MenuMultipleChoice(true, $"{message}Choose ship to buy:", () =>
+                {
+                    _presenter.ShowGameField(startField.GameField, _players, startField.GamePlayer, true, startField.FieldLabels);
+                    _presenter.ShowMessage($"Player: {startField.GamePlayer.Name}, Points: {startField.Points}", false, false);
+                }, options.ToArray());
+                switch (choice)
+                {
+                    case -1:
+                    case 0:
+                        //ready and exit
+                        choice = -1;
+                        break;
+                    default:
+                        StateCode state = _manager.BuyShip(startField.GamePlayer, commonShips.ElementAt(choice - 1).Item1);
+                        message = state switch
+                        {
+                            StateCode.Success => "",
+                            StateCode.PointsShortage => "Not enough points\n",
+                            _ => "Some error\n"
+                        };
                         break;
                 }
             }
