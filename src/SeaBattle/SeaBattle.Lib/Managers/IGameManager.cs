@@ -85,6 +85,12 @@ namespace SeaBattle.Lib.Managers
         LimitSize GetLimitSizeField();
 
         /// <summary>
+        /// Getting max number of players
+        /// </summary>
+        /// <returns><see cref="byte"/></returns>
+        byte GetMaxNumberOfPlayers();
+
+        /// <summary>
         /// Buy ship and save in <see cref="IStartField"/>
         /// </summary>
         /// <param name="player">The player who request buying ship</param>

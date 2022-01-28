@@ -42,6 +42,12 @@ namespace SeaBattle.Lib.Managers
         LimitSize GetLimitSizeField();
 
         /// <summary>
+        /// Getting max number of players
+        /// </summary>
+        /// <returns><see cref="byte"/></returns>
+        byte GetMaxNumberOfPlayers();
+
+        /// <summary>
         /// Create and add player to the game
         /// </summary>
         /// <param name="game">Current game</param>

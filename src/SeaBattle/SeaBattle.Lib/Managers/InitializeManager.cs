@@ -215,6 +215,8 @@ namespace SeaBattle.Lib.Managers
         public LimitSize GetLimitSizeField() =>
             new LimitSize(_maxSizeX, _maxSizeY, _minSizeX, _minSizeY);
 
+        public byte GetMaxNumberOfPlayers() => _maxNumberOfPlayers;
+
         public IResponseGamePlayer AddPlayerToGame(IGame game, string playerName)
         {
             if (game.Players.Count == 0)
