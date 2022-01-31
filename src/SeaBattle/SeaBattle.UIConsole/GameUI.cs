@@ -221,7 +221,8 @@ namespace SeaBattle.UIConsole
 
         private void RemoveShip(IStartField startField)
         {
-            _presenter.SelectCell(startField.GameField, _players, GetCenterOfStartField(startField),
+            (ushort X, ushort Y, bool isSelected) point = _presenter.SelectCell(startField.GameField, _players,
+                GetCenterOfStartField(startField),
                 startField.FieldLabels,
                 () =>
                 {
@@ -229,6 +230,10 @@ namespace SeaBattle.UIConsole
                         false);
                     _presenter.ShowMessage($"Choose ship for removing", false, false);
                 }, startField.GamePlayer);
+            if (point.isSelected)
+            {
+                _manager.RemoveShipFromField(startField.GamePlayer, point.X, point.Y);
+            }
         }
 
         /// <summary>
