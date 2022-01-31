@@ -37,6 +37,11 @@ namespace SeaBattle.Lib.Managers
         /// <value><see cref="IGame"/></value>
         private IGame _game;
 
+        public IGamePlayer CurrentGamePlayerMove
+        {
+            get => _game.CurrentGamePlayerMove;
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="InitializeManager"/> class
         /// </summary>
@@ -279,6 +284,7 @@ namespace SeaBattle.Lib.Managers
             }
 
             StateCode state = _actionManager.AttackShip(player, ship, posX, posY, _game.Field);
+
             return CheckEndGame() ? StateCode.GameFinished : state;
         }
 
@@ -306,10 +312,7 @@ namespace SeaBattle.Lib.Managers
 
         #region Services
 
-        /// <summary>
-        /// Change state <see cref="IGame"/> to next move
-        /// </summary>
-        protected void NextMove()
+        public StateCode NextMove()
         {
             ICollection<IGamePlayer> players = _game.Players;
 
@@ -319,9 +322,12 @@ namespace SeaBattle.Lib.Managers
                 {
                     _game.CurrentGamePlayerMove =
                         i + 1 < players.Count ? players.ElementAt(i + 1) : players.ElementAt(0);
-                    return;
+
+                    return StateCode.Success;
                 }
             }
+
+            return StateCode.InvalidPlayer;
         }
 
         /// <summary>

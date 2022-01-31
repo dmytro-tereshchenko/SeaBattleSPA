@@ -11,6 +11,12 @@ namespace SeaBattle.Lib.Managers
     public interface IGameManager
     {
         /// <summary>
+        /// Player, which needs to move this turn.
+        /// </summary>
+        /// <value><see cref="IGamePlayer"/></value>
+        IGamePlayer CurrentGamePlayerMove { get; }
+
+        /// <summary>
         /// Create <see cref="IGame"/>
         /// </summary>
         /// <param name="numberOfPlayers">Number of players in <see cref="IGame"/></param>
@@ -206,5 +212,11 @@ namespace SeaBattle.Lib.Managers
         /// <param name="ship">Current ship</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
         StateCode RepairAllShip(IGamePlayer player, IGameShip ship);
+
+        /// <summary>
+        /// Change state <see cref="IGame"/> to next move
+        /// </summary>
+        /// <returns><see cref="StateCode"/> result of operation</returns>
+        StateCode NextMove();
     }
 }
