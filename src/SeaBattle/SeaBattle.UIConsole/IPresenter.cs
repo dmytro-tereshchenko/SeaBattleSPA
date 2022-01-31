@@ -45,8 +45,8 @@ namespace SeaBattle.UIConsole
         /// <param name="player">Current player</param>
         /// <param name="clear">true - clear previous output, false - not action</param>
         /// <param name="startFieldLabels">Array labels for game field when the player can put his own ships on start field</param>
-        void ShowGameField(IGameField field, ICollection<IGamePlayer> players, IGamePlayer player = null,
-            bool clear = true, bool[,] startFieldLabels = null);
+        void ShowGameField(IGameField field, ICollection<IGamePlayer> players, bool[,] startFieldLabels = null, IGamePlayer player = null,
+            bool clear = true);
 
         /// <summary>
         /// Show menu
@@ -57,5 +57,26 @@ namespace SeaBattle.UIConsole
         /// <param name="options">Options of menu</param>
         /// <returns>result of choice</returns>
         int MenuMultipleChoice(bool canCancel, string message, Action action, params string[] options);
+
+        /// <summary>
+        /// The select cell of game field with keyboard's helping
+        /// <para><see cref="ConsoleKey.Enter"/> - select cell</para>
+        /// <para><see cref="ConsoleKey.LeftArrow"/> - move cursor left</para>
+        /// <para><see cref="ConsoleKey.RightArrow"/> - move cursor right</para>
+        /// <para><see cref="ConsoleKey.UpArrow"/> - move cursor up</para>
+        /// <para><see cref="ConsoleKey.DownArrow"/> - move cursor down</para>
+        /// <para><see cref="ConsoleKey.Escape"/> - escape without select</para>
+        /// </summary>
+        /// <param name="field"><see cref="IGameField"/></param>
+        /// <param name="players">Collection of players in game</param>
+        /// <param name="startPoint">Coordinates of start cursors' position</param>
+        /// <param name="startFieldLabels">Array labels for game field when the player can put his own ships on start field</param>
+        /// <param name="additionInfo">Calling the display of additional information after the playing field</param>
+        /// <param name="player">Current player</param>
+        /// <param name="clear">true - clear previous output, false - no action</param>
+        /// <returns>(<see cref="ushort"/> X, <see cref="ushort"/> Y, <see cref="bool"/> Select) where X, Y - selected coordinates, Select - true - isSelected, otherwise exit</returns>
+        (ushort X, ushort Y, bool Select) SelectCell(IGameField field, ICollection<IGamePlayer> players,
+            (ushort X, ushort Y) startPoint, bool[,] startFieldLabels = null, Action additionInfo = null,
+            IGamePlayer player = null, bool clear = true);
     }
 }

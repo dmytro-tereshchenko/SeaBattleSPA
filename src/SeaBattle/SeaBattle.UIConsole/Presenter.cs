@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,7 +72,7 @@ namespace SeaBattle.UIConsole
             return Console.ReadLine();
         }
 
-        public void ShowGameField(IGameField field, ICollection<IGamePlayer> players, IGamePlayer player = null, bool clear = true, bool[,]startFieldLabels=null)
+        public void ShowGameField(IGameField field, ICollection<IGamePlayer> players, bool[,] startFieldLabels = null, IGamePlayer player = null, bool clear = true)
         {
             if (clear)
             {
@@ -106,29 +107,7 @@ namespace SeaBattle.UIConsole
 
                 for (ushort j = 1; j <= field.SizeY; j++)
                 {
-                    if (field[i, j] != null && player == field[i, j].GamePlayer)
-                    {
-                        Console.BackgroundColor = (ConsoleColor) 1;
-                        PrintSymbol(' ', sizeNumberY);
-                        Console.BackgroundColor = ConsoleColor.Black;
-                    }
-                    else if (field[i, j] != null && player == null)
-                    {
-                        Console.BackgroundColor = (ConsoleColor) (playersList.IndexOf(field[i, j].GamePlayer) + 1);
-                        PrintSymbol(' ', sizeNumberY);
-                        Console.BackgroundColor = ConsoleColor.Black;
-                    }
-                    else if (startFieldLabels != null && startFieldLabels[i - 1, j - 1])
-                    {
-                        //If show StartField than mark this zone
-                        Console.BackgroundColor = ConsoleColor.DarkGray;
-                        PrintSymbol(' ', sizeNumberY);
-                        Console.BackgroundColor = ConsoleColor.Black;
-                    }
-                    else
-                    {
-                        PrintSymbol(' ', sizeNumberY);
-                    }
+                    ShowCellOfField(field, new(i, j), playersList, startFieldLabels, player);
                 }
 
                 Console.WriteLine("|");
@@ -196,6 +175,134 @@ namespace SeaBattle.UIConsole
 
             Console.CursorVisible = true;
             return currentSelection;
+        }
+
+        public (ushort X, ushort Y, bool Select) SelectCell(IGameField field, ICollection<IGamePlayer> players,
+            (ushort X, ushort Y) startPoint, bool[,] startFieldLabels = null, Action additionInfo = null,
+            IGamePlayer player = null, bool clear = true)
+        {
+            ShowGameField(field, players, startFieldLabels, player, clear);
+            additionInfo?.Invoke();
+
+            ConsoleKeyInfo key;
+            (ushort X, ushort Y) newPoint = new(startPoint.X, startPoint.Y);
+
+            while (true)
+            {
+                key = Console.ReadKey();
+                switch (key.Key)
+                {
+                    case ConsoleKey.Enter:
+                        return new(startPoint.X, startPoint.Y, true);
+                    case ConsoleKey.LeftArrow: //move cursor left
+                        newPoint = new(startPoint.X, (ushort) (startPoint.Y - 1));
+                        RewriteCursor(field, startPoint, newPoint, players.ToList(), startFieldLabels, player);
+                        break;
+                    case ConsoleKey.RightArrow: //move cursor right
+                        newPoint = new(startPoint.X, (ushort) (startPoint.Y + 1));
+                        RewriteCursor(field, startPoint, newPoint, players.ToList(), startFieldLabels, player);
+                        break;
+                    case ConsoleKey.UpArrow: //move cursor up
+                        newPoint = new((ushort) (startPoint.X - 1), startPoint.Y);
+                        RewriteCursor(field, startPoint, newPoint, players.ToList(), startFieldLabels, player);
+                        break;
+                    case ConsoleKey.DownArrow: //move cursor down
+                        newPoint = new((ushort) (startPoint.X + 1), startPoint.Y);
+                        RewriteCursor(field, startPoint, newPoint, players.ToList(), startFieldLabels, player);
+                        break;
+                    case ConsoleKey.Escape: //exit
+                        return new(startPoint.X, startPoint.Y, false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Show Cell of <see cref="IGameField"/> by coordinates
+        /// </summary>
+        /// <param name="field"><see cref="IGameField"/></param>
+        /// <param name="point">Coordinates of field's cell</param>
+        /// <param name="playersList">Collection of players in game</param>
+        /// <param name="startFieldLabels">Array labels for game field when the player can put his own ships on start field</param>
+        /// <param name="player">Current player</param>
+        private void ShowCellOfField(IGameField field, (ushort X, ushort Y) point, IList<IGamePlayer> playersList, bool[,] startFieldLabels = null, IGamePlayer player = null)
+        {
+            ushort sizeNumberY = GetSizeNumber(field.SizeY);
+
+            if (field[point.X, point.Y] != null && player == field[point.X, point.Y].GamePlayer)
+            {
+                Console.BackgroundColor = (ConsoleColor)1;
+                PrintSymbol(' ', sizeNumberY);
+                Console.BackgroundColor = ConsoleColor.Black;
+            }
+            else if (field[point.X, point.Y] != null && player == null)
+            {
+                Console.BackgroundColor = (ConsoleColor)(playersList.IndexOf(field[point.X, point.Y].GamePlayer) + 1);
+                PrintSymbol(' ', sizeNumberY);
+                Console.BackgroundColor = ConsoleColor.Black;
+            }
+            else if (startFieldLabels != null && startFieldLabels[point.X - 1, point.Y - 1])
+            {
+                //If show StartField than mark this zone
+                Console.BackgroundColor = ConsoleColor.DarkGray;
+                PrintSymbol(' ', sizeNumberY);
+                Console.BackgroundColor = ConsoleColor.Black;
+            }
+            else
+            {
+                PrintSymbol(' ', sizeNumberY);
+            }
+        }
+
+        /// <summary>
+        /// Show cursor on game field
+        /// </summary>
+        private void ShowCursor()
+        {
+            Console.BackgroundColor = ConsoleColor.Red;
+            PrintSymbol(' ', 1);
+            Console.BackgroundColor = ConsoleColor.Black;
+        }
+
+        /// <summary>
+        /// Rewrite changing position of the cursor
+        /// </summary>
+        /// <param name="field"><see cref="IGameField"/></param>
+        /// <param name="oldPoint">Coordinates of old field's cell</param>
+        /// <param name="newPoint">Coordinates of new field's cell</param>
+        /// <param name="playersList">Collection of players in game</param>
+        /// <param name="startFieldLabels">Array labels for game field when the player can put his own ships on start field</param>
+        /// <param name="player">Current player</param>
+        private void RewriteCursor(IGameField field, (ushort X, ushort Y) oldPoint, (ushort X, ushort Y) newPoint,
+            IList<IGamePlayer> playersList, bool[,] startFieldLabels = null, IGamePlayer player = null)
+        {
+            // if out of the game's field then return without changing
+            if (newPoint.X < 1 || newPoint.Y < 1 || newPoint.X > field.SizeX || newPoint.Y > field.SizeY)
+            {
+                return;
+            }
+            
+            SetCursorPosition(field, oldPoint);
+            ShowCellOfField(field, oldPoint, playersList, startFieldLabels, player);
+            SetCursorPosition(field, newPoint);
+            ShowCursor();
+
+            //move coordinates of cell
+            oldPoint.X = newPoint.X;
+            oldPoint.Y = newPoint.Y;
+        }
+
+        /// <summary>
+        /// Set cursor on game field in console by coordinates
+        /// </summary>
+        /// <param name="field"><see cref="IGameField"/></param>
+        /// <param name="point">Coordinates of cursor's position</param>
+        private void SetCursorPosition(IGameField field, (ushort X, ushort Y) point)
+        {
+            ushort sizeNumberY = GetSizeNumber(field.SizeY);
+            ushort sizeNumberX = GetSizeNumber(field.SizeX);
+            int posLeft = sizeNumberX + sizeNumberY * (point.Y - 1) + sizeNumberY / 2;
+            int posTop = 1 + point.X;
+            Console.SetCursorPosition(posLeft, posTop);
         }
 
         /// <summary>

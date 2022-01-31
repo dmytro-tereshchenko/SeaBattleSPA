@@ -25,16 +25,16 @@ namespace SeaBattle.UIConsole
 
         public void Start()
         {
-            CreateGame();
+            /*CreateGame();
             CreateGameField();
-            CreatePlayers();
+            CreatePlayers();*/
 
             //testing
-            /*_manager.CreateGame(2);
+            _manager.CreateGame(2);
             _manager.CreateGameField(10, 10);
             _players = new List<IGamePlayer>();
             _players.Add(_manager.AddGamePlayer("player 1").Value);
-            _players.Add(_manager.AddGamePlayer("player 2").Value);*/
+            _players.Add(_manager.AddGamePlayer("player 2").Value);
 
             CreateStartFields();
             
@@ -144,12 +144,12 @@ namespace SeaBattle.UIConsole
         private void InitializeField(IStartField startField)
         {
             //testing
-            /*IGameShip ship = new GameShip(new Ship(ShipType.Military, 2, 100, 10), _players.ElementAt(0), 50);
+            IGameShip ship = new GameShip(new Ship(ShipType.Military, 2, 100, 10), _players.ElementAt(0), 50);
             IGameShip ship2 = new GameShip(new Ship(ShipType.Military, 2, 100, 10), _players.ElementAt(1), 50);
             startField.GameField[2, 2] = ship;
             startField.GameField[2, 3] = ship;
             startField.GameField[9, 9] = ship2;
-            startField.GameField[10, 9] = ship2;*/
+            startField.GameField[10, 9] = ship2;
 
             int choice = 0;
             while (choice != -1)
@@ -160,7 +160,7 @@ namespace SeaBattle.UIConsole
                 options.InsertRange(0, new string[]{"Ready", "Buy ship", "Remove ship from field"});
                 choice = _presenter.MenuMultipleChoice(true, "Choose ship or buy:", () =>
                 {
-                    _presenter.ShowGameField(startField.GameField, _players, startField.GamePlayer, true, startField.FieldLabels);
+                    _presenter.ShowGameField(startField.GameField, _players, startField.FieldLabels, startField.GamePlayer);
                     _presenter.ShowMessage($"Player: {startField.GamePlayer.Name}, Points: {startField.Points}", false, false);
                 }, options.ToArray());
                 switch (choice)
@@ -195,7 +195,7 @@ namespace SeaBattle.UIConsole
                 options.Insert(0, "Quite");
                 choice = _presenter.MenuMultipleChoice(true, $"{message}Choose ship to buy:", () =>
                 {
-                    _presenter.ShowGameField(startField.GameField, _players, startField.GamePlayer, true, startField.FieldLabels);
+                    _presenter.ShowGameField(startField.GameField, _players, startField.FieldLabels, startField.GamePlayer);
                     _presenter.ShowMessage($"Player: {startField.GamePlayer.Name}, Points: {startField.Points}", false, false);
                 }, options.ToArray());
                 switch (choice)
