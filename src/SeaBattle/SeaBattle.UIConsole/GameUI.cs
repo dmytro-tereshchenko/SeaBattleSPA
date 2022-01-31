@@ -25,20 +25,19 @@ namespace SeaBattle.UIConsole
 
         public void Start()
         {
-            /*CreateGame();
+            CreateGame();
             CreateGameField();
-            CreatePlayers();*/
+            CreatePlayers();
+            CreateStartFields();
 
             //testing
-            _manager.CreateGame(2);
+            /*_manager.CreateGame(2);
             _manager.CreateGameField(10, 10);
             _players = new List<IGamePlayer>();
             _players.Add(_manager.AddGamePlayer("player 1").Value);
-            _players.Add(_manager.AddGamePlayer("player 2").Value);
+            _players.Add(_manager.AddGamePlayer("player 2").Value);*/
 
-            CreateStartFields();
-            
-            Console.ReadKey();
+            GameFlow();
         }
 
         private void CreateGame()
@@ -141,15 +140,141 @@ namespace SeaBattle.UIConsole
             }
         }
 
+        private void GameFlow()
+        {
+            StateCode state = StateCode.InvalidOperation;
+            int choice = -1;
+            IGameField gameField = null;
+            string message = "";
+            IGamePlayer player = null;
+            IGameShip ship = null;
+
+            while (state != StateCode.GameFinished)
+            {
+                //move
+                while (state != StateCode.GameFinished && state != StateCode.Success &&
+                       state != StateCode.InvalidPlayer)
+                {
+                    player = _manager.CurrentGamePlayerMove;
+                    gameField = _manager.GetGameField(player).Value;
+                
+                    //select ship or skip (escape)
+                    var selectedShip = SelectShip(message);
+
+                    if (!selectedShip.isSelected)
+                    {
+                        _manager.NextMove();
+                        continue;
+                    }
+                    else
+                    {
+                        ship = selectedShip.Ship;
+                    }
+
+                    if (selectedShip.Ship == null)
+                    {
+                        continue;
+                    }
+
+                    var selectedPlace = SelectTarget(message);
+
+                    if (!selectedPlace.isSelected)
+                    {
+                        continue;
+                    }
+
+                    choice = _presenter.MenuMultipleChoice(true, "Choose direction:", () =>
+                        {
+                            _presenter.ShowGameField(gameField, _players, null,
+                                player);
+                            _presenter.ShowMessage($"Player: {player.Name}, choose ship", false,
+                                false);
+                        },
+                        new string[]
+                        {
+                            "Up", "Right", "Down", "Left", "Cancel"
+                        });
+
+                    DirectionOfShipPosition direction = DirectionOfShipPosition.XDec; //case 0:
+
+                    switch (choice)
+                    {
+                        case 1:
+                            direction = DirectionOfShipPosition.YInc;
+                            break;
+                        case 2:
+                            direction = DirectionOfShipPosition.XInc;
+                            break;
+                        case 3:
+                            direction = DirectionOfShipPosition.YDec;
+                            break;
+                    }
+
+                    if (choice is >= 0 and < 4)
+                    {
+                        state = _manager.PutShipOnField(player, ship, selectedPlace.X, selectedPlace.Y, direction);
+                    }
+
+                    message = InfoState(state);
+                }
+
+                state = StateCode.InvalidOperation;
+                message = "";
+
+                //action
+                while (state != StateCode.GameFinished && state != StateCode.Success &&
+                       state != StateCode.InvalidPlayer && state != StateCode.MissTarget &&
+                       state != StateCode.TargetDestroyed)
+                {
+                    switch (SelectAction())
+                    {
+                        case -1:
+                            continue;
+                        case 3:
+                            state = StateCode.Success;
+                            break;
+                        case 0:
+                            var selectedTargetAtack = SelectTarget(message);
+
+                            if (selectedTargetAtack.isSelected)
+                            {
+                                state = _manager.AttackShip(player, ship, selectedTargetAtack.X, selectedTargetAtack.Y);
+                            }
+
+                            break;
+                        case 1:
+                            var selectedTargetRepair = SelectTarget(message);
+
+                            if (selectedTargetRepair.isSelected)
+                            {
+                                state = _manager.RepairShip(player, ship, selectedTargetRepair.X, selectedTargetRepair.Y);
+                            }
+
+                            break;
+                        case 2:
+                            state=_manager.RepairAllShip(player, ship);
+                            break;
+                    }
+
+                    message = InfoState(state);
+
+                    _manager.NextMove();
+                }
+            }
+
+            _presenter.ShowGameField(gameField, _players);
+            _presenter.ShowMessage($"Winner: {_manager.GetResultGame().Name}");
+        }
+
         private void InitializeField(IStartField startField)
         {
             //testing
-            IGameShip ship = new GameShip(new Ship(ShipType.Military, 2, 100, 10), _players.ElementAt(0), 50);
+            /*IGameShip ship = new GameShip(new Ship(ShipType.Military, 2, 100, 10), _players.ElementAt(0), 50);
             IGameShip ship2 = new GameShip(new Ship(ShipType.Military, 2, 100, 10), _players.ElementAt(1), 50);
             startField.GameField[2, 2] = ship;
             startField.GameField[2, 3] = ship;
             startField.GameField[9, 9] = ship2;
-            startField.GameField[8, 9] = ship2;
+            startField.GameField[8, 9] = ship2;*/
 
             int choice = 0;
             while (choice != -1)
@@ -244,6 +369,11 @@ namespace SeaBattle.UIConsole
             }
         }
 
+        /// <summary>
+        /// Manage ship during initializing.
+        /// </summary>
+        /// <param name="startField">The field for storing the location of ships and points for buy ships by the player when initializing game.</param>
+        /// <param name="ship">Current ship</param>
         private void ShipManage(IStartField startField, IGameShip ship)
         {
             int choice = 0;
@@ -296,6 +426,11 @@ namespace SeaBattle.UIConsole
             }
         }
 
+        /// <summary>
+        /// Put ship from list of ships in <see cref="IStartField"/> to <see cref="IGameField"/>
+        /// </summary>
+        /// <param name="startField">The field for storing the location of ships and points for buy ships by the player when initializing game.</param>
+        /// <param name="ship">Current ship</param>
         private void SetShip(IStartField startField, IGameShip ship)
         {
             (ushort X, ushort Y, bool isSelected) point = _presenter.SelectCell(startField.GameField, _players,
@@ -327,7 +462,7 @@ namespace SeaBattle.UIConsole
                         "Up", "Right", "Down", "Left", "Cancel"
                     });
 
-                DirectionOfShipPosition direction= direction = DirectionOfShipPosition.XDec; //case 0:
+                DirectionOfShipPosition direction = DirectionOfShipPosition.XDec; //case 0:
 
                 switch (choice)
                 {
@@ -342,11 +477,79 @@ namespace SeaBattle.UIConsole
                         break;
                 }
 
-                if (choice >= 0 && choice < 4)
+                if (choice is >= 0 and < 4)
                 {
                     _manager.PutShipOnField(startField.GamePlayer, ship, point.X, point.Y, direction);
                 }
             }
+        }
+
+        /// <summary>
+        /// Select action for ship
+        /// </summary>
+        /// <returns><see cref="int"/> Number of action
+        /// <para>-1, 3 - skip/quit</para><para>0 - attack</para><para>1 - repair</para><para>2 - repair all</para></returns>
+        private int SelectAction()
+        {
+            IGamePlayer player = _manager.CurrentGamePlayerMove;
+            IGameField gameField = _manager.GetGameField(player).Value;
+
+            return _presenter.MenuMultipleChoice(true, "", () =>
+                {
+                    _presenter.ShowGameField(gameField, _players, null,
+                        player);
+                    _presenter.ShowMessage($"Player: {player.Name}, choose action:", false,
+                        false);
+                },
+                new string[]
+                {
+                    "Attack", "Repair", "Repair all", "Skip"
+                });
+        }
+
+        /// <summary>
+        /// Select cell on game field
+        /// </summary>
+        /// <param name="message">Message for show</param>
+        /// <returns>(<see cref="ushort"/> X, <see cref="ushort"/> Y, <see cref="bool"/> Select) where X, Y - selected coordinates, Select - true - isSelected, otherwise exit</returns>
+        private (ushort X, ushort Y, bool isSelected) SelectTarget(string message = "")
+        {
+            IGamePlayer player = _manager.CurrentGamePlayerMove;
+            IGameField gameField = _manager.GetGameField(player).Value;
+            return _presenter.SelectCell(gameField, _players,
+                new((ushort) (gameField.SizeX / 2), (ushort) (gameField.SizeY / 2)),
+                null,
+                () =>
+                {
+                    _presenter.ShowMessage($"Player: {player.Name}, select place", false,
+                        false);
+                    _presenter.ShowMessage(message, false,
+                        false);
+                }, player);
+        }
+
+        
+
+        /// <summary>
+        /// Select ship on <see cref="IGameField"/>
+        /// </summary>
+        /// <param name="message">Message for show</param>
+        /// <returns><see cref="IGameShip"/> otherwise null</returns>
+        private (IGameShip Ship, bool isSelected) SelectShip(string message = "")
+        {
+            IGamePlayer player = _manager.CurrentGamePlayerMove;
+            IGameField gameField = _manager.GetGameField(player).Value;
+            (ushort X, ushort Y, bool isSelected) shipPoint = _presenter.SelectCell(gameField, _players,
+                new((ushort) (gameField.SizeX / 2), (ushort) (gameField.SizeY / 2)),
+                null,
+                () =>
+                {
+                    _presenter.ShowMessage($"Player: {player.Name}, select ship", false,
+                        false);
+                    _presenter.ShowMessage(message, false,
+                        false);
+                }, player);
+            return new(gameField[shipPoint.X, shipPoint.Y], shipPoint.isSelected);
         }
 
         /// <summary>
@@ -377,5 +580,18 @@ namespace SeaBattle.UIConsole
 
             return new((ushort) ((minX + maxX) / 2), (ushort) ((minY + maxY) / 2));
         }
+
+        private string InfoState(StateCode code) => (code) switch
+        {
+            StateCode.InvalidPositionShip => "Wrong position for ship",
+            StateCode.InvalidPlayer => "Wrong player",
+            StateCode.InvalidShip => "Wrong ship",
+            StateCode.OutOfDistance => "Target is out of distance",
+            StateCode.MissTarget => "Action on target was missed",
+            StateCode.TargetDestroyed => "Target was destroyed",
+            StateCode.GameFinished => "Game was finished",
+            StateCode.InvalidOperation => "Invalid operation",
+            _ => ""
+        };
     }
 }
