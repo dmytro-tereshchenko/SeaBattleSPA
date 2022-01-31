@@ -186,6 +186,12 @@ namespace SeaBattle.UIConsole
 
             ConsoleKeyInfo key;
             (ushort X, ushort Y) newPoint = new(startPoint.X, startPoint.Y);
+            bool move = false;
+            Console.CursorVisible = false;
+
+            //show cursor
+            SetCursorPosition(field, newPoint);
+            ShowCursor(field);
 
             while (true)
             {
@@ -193,25 +199,34 @@ namespace SeaBattle.UIConsole
                 switch (key.Key)
                 {
                     case ConsoleKey.Enter:
+                        Console.CursorVisible = true;
                         return new(startPoint.X, startPoint.Y, true);
                     case ConsoleKey.LeftArrow: //move cursor left
                         newPoint = new(startPoint.X, (ushort) (startPoint.Y - 1));
-                        RewriteCursor(field, startPoint, newPoint, players.ToList(), startFieldLabels, player);
+                        move = RewriteCursor(field, startPoint, newPoint, players.ToList(), startFieldLabels, player);
                         break;
                     case ConsoleKey.RightArrow: //move cursor right
                         newPoint = new(startPoint.X, (ushort) (startPoint.Y + 1));
-                        RewriteCursor(field, startPoint, newPoint, players.ToList(), startFieldLabels, player);
+                        move = RewriteCursor(field, startPoint, newPoint, players.ToList(), startFieldLabels, player);
                         break;
                     case ConsoleKey.UpArrow: //move cursor up
                         newPoint = new((ushort) (startPoint.X - 1), startPoint.Y);
-                        RewriteCursor(field, startPoint, newPoint, players.ToList(), startFieldLabels, player);
+                        move = RewriteCursor(field, startPoint, newPoint, players.ToList(), startFieldLabels, player);
                         break;
                     case ConsoleKey.DownArrow: //move cursor down
                         newPoint = new((ushort) (startPoint.X + 1), startPoint.Y);
-                        RewriteCursor(field, startPoint, newPoint, players.ToList(), startFieldLabels, player);
+                        move = RewriteCursor(field, startPoint, newPoint, players.ToList(), startFieldLabels, player);
                         break;
                     case ConsoleKey.Escape: //exit
+                        Console.CursorVisible = true;
                         return new(startPoint.X, startPoint.Y, false);
+                }
+
+                if (move)
+                {
+                    //move coordinates of cell
+                    startPoint.X = newPoint.X;
+                    startPoint.Y = newPoint.Y;
                 }
             }
         }
@@ -256,10 +271,10 @@ namespace SeaBattle.UIConsole
         /// <summary>
         /// Show cursor on game field
         /// </summary>
-        private void ShowCursor()
+        private void ShowCursor(IGameField field)
         {
             Console.BackgroundColor = ConsoleColor.Red;
-            PrintSymbol(' ', 1);
+            PrintSymbol(' ', GetSizeNumber(field.SizeY));
             Console.BackgroundColor = ConsoleColor.Black;
         }
 
@@ -272,23 +287,21 @@ namespace SeaBattle.UIConsole
         /// <param name="playersList">Collection of players in game</param>
         /// <param name="startFieldLabels">Array labels for game field when the player can put his own ships on start field</param>
         /// <param name="player">Current player</param>
-        private void RewriteCursor(IGameField field, (ushort X, ushort Y) oldPoint, (ushort X, ushort Y) newPoint,
+        private bool RewriteCursor(IGameField field, (ushort X, ushort Y) oldPoint, (ushort X, ushort Y) newPoint,
             IList<IGamePlayer> playersList, bool[,] startFieldLabels = null, IGamePlayer player = null)
         {
             // if out of the game's field then return without changing
             if (newPoint.X < 1 || newPoint.Y < 1 || newPoint.X > field.SizeX || newPoint.Y > field.SizeY)
             {
-                return;
+                return false;
             }
             
             SetCursorPosition(field, oldPoint);
             ShowCellOfField(field, oldPoint, playersList, startFieldLabels, player);
             SetCursorPosition(field, newPoint);
-            ShowCursor();
+            ShowCursor(field);
 
-            //move coordinates of cell
-            oldPoint.X = newPoint.X;
-            oldPoint.Y = newPoint.Y;
+            return true;
         }
 
         /// <summary>
@@ -300,7 +313,7 @@ namespace SeaBattle.UIConsole
         {
             ushort sizeNumberY = GetSizeNumber(field.SizeY);
             ushort sizeNumberX = GetSizeNumber(field.SizeX);
-            int posLeft = sizeNumberX + sizeNumberY * (point.Y - 1) + sizeNumberY / 2;
+            int posLeft = sizeNumberX + sizeNumberY * (point.Y - 1) + 1;
             int posTop = 1 + point.X;
             Console.SetCursorPosition(posLeft, posTop);
         }

@@ -149,7 +149,7 @@ namespace SeaBattle.UIConsole
             startField.GameField[2, 2] = ship;
             startField.GameField[2, 3] = ship;
             startField.GameField[9, 9] = ship2;
-            startField.GameField[10, 9] = ship2;
+            startField.GameField[8, 9] = ship2;
 
             int choice = 0;
             while (choice != -1)
@@ -174,6 +174,7 @@ namespace SeaBattle.UIConsole
                         BuyShip(startField);
                         break;
                     case 2:
+                        RemoveShip(startField);
                         break;
                     default:
 
@@ -216,6 +217,47 @@ namespace SeaBattle.UIConsole
                         break;
                 }
             }
+        }
+
+        private void RemoveShip(IStartField startField)
+        {
+            _presenter.SelectCell(startField.GameField, _players, GetCenterOfStartField(startField),
+                startField.FieldLabels,
+                () =>
+                {
+                    _presenter.ShowMessage($"Player: {startField.GamePlayer.Name}, Points: {startField.Points}", false,
+                        false);
+                    _presenter.ShowMessage($"Choose ship for removing", false, false);
+                }, startField.GamePlayer);
+        }
+
+        /// <summary>
+        /// Get coordinates of the center of the field for allocating player's ships
+        /// </summary>
+        /// <param name="startField">The field for storing the location of ships and points for buy ships by the player when initializing game.</param>
+        /// <returns>(<see cref="ushort"/> X, <see cref="ushort"/> Y) Coordinates of center field for allocating player's ships</returns>
+        private (ushort X, ushort Y) GetCenterOfStartField(IStartField startField)
+        {
+            ushort minX = (ushort) (startField.FieldLabels.GetLength(0) - 1);
+            ushort minY = (ushort) (startField.FieldLabels.GetLength(1) - 1);
+            ushort maxX = 0;
+            ushort maxY = 0;
+
+            for (ushort i = 0; i < startField.FieldLabels.GetLength(0); i++)
+            {
+                for (ushort j = 0; j < startField.FieldLabels.GetLength(1); j++)
+                {
+                    if (startField.FieldLabels[i, j])
+                    {
+                        minX = (i < minX) ? i : minX;
+                        minY = (j < minY) ? j : minY;
+                        maxX = (i > maxX) ? i : maxX;
+                        maxY = (j > maxY) ? j : maxY;
+                    }
+                }
+            }
+
+            return new((ushort) ((minX + maxX) / 2), (ushort) ((minY + maxY) / 2));
         }
     }
 }
