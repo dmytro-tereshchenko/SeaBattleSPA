@@ -177,12 +177,16 @@ namespace SeaBattle.UIConsole
                         RemoveShip(startField);
                         break;
                     default:
-
+                        ShipManage(startField, startField.Ships.ElementAt(choice - 3));
                         break;
                 }
             }
         }
 
+        /// <summary>
+        /// Buy ship for points to list of ships in start field
+        /// </summary>
+        /// <param name="startField">The field for storing the location of ships and points for buy ships by the player when initializing game.</param>
         private void BuyShip(IStartField startField)
         {
             int choice = 0;
@@ -219,6 +223,10 @@ namespace SeaBattle.UIConsole
             }
         }
 
+        /// <summary>
+        /// Remove ship from game field to list of ships in start field
+        /// </summary>
+        /// <param name="startField">The field for storing the location of ships and points for buy ships by the player when initializing game.</param>
         private void RemoveShip(IStartField startField)
         {
             (ushort X, ushort Y, bool isSelected) point = _presenter.SelectCell(startField.GameField, _players,
@@ -233,6 +241,111 @@ namespace SeaBattle.UIConsole
             if (point.isSelected)
             {
                 _manager.RemoveShipFromField(startField.GamePlayer, point.X, point.Y);
+            }
+        }
+
+        private void ShipManage(IStartField startField, IGameShip ship)
+        {
+            int choice = 0;
+            while (choice != -1)
+            {
+                choice = _presenter.MenuMultipleChoice(true, "Choose action:", () =>
+                    {
+                        _presenter.ShowGameField(startField.GameField, _players, startField.FieldLabels,
+                            startField.GamePlayer);
+                        _presenter.ShowMessage($"Player: {startField.GamePlayer.Name}, Points: {startField.Points}",
+                            false, false);
+                        _presenter.ShowMessage(
+                            $"{ship.Ship.Type}, size: {ship.Size}, weapons: {ship.Weapons.Count}, repairs: {ship.Repairs.Count}",
+                            false, false);
+                    },
+                    new string[]
+                    {
+                        "Set ship on the field", "Add weapon", "Add repair", "Remove weapon", "Remove repair",
+                        "Sell ship", "Quit"
+                    });
+
+                switch (choice)
+                {
+                    case 6:
+                    case -1:
+                        //exit
+                        choice = -1;
+                        break;
+                    case 0:
+                        SetShip(startField, ship);
+                        choice = -1;
+                        break;
+                    case 1:
+                        _manager.AddWeapon(startField.GamePlayer, ship, ship.Weapons?.LastOrDefault());
+                        break;
+                    case 2:
+                        _manager.AddRepair(startField.GamePlayer, ship, ship.Repairs?.LastOrDefault());
+                        break;
+                    case 3:
+                        _manager.RemoveWeapon(startField.GamePlayer, ship, ship.Weapons?.LastOrDefault());
+                        break;
+                    case 4:
+                        _manager.RemoveRepair(startField.GamePlayer, ship, ship.Repairs?.LastOrDefault());
+                        break;
+                    case 5:
+                        _manager.SellShip(startField.GamePlayer, ship);
+                        choice = -1;
+                        break;
+                }
+            }
+        }
+
+        private void SetShip(IStartField startField, IGameShip ship)
+        {
+            (ushort X, ushort Y, bool isSelected) point = _presenter.SelectCell(startField.GameField, _players,
+                GetCenterOfStartField(startField),
+                startField.FieldLabels,
+                () =>
+                {
+                    _presenter.ShowMessage($"Player: {startField.GamePlayer.Name}, Points: {startField.Points}", false,
+                        false);
+                    _presenter.ShowMessage(
+                        $"{ship.Ship.Type}, size: {ship.Size}, weapons: {ship.Weapons.Count}, repairs: {ship.Repairs.Count}",
+                        false, false);
+                    _presenter.ShowMessage($"Select position of the ship's stern", false, false);
+                }, startField.GamePlayer);
+            if (point.isSelected)
+            {
+                int choice = _presenter.MenuMultipleChoice(true, "Choose direction:", () =>
+                    {
+                        _presenter.ShowGameField(startField.GameField, _players, startField.FieldLabels,
+                            startField.GamePlayer);
+                        _presenter.ShowMessage($"Player: {startField.GamePlayer.Name}, Points: {startField.Points}",
+                            false, false);
+                        _presenter.ShowMessage(
+                            $"{ship.Ship.Type}, size: {ship.Size}, weapons: {ship.Weapons.Count}, repairs: {ship.Repairs.Count}",
+                            false, false);
+                    },
+                    new string[]
+                    {
+                        "Up", "Right", "Down", "Left", "Cancel"
+                    });
+
+                DirectionOfShipPosition direction= direction = DirectionOfShipPosition.XDec; //case 0:
+
+                switch (choice)
+                {
+                    case 1:
+                        direction = DirectionOfShipPosition.YInc;
+                        break;
+                    case 2:
+                        direction = DirectionOfShipPosition.XInc;
+                        break;
+                    case 3:
+                        direction = DirectionOfShipPosition.YDec;
+                        break;
+                }
+
+                if (choice >= 0 && choice < 4)
+                {
+                    _manager.PutShipOnField(startField.GamePlayer, ship, point.X, point.Y, direction);
+                }
             }
         }
 

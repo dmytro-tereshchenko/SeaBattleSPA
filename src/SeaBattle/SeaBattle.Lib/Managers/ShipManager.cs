@@ -129,6 +129,11 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.LimitEquipment;
             }
 
+            if (gameShip.Ship.Type == ShipType.Auxiliary)
+            {
+                return StateCode.InvalidEquipment;
+            }
+
             gameShip.Weapons.Add(weapon);
 
             return StateCode.Success;
@@ -146,6 +151,11 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.LimitEquipment;
             }
 
+            if (gameShip.Ship.Type == ShipType.Military)
+            {
+                return StateCode.InvalidEquipment;
+            }
+
             gameShip.Repairs.Add(repair);
 
             return StateCode.Success;
@@ -158,9 +168,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            gameShip.Weapons.Remove(weapon);
-
-            return StateCode.Success;
+            return gameShip.Weapons.Remove(weapon) ? StateCode.Success : StateCode.InvalidEquipment;
         }
 
         public StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair)
@@ -170,9 +178,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            gameShip.Repairs.Remove(repair);
-
-            return StateCode.Success;
+            return gameShip.Repairs.Remove(repair) ? StateCode.Success : StateCode.InvalidEquipment;
         }
 
         /// <summary>

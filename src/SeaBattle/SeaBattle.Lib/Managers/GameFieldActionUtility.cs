@@ -68,7 +68,7 @@ namespace SeaBattle.Lib.Managers
             ushort sizeX = field.SizeX;
             ushort sizeY = field.SizeY;
 
-            if (x < 0 || x >= sizeX || y < 0 || y > sizeY)
+            if (x < 1 || x > sizeX || y < 1 || y > sizeY)
             {
                 throw new ArgumentOutOfRangeException();
             }
@@ -83,7 +83,7 @@ namespace SeaBattle.Lib.Managers
                 //Check free cells (absents ship or current ship) on diagonal from the cell with coordinates x,y
                 offsetXY = Convert.ToInt16(Math.Pow(-1, i / 2));
                 offsetYX = Convert.ToInt16(Math.Pow(-1, (i + 1) / 2));
-                if (x + offsetXY >= 0 && x + offsetXY < sizeX && y + offsetYX >= 0 && y + offsetYX < sizeY &&
+                if (x + offsetXY > 0 && x + offsetXY <= sizeX && y + offsetYX > 0 && y + offsetYX <= sizeY &&
                     field[(ushort)(x + offsetXY), (ushort)(y + offsetYX)] != null &&
                     field[(ushort)(x + offsetXY), (ushort)(y + offsetYX)] != ship)
                 {
@@ -91,7 +91,7 @@ namespace SeaBattle.Lib.Managers
                 }
 
                 //Check free cells (absents ship or current ship) on horizontal and vertical from the cell with coordinates x,y
-                if (x + offsetX >= 0 && x + offsetX < sizeX && y + offsetY >= 0 && y + offsetY < sizeY &&
+                if (x + offsetX > 0 && x + offsetX <= sizeX && y + offsetY > 0 && y + offsetY <= sizeY &&
                     field[(ushort)(x + offsetX), (ushort)(y + offsetY)] != null &&
                     field[(ushort)(x + offsetX), (ushort)(y + offsetY)] != ship)
                 {
