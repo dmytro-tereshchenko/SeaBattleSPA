@@ -45,13 +45,13 @@ namespace SeaBattle.UIConsole
             IGameField field = _manager.GetGameField(_players.FirstOrDefault()).Value;
             IWeapon weapon = new BasicWeapon(50, 10);
             IRepair repair = new BasicRepair(40, 10);
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 100, 10), _players.ElementAt(0), 50);
+            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), _players.ElementAt(0), 50);
             ship.Weapons.Add(weapon);
             ship.Repairs.Add(repair);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 100, 10), _players.ElementAt(1), 50);
+            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), _players.ElementAt(1), 50);
             ship2.Weapons.Add(weapon);
             ship2.Repairs.Add(repair);
-            IGameShip ship3 = new GameShip(new Ship(ShipType.Military, 4, 200, 10), _players.ElementAt(1), 50);
+            IGameShip ship3 = new GameShip(new Ship(ShipType.Military, 4, 400, 1), _players.ElementAt(1), 50);
             ship3.Weapons.Add(weapon);
             ship3.Weapons.Add(weapon);
             ship3.Weapons.Add(weapon);
@@ -561,7 +561,7 @@ namespace SeaBattle.UIConsole
             IGamePlayer player = _manager.CurrentGamePlayerMove;
             IGameField gameField = _manager.GetGameField(player).Value;
             return _presenter.SelectCell(gameField, _players,
-                new((ushort) (gameField.SizeX / 2), (ushort) (gameField.SizeY / 2)),
+                new((ushort)(gameField.SizeX / 2), (ushort)(gameField.SizeY / 2)),
                 null,
                 () =>
                 {

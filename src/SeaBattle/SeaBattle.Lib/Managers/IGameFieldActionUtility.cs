@@ -23,6 +23,18 @@ namespace SeaBattle.Lib.Managers
             DirectionOfShipPosition direction, IGameField field);
 
         /// <summary>
+        /// Prognosis coordinates of the ship by position stern and direction
+        /// </summary>
+        /// <param name="shipSize">Size of <see cref="IGameShip"/></param>
+        /// <param name="posX">Coordinate X of position</param>
+        /// <param name="posY">Coordinate Y of position</param>
+        /// <param name="direction">The direction of allocating of the ship relatively by stern</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidEnumArgumentException"></exception>
+        ICollection<(ushort, ushort)> GetCoordinatesShipByPosition(byte shipSize, ushort posX, ushort posY,
+            DirectionOfShipPosition direction);
+
+        /// <summary>
         /// Method for checking the free area around the cell for position ship with size equals 1 
         /// </summary>
         /// <param name="field">Field with ships - array with type bool, where <see cref="IGameShip"/> - placed ship, null - empty.</param>

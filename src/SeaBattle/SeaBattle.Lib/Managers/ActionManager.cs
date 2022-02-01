@@ -159,8 +159,9 @@ namespace SeaBattle.Lib.Managers
             //Ship's coordinates on game field
             ICollection<(ushort, ushort)> locOfShip = ActionUtility.GetShipCoordinates(ship, field);
 
-            //check distance between target point and furthest cell of current ship.
-            if (locOfShip.Select(s => ActionUtility.GetDistanceBetween2Points((tPosX, tPosY), s)).OrderByDescending(d => d).First() >
+            //check distance between target point and the nearest cell of current ship.
+
+            if (locOfShip.Select(s => ActionUtility.GetDistanceBetween2Points((tPosX, tPosY), s)).OrderBy(d => d).First() >
                 ship.Speed)
             {
                 return StateCode.OutOfDistance;

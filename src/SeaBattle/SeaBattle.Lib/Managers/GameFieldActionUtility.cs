@@ -19,27 +19,10 @@ namespace SeaBattle.Lib.Managers
 
             byte i = 0;
             bool check = true;
-            List<(ushort, ushort)> coordinates = new List<(ushort, ushort)>(ship.Size);
+            ICollection<(ushort, ushort)> coordinates = GetCoordinatesShipByPosition(ship.Size, posX, posY, direction);
 
-            while (i++ != ship.Size)
+            foreach (var coordinate in coordinates)
             {
-                switch (direction)
-                {
-                    case DirectionOfShipPosition.XDec:
-                        coordinates.Add(new(posX--, posY));
-                        break;
-                    case DirectionOfShipPosition.XInc:
-                        coordinates.Add(new(posX++, posY));
-                        break;
-                    case DirectionOfShipPosition.YDec:
-                        coordinates.Add(new(posX, posY--));
-                        break;
-                    case DirectionOfShipPosition.YInc:
-                        coordinates.Add(new(posX, posY++));
-                        break;
-                    default:
-                        throw new InvalidEnumArgumentException();
-                }
                 try
                 {
                     check = CheckFreeAreaAroundShip(field, coordinates.Last().Item1, coordinates.Last().Item2, ship);
@@ -61,6 +44,45 @@ namespace SeaBattle.Lib.Managers
             }
 
             return StateCode.Success;
+        }
+
+        /// <summary>
+        /// Prognosis coordinates of the ship by position stern and direction
+        /// </summary>
+        /// <param name="shipSize">Size of <see cref="IGameShip"/></param>
+        /// <param name="posX">Coordinate X of position</param>
+        /// <param name="posY">Coordinate Y of position</param>
+        /// <param name="direction">The direction of allocating of the ship relatively by stern</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidEnumArgumentException"></exception>
+        public ICollection<(ushort, ushort)> GetCoordinatesShipByPosition(byte shipSize, ushort posX, ushort posY,
+            DirectionOfShipPosition direction)
+        {
+            byte i = 0;
+            List<(ushort, ushort)> coordinates = new List<(ushort, ushort)>(shipSize);
+
+            while (i++ != shipSize)
+            {
+                switch (direction)
+                {
+                    case DirectionOfShipPosition.XDec:
+                        coordinates.Add(new(posX--, posY));
+                        break;
+                    case DirectionOfShipPosition.XInc:
+                        coordinates.Add(new(posX++, posY));
+                        break;
+                    case DirectionOfShipPosition.YDec:
+                        coordinates.Add(new(posX, posY--));
+                        break;
+                    case DirectionOfShipPosition.YInc:
+                        coordinates.Add(new(posX, posY++));
+                        break;
+                    default:
+                        throw new InvalidEnumArgumentException("Wrong direction of ship");
+                }
+            }
+
+            return coordinates;
         }
 
         public bool CheckFreeAreaAroundShip(IGameField field, ushort x, ushort y, IGameShip ship)
