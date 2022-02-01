@@ -25,17 +25,45 @@ namespace SeaBattle.UIConsole
 
         public void Start()
         {
-            CreateGame();
+            /*CreateGame();
             CreateGameField();
             CreatePlayers();
-            CreateStartFields();
+            CreateStartFields();*/
 
             //testing
-            /*_manager.CreateGame(2);
+            _manager.CreateGame(2);
             _manager.CreateGameField(10, 10);
             _players = new List<IGamePlayer>();
             _players.Add(_manager.AddGamePlayer("player 1").Value);
-            _players.Add(_manager.AddGamePlayer("player 2").Value);*/
+            _players.Add(_manager.AddGamePlayer("player 2").Value);
+            foreach (var player in _players)
+            {
+                _manager.GetStartField(player);
+                _manager.ReadyPlayer(player);
+            }
+
+            IGameField field = _manager.GetGameField(_players.FirstOrDefault()).Value;
+            IWeapon weapon = new BasicWeapon(50, 10);
+            IRepair repair = new BasicRepair(40, 10);
+            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 100, 10), _players.ElementAt(0), 50);
+            ship.Weapons.Add(weapon);
+            ship.Repairs.Add(repair);
+            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 100, 10), _players.ElementAt(1), 50);
+            ship2.Weapons.Add(weapon);
+            ship2.Repairs.Add(repair);
+            IGameShip ship3 = new GameShip(new Ship(ShipType.Military, 4, 200, 10), _players.ElementAt(1), 50);
+            ship3.Weapons.Add(weapon);
+            ship3.Weapons.Add(weapon);
+            ship3.Weapons.Add(weapon);
+            ship3.Weapons.Add(weapon);
+            field[2, 2] = ship;
+            field[2, 3] = ship;
+            field[9, 9] = ship2;
+            field[8, 9] = ship2;
+            field[1, 10] = ship3;
+            field[2, 10] = ship3;
+            field[3, 10] = ship3;
+            field[4, 10] = ship3;
 
             GameFlow();
         }
@@ -151,13 +179,15 @@ namespace SeaBattle.UIConsole
 
             while (state != StateCode.GameFinished)
             {
+                state = StateCode.InvalidOperation;
+
                 //move
                 while (state != StateCode.GameFinished && state != StateCode.Success &&
                        state != StateCode.InvalidPlayer)
                 {
                     player = _manager.CurrentGamePlayerMove;
                     gameField = _manager.GetGameField(player).Value;
-                
+
                     //select ship or skip (escape)
                     var selectedShip = SelectShip(message);
 
@@ -171,12 +201,14 @@ namespace SeaBattle.UIConsole
                         ship = selectedShip.Ship;
                     }
 
-                    if (selectedShip.Ship == null)
+                    if (selectedShip.Ship == null || selectedShip.Ship.GamePlayer != player)
                     {
                         continue;
                     }
 
-                    var selectedPlace = SelectTarget(message);
+                    var selectedPlace =
+                        SelectTarget(
+                            $"Ship: {ship.Type}, size: {ship.Size}, hp: {ship.Hp} weapons: {ship.Weapons.Count}, repairs: {ship.Repairs.Count}\nMovement phase. Select new place for ship");
 
                     if (!selectedPlace.isSelected)
                     {
@@ -185,10 +217,14 @@ namespace SeaBattle.UIConsole
 
                     choice = _presenter.MenuMultipleChoice(true, "Choose direction:", () =>
                         {
-                            _presenter.ShowGameField(gameField, _players, null,
-                                player);
-                            _presenter.ShowMessage($"Player: {player.Name}, choose ship", false,
-                                false);
+                            _presenter.ShowGameField(gameField, _players);
+                            _presenter.ShowMessage(
+                                $"Ship: {ship.Type}, size: {ship.Size}, hp: {ship.Hp} weapons: {ship.Weapons.Count}, repairs: {ship.Repairs.Count}",
+                                false, false);
+                            _presenter.ShowMessage("Movement phase. Player:", false,
+                                false, false);
+                            _presenter.ShowMessage(player.Name, false,
+                                false, true, (ConsoleColor) ((_players as IList<IGamePlayer>).IndexOf(player) + 1));
                         },
                         new string[]
                         {
@@ -208,6 +244,10 @@ namespace SeaBattle.UIConsole
                         case 3:
                             direction = DirectionOfShipPosition.YDec;
                             break;
+                        case -1:
+                        case 4:
+                            state = StateCode.Success;
+                            break;
                     }
 
                     if (choice is >= 0 and < 4)
@@ -219,14 +259,13 @@ namespace SeaBattle.UIConsole
                 }
 
                 state = StateCode.InvalidOperation;
-                message = "";
 
                 //action
                 while (state != StateCode.GameFinished && state != StateCode.Success &&
                        state != StateCode.InvalidPlayer && state != StateCode.MissTarget &&
                        state != StateCode.TargetDestroyed)
                 {
-                    switch (SelectAction())
+                    switch (SelectAction(ship, message))
                     {
                         case -1:
                             continue;
@@ -234,7 +273,7 @@ namespace SeaBattle.UIConsole
                             state = StateCode.Success;
                             break;
                         case 0:
-                            var selectedTargetAtack = SelectTarget(message);
+                            var selectedTargetAtack = SelectTarget($"Ship: {ship.Type}, size: {ship.Size}, hp: {ship.Hp} weapons: {ship.Weapons.Count}, repairs: {ship.Repairs.Count}\nAction phase. Select ship for attack");
 
                             if (selectedTargetAtack.isSelected)
                             {
@@ -243,7 +282,7 @@ namespace SeaBattle.UIConsole
 
                             break;
                         case 1:
-                            var selectedTargetRepair = SelectTarget(message);
+                            var selectedTargetRepair = SelectTarget($"Ship: {ship.Type}, size: {ship.Size}, hp: {ship.Hp} weapons: {ship.Weapons.Count}, repairs: {ship.Repairs.Count}\nAction phase. Select ship for repair");
 
                             if (selectedTargetRepair.isSelected)
                             {
@@ -257,9 +296,9 @@ namespace SeaBattle.UIConsole
                     }
 
                     message = InfoState(state);
-
-                    _manager.NextMove();
                 }
+
+                _manager.NextMove();
             }
 
             _presenter.ShowGameField(gameField, _players);
@@ -268,14 +307,6 @@ namespace SeaBattle.UIConsole
 
         private void InitializeField(IStartField startField)
         {
-            //testing
-            /*IGameShip ship = new GameShip(new Ship(ShipType.Military, 2, 100, 10), _players.ElementAt(0), 50);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Military, 2, 100, 10), _players.ElementAt(1), 50);
-            startField.GameField[2, 2] = ship;
-            startField.GameField[2, 3] = ship;
-            startField.GameField[9, 9] = ship2;
-            startField.GameField[8, 9] = ship2;*/
-
             int choice = 0;
             while (choice != -1)
             {
@@ -306,6 +337,8 @@ namespace SeaBattle.UIConsole
                         break;
                 }
             }
+
+            _manager.ReadyPlayer(startField.GamePlayer);
         }
 
         /// <summary>
@@ -487,18 +520,29 @@ namespace SeaBattle.UIConsole
         /// <summary>
         /// Select action for ship
         /// </summary>
+        /// <param name="ship">Selected ship</param>
         /// <returns><see cref="int"/> Number of action
         /// <para>-1, 3 - skip/quit</para><para>0 - attack</para><para>1 - repair</para><para>2 - repair all</para></returns>
-        private int SelectAction()
+        private int SelectAction(IGameShip ship, string message=null)
         {
             IGamePlayer player = _manager.CurrentGamePlayerMove;
             IGameField gameField = _manager.GetGameField(player).Value;
 
             return _presenter.MenuMultipleChoice(true, "", () =>
                 {
-                    _presenter.ShowGameField(gameField, _players, null,
-                        player);
-                    _presenter.ShowMessage($"Player: {player.Name}, choose action:", false,
+                    _presenter.ShowGameField(gameField, _players);
+                    _presenter.ShowMessage($"Ship: { ship.Type}, size: { ship.Size}, hp: { ship.Hp}, weapons: { ship.Weapons.Count}, repairs: { ship.Repairs.Count}", false, false);
+                    
+                    if (string.IsNullOrEmpty(message))
+                    {
+                        _presenter.ShowMessage(message, false, false);
+                    }
+
+                    _presenter.ShowMessage("Action phase. Player: ", false,
+                        false, false);
+                    _presenter.ShowMessage(player.Name, false, false,
+                        false, (ConsoleColor) ((_players as IList<IGamePlayer>).IndexOf(player) + 1));
+                    _presenter.ShowMessage(" Choose action:", false,
                         false);
                 },
                 new string[]
@@ -521,11 +565,13 @@ namespace SeaBattle.UIConsole
                 null,
                 () =>
                 {
-                    _presenter.ShowMessage($"Player: {player.Name}, select place", false,
-                        false);
+                    _presenter.ShowMessage("Player: ", false,
+                        false, false);
+                    _presenter.ShowMessage(player.Name, false,
+                        false, true, (ConsoleColor)((_players as IList<IGamePlayer>).IndexOf(player) + 1));
                     _presenter.ShowMessage(message, false,
                         false);
-                }, player);
+                });
         }
 
         
@@ -544,11 +590,13 @@ namespace SeaBattle.UIConsole
                 null,
                 () =>
                 {
-                    _presenter.ShowMessage($"Player: {player.Name}, select ship", false,
+                    _presenter.ShowMessage("Player: ", false,
+                        false, false);
+                    _presenter.ShowMessage(player.Name, false,
+                        false, true, (ConsoleColor) ((_players as IList<IGamePlayer>).IndexOf(player) + 1));
+                    _presenter.ShowMessage($"{message}\nSelect ship", false,
                         false);
-                    _presenter.ShowMessage(message, false,
-                        false);
-                }, player);
+                });
             return new(gameField[shipPoint.X, shipPoint.Y], shipPoint.isSelected);
         }
 
