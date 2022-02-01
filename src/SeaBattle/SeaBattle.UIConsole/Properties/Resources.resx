@@ -163,13 +163,13 @@
     <value>Exit</value>
   </data>
   <data name="GameFieldCrOrNoGame" xml:space="preserve">
-    <value>Game field already created or no game yet</value>
+    <value>Game field already created or no game yet.</value>
   </data>
   <data name="GameFinished" xml:space="preserve">
-    <value>Game was finished</value>
+    <value>Game was finished.</value>
   </data>
   <data name="GameReadCr" xml:space="preserve">
-    <value>Game already created</value>
+    <value>Game already created.</value>
   </data>
   <data name="Hp" xml:space="preserve">
     <value>hp</value>
@@ -187,19 +187,19 @@
     <value>Input sizeY</value>
   </data>
   <data name="InvalidInput" xml:space="preserve">
-    <value>Wrong input. You should repeat</value>
+    <value>Wrong input. You should repeat.</value>
   </data>
   <data name="InvalidOperation" xml:space="preserve">
-    <value>Invalid operation</value>
+    <value>Invalid operation.</value>
   </data>
   <data name="InvalidPlayer" xml:space="preserve">
-    <value>Wrong player</value>
+    <value>Wrong player.</value>
   </data>
   <data name="InvalidPositionShip" xml:space="preserve">
-    <value>Wrong position for ship</value>
+    <value>Wrong position for ship.</value>
   </data>
   <data name="InvalidShip" xml:space="preserve">
-    <value>Wrong ship</value>
+    <value>Wrong ship.</value>
   </data>
   <data name="Left" xml:space="preserve">
     <value>Left</value>
@@ -208,13 +208,13 @@
     <value>max hp</value>
   </data>
   <data name="MissTarget" xml:space="preserve">
-    <value>Action on target was missed</value>
+    <value>Action on target was missed.</value>
   </data>
   <data name="MovementPhase" xml:space="preserve">
     <value>Movement phase</value>
   </data>
   <data name="OutOfDistance" xml:space="preserve">
-    <value>Target is out of distance</value>
+    <value>Target is out of distance.</value>
   </data>
   <data name="Player" xml:space="preserve">
     <value>Player</value>
@@ -223,7 +223,7 @@
     <value>Points</value>
   </data>
   <data name="PointsShortage" xml:space="preserve">
-    <value>Not enough points</value>
+    <value>Not enough points.</value>
   </data>
   <data name="PressButton" xml:space="preserve">
     <value>Press button</value>
@@ -292,7 +292,7 @@
     <value>speed</value>
   </data>
   <data name="TargetDestroyed" xml:space="preserve">
-    <value>Target was destroyed</value>
+    <value>Target was destroyed.</value>
   </data>
   <data name="Up" xml:space="preserve">
     <value>Up</value>

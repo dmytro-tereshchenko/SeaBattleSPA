@@ -196,7 +196,7 @@ namespace SeaBattle.UIConsole.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game field already created or no game yet.
+        ///   Looks up a localized string similar to Game field already created or no game yet..
         /// </summary>
         internal static string GameFieldCrOrNoGame {
             get {
@@ -205,7 +205,7 @@ namespace SeaBattle.UIConsole.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game was finished.
+        ///   Looks up a localized string similar to Game was finished..
         /// </summary>
         internal static string GameFinished {
             get {
@@ -214,7 +214,7 @@ namespace SeaBattle.UIConsole.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Game already created.
+        ///   Looks up a localized string similar to Game already created..
         /// </summary>
         internal static string GameReadCr {
             get {
@@ -268,7 +268,7 @@ namespace SeaBattle.UIConsole.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wrong input. You should repeat.
+        ///   Looks up a localized string similar to Wrong input. You should repeat..
         /// </summary>
         internal static string InvalidInput {
             get {
@@ -277,7 +277,7 @@ namespace SeaBattle.UIConsole.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid operation.
+        ///   Looks up a localized string similar to Invalid operation..
         /// </summary>
         internal static string InvalidOperation {
             get {
@@ -286,7 +286,7 @@ namespace SeaBattle.UIConsole.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wrong player.
+        ///   Looks up a localized string similar to Wrong player..
         /// </summary>
         internal static string InvalidPlayer {
             get {
@@ -295,7 +295,7 @@ namespace SeaBattle.UIConsole.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wrong position for ship.
+        ///   Looks up a localized string similar to Wrong position for ship..
         /// </summary>
         internal static string InvalidPositionShip {
             get {
@@ -304,7 +304,7 @@ namespace SeaBattle.UIConsole.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wrong ship.
+        ///   Looks up a localized string similar to Wrong ship..
         /// </summary>
         internal static string InvalidShip {
             get {
@@ -331,7 +331,7 @@ namespace SeaBattle.UIConsole.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Action on target was missed.
+        ///   Looks up a localized string similar to Action on target was missed..
         /// </summary>
         internal static string MissTarget {
             get {
@@ -349,7 +349,7 @@ namespace SeaBattle.UIConsole.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Target is out of distance.
+        ///   Looks up a localized string similar to Target is out of distance..
         /// </summary>
         internal static string OutOfDistance {
             get {
@@ -376,7 +376,7 @@ namespace SeaBattle.UIConsole.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not enough points.
+        ///   Looks up a localized string similar to Not enough points..
         /// </summary>
         internal static string PointsShortage {
             get {
@@ -583,7 +583,7 @@ namespace SeaBattle.UIConsole.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Target was destroyed.
+        ///   Looks up a localized string similar to Target was destroyed..
         /// </summary>
         internal static string TargetDestroyed {
             get {

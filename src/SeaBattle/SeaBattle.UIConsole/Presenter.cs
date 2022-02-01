@@ -39,6 +39,10 @@ namespace SeaBattle.UIConsole
                 catch (ArgumentException ex)
                 {
                     showMessage = $"{Resources.InvalidInput}.\n{message}";
+
+                    Console.WriteLine($"{Resources.PressButton}...");
+
+                    Console.ReadKey();
                 }
             } while (!result);
 

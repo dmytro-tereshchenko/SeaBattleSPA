@@ -31,48 +31,12 @@ namespace SeaBattle.UIConsole
             CreateGameField();
             CreatePlayers();
             CreateStartFields();
-
-            //testing
-            /*_manager.CreateGame(2);
-            _manager.CreateGameField(10, 10);
-            _players = new List<IGamePlayer>();
-            _players.Add(_manager.AddGamePlayer("player 1").Value);
-            _players.Add(_manager.AddGamePlayer("player 2").Value);
-            foreach (var player in _players)
-            {
-                _manager.GetStartField(player);
-                _manager.ReadyPlayer(player);
-            }
-
-            IGameField field = _manager.GetGameField(_players.FirstOrDefault()).Value;
-            IWeapon weapon = new BasicWeapon(50, 10);
-            IRepair repair = new BasicRepair(40, 10);
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), _players.ElementAt(0), 50);
-            ship.Weapons.Add(weapon);
-            ship.Repairs.Add(repair);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), _players.ElementAt(1), 50);
-            ship2.Weapons.Add(weapon);
-            ship2.Repairs.Add(repair);
-            IGameShip ship3 = new GameShip(new Ship(ShipType.Military, 4, 400, 1), _players.ElementAt(1), 50);
-            ship3.Weapons.Add(weapon);
-            ship3.Weapons.Add(weapon);
-            ship3.Weapons.Add(weapon);
-            ship3.Weapons.Add(weapon);
-            field[2, 2] = ship;
-            field[2, 3] = ship;
-            field[9, 9] = ship2;
-            field[8, 9] = ship2;
-            field[1, 10] = ship3;
-            field[2, 10] = ship3;
-            field[3, 10] = ship3;
-            field[4, 10] = ship3;*/
-
-            GameFlow();
+            GameProcessStart();
         }
 
         private void CreateGame()
         {
-            bool isGetData = true;
+            bool DataRetrieved = false;
             string message = Resources.InpNumPlayers;
 
             do
@@ -83,18 +47,18 @@ namespace SeaBattle.UIConsole
                 {
                     case StateCode.ErrorInitialization:
                         _presenter.ShowMessage(Resources.GameReadCr);
-                        isGetData = false;
+                        DataRetrieved = true;
                         break;
                     case StateCode.ExceededMaxNumberOfPlayers:
                         message =
                             $"{Resources.ExceededMaxNumberOfPlayers} {_manager.GetMaxNumberOfPlayers()}\n{Resources.InpNumPlayers}";
                         break;
                     case StateCode.Success:
-                        isGetData = false;
+                        DataRetrieved = true;
                         break;
                 };
 
-            } while (isGetData);
+            } while (!DataRetrieved);
         }
 
         private void CreateGameField()
@@ -171,7 +135,10 @@ namespace SeaBattle.UIConsole
             }
         }
 
-        private void GameFlow()
+        /// <summary>
+        /// Main process of game which consists of moves players (move ships, attack, repair)
+        /// </summary>
+        private void GameProcessStart()
         {
             StateCode state = StateCode.InvalidOperation;
             int choice = -1;
