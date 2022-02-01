@@ -25,9 +25,12 @@ namespace SeaBattle.UIConsole
         /// Output message
         /// </summary>
         /// <param name="message">Message</param>
-        /// <param name="clear">true - clear previous output, false - no action</param>
-        /// <param name="pause">true - pause for read message, false - no action</param>
-        void ShowMessage(string message, bool clear = true, bool pause = true);
+        /// <param name="clear">true - clear previous output, false - no action, default true</param>
+        /// <param name="pause">true - pause for read message, false - no action, default true</param>
+        /// <param name="newLine">true - start message from new line, false - current line, default true</param>
+        /// <param name="color">Foreground color for text message, default <see cref="ConsoleColor.White"/></param>
+        void ShowMessage(string message, bool clear = true, bool pause = true, bool newLine = true,
+            ConsoleColor color = ConsoleColor.White);
 
         /// <summary>
         /// Input string
@@ -71,7 +74,7 @@ namespace SeaBattle.UIConsole
         /// <param name="players">Collection of players in game</param>
         /// <param name="startPoint">Coordinates of start cursors' position</param>
         /// <param name="startFieldLabels">Array labels for game field when the player can put his own ships on start field</param>
-        /// <param name="additionInfo">Calling the display of additional information after the playing field</param>
+        /// <param name="additionInfo">Calling the display of additional information after <see cref="IGameField"/></param>
         /// <param name="player">Current player</param>
         /// <param name="clear">true - clear previous output, false - no action</param>
         /// <returns>(<see cref="ushort"/> X, <see cref="ushort"/> Y, <see cref="bool"/> Select) where X, Y - selected coordinates, Select - true - isSelected, otherwise exit</returns>

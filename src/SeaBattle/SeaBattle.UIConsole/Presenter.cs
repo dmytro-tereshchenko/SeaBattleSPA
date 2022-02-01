@@ -44,20 +44,32 @@ namespace SeaBattle.UIConsole
             return data;
         }
 
-        public void ShowMessage(string message, bool clear = true, bool pause = true)
+        public void ShowMessage(string message, bool clear = true, bool pause = true, bool newLine = true,
+            ConsoleColor color = ConsoleColor.White)
         {
             if (clear)
             {
                 Console.Clear();
             }
 
-            Console.WriteLine(message);
+            Console.ForegroundColor = color;
+
+            if (newLine)
+            {
+                Console.WriteLine(message);
+            }
+            else
+            {
+                Console.Write(message);
+            }
 
             if (pause)
             {
                 Console.Write("Press button...");
                 Console.ReadLine();
             }
+
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         public string GetString(string message, bool clear = true)
