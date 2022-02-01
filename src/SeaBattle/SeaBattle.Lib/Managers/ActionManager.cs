@@ -217,7 +217,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.OutOfDistance;
             }
 
-            if (field[tPosX, tPosY].Hp < ship.Damage)
+            if (field[tPosX, tPosY].Hp <= ship.Damage)
             {
                 ActionUtility.RemoveShipFromField(field[tPosX, tPosY], field);
 
