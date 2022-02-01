@@ -166,6 +166,12 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.OutOfDistance;
             }
 
+            //clear previous position of ship
+            foreach (var loc in locOfShip)
+            {
+                field[loc.Item1, loc.Item2] = null;
+            }
+
             StateCode result;
 
             try
@@ -177,12 +183,12 @@ namespace SeaBattle.Lib.Managers
                 result = StateCode.InvalidOperation;
             }
 
-            if (result == StateCode.Success)
+            if (result != StateCode.Success)
             {
-                //clear previous position of ship
+                //if can't place the ship in the new position, then restore the old position of the ship
                 foreach (var loc in locOfShip)
                 {
-                    field[loc.Item1, loc.Item2] = null;
+                    field[loc.Item1, loc.Item2] = ship;
                 }
             }
 
@@ -196,7 +202,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            if (field[tPosX, tPosY] == null || field[tPosX, tPosY] == ship)
+            if (field[tPosX, tPosY] == null || field[tPosX, tPosY].GamePlayer == ship.GamePlayer)
             {
                 return StateCode.MissTarget;
             }
@@ -229,7 +235,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            if (field[tPosX, tPosY] == null || field[tPosX, tPosY] == ship)
+            if (field[tPosX, tPosY] == null || field[tPosX, tPosY].GamePlayer != ship.GamePlayer)
             {
                 return StateCode.MissTarget;
             }
