@@ -122,14 +122,14 @@ namespace SeaBattle.Lib.Managers
 
                         //add other vertical cells of the ship
                         ushort tempCoordinate = i;
-                        while (field[++tempCoordinate, j] == ship)
+                        while (++tempCoordinate <= field.SizeX && field[tempCoordinate, j] == ship)
                         {
                             coordinates.Add((i, j));
                         }
 
                         //add other horizontal cells of the ship
                         tempCoordinate = j;
-                        while (field[i, ++tempCoordinate] == ship)
+                        while (++tempCoordinate <= field.SizeY && field[i, tempCoordinate] == ship)
                         {
                             coordinates.Add((i, j));
                         }
