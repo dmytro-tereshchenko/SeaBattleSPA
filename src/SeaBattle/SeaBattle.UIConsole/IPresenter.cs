@@ -81,5 +81,19 @@ namespace SeaBattle.UIConsole
         (ushort X, ushort Y, bool Select) SelectCell(IGameField field, ICollection<IGamePlayer> players,
             (ushort X, ushort Y) startPoint, bool[,] startFieldLabels = null, Action additionInfo = null,
             IGamePlayer player = null, bool clear = true);
+
+        /// <summary>
+        /// Get status of ship
+        /// </summary>
+        /// <param name="ship"><see cref="IGameShip"/></param>
+        /// <returns><see cref="string"/> ship's status</returns>
+        string GetShipStatus(IGameShip ship);
+
+        /// <summary>
+        /// Get status player from <see cref="IStartField"/>
+        /// </summary>
+        /// <param name="startField">The field for storing the location of ships and points for buy ships by the player when initializing game.</param>
+        /// <returns><see cref="string"/> player's status</returns>
+        string GetPlayerStatus(IStartField startField);
     }
 }

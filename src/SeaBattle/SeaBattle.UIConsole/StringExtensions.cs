@@ -6,12 +6,12 @@ namespace SeaBattle.UIConsole
     /// <summary>
     /// Extensions for <see cref="GameUI"/>
     /// </summary>
-    public static class Extensions
+    public static class StringExtensions
     {
         /// <summary>
         /// Generic Convert
         /// </summary>
-        /// <typeparam name="T"><see cref="struct"/></typeparam>
+        /// <typeparam name="T">struct</typeparam>
         /// <param name="input"><see cref="string"/> which converted</param>
         /// <returns><paramref name="T"/></returns>
         public static T Convert<T>(this string input)

@@ -1,0 +1,309 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActionPhase" xml:space="preserve">
+    <value>Action phase</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>all</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>and</value>
+  </data>
+  <data name="Attack" xml:space="preserve">
+    <value>Attack</value>
+  </data>
+  <data name="BuyShip" xml:space="preserve">
+    <value>Buy ship</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ChooseAction" xml:space="preserve">
+    <value>Choose action</value>
+  </data>
+  <data name="ChooseDirection" xml:space="preserve">
+    <value>Choose direction</value>
+  </data>
+  <data name="ChooseOrBuyShip" xml:space="preserve">
+    <value>Choose ship or buy</value>
+  </data>
+  <data name="ChooseShipForRemove" xml:space="preserve">
+    <value>Choose ship for removing</value>
+  </data>
+  <data name="Cost" xml:space="preserve">
+    <value>cost</value>
+  </data>
+  <data name="Down" xml:space="preserve">
+    <value>Down</value>
+  </data>
+  <data name="ExceededMaxNumberOfPlayers" xml:space="preserve">
+    <value>The number of players should be equal to or less than</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="GameFieldCrOrNoGame" xml:space="preserve">
+    <value>Game field already created or no game yet</value>
+  </data>
+  <data name="GameFinished" xml:space="preserve">
+    <value>Game was finished</value>
+  </data>
+  <data name="GameReadCr" xml:space="preserve">
+    <value>Game already created</value>
+  </data>
+  <data name="Hp" xml:space="preserve">
+    <value>hp</value>
+  </data>
+  <data name="InpNamePlayers" xml:space="preserve">
+    <value>Input name for player</value>
+  </data>
+  <data name="InpNumPlayers" xml:space="preserve">
+    <value>Input number of players.</value>
+  </data>
+  <data name="InputSizeX" xml:space="preserve">
+    <value>Input sizeX</value>
+  </data>
+  <data name="InputSizeY" xml:space="preserve">
+    <value>Input sizeY</value>
+  </data>
+  <data name="InvalidInput" xml:space="preserve">
+    <value>Wrong input. You should repeat</value>
+  </data>
+  <data name="InvalidOperation" xml:space="preserve">
+    <value>Invalid operation</value>
+  </data>
+  <data name="InvalidPlayer" xml:space="preserve">
+    <value>Wrong player</value>
+  </data>
+  <data name="InvalidPositionShip" xml:space="preserve">
+    <value>Wrong position for ship</value>
+  </data>
+  <data name="InvalidShip" xml:space="preserve">
+    <value>Wrong ship</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="MaxHp" xml:space="preserve">
+    <value>max hp</value>
+  </data>
+  <data name="MissTarget" xml:space="preserve">
+    <value>Action on target was missed</value>
+  </data>
+  <data name="MovementPhase" xml:space="preserve">
+    <value>Movement phase</value>
+  </data>
+  <data name="OutOfDistance" xml:space="preserve">
+    <value>Target is out of distance</value>
+  </data>
+  <data name="Player" xml:space="preserve">
+    <value>Player</value>
+  </data>
+  <data name="Points" xml:space="preserve">
+    <value>Points</value>
+  </data>
+  <data name="PointsShortage" xml:space="preserve">
+    <value>Not enough points</value>
+  </data>
+  <data name="PressButton" xml:space="preserve">
+    <value>Press button</value>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="RemoveShipFromField" xml:space="preserve">
+    <value>Remove ship from field</value>
+  </data>
+  <data name="RepairLCase" xml:space="preserve">
+    <value>repair</value>
+  </data>
+  <data name="Repairs" xml:space="preserve">
+    <value>repairs</value>
+  </data>
+  <data name="RepairUCase" xml:space="preserve">
+    <value>Repair</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>Right</value>
+  </data>
+  <data name="SelectPlaceShip" xml:space="preserve">
+    <value>Select new place for ship</value>
+  </data>
+  <data name="SelectPosShipStern" xml:space="preserve">
+    <value>Select position of the ship's stern</value>
+  </data>
+  <data name="SelectShip" xml:space="preserve">
+    <value>Select ship</value>
+  </data>
+  <data name="SelectShipAttack" xml:space="preserve">
+    <value>Select ship for attack</value>
+  </data>
+  <data name="SelectShipRepair" xml:space="preserve">
+    <value>Select ship for repair</value>
+  </data>
+  <data name="SellShip" xml:space="preserve">
+    <value>Sell ship</value>
+  </data>
+  <data name="SetShipField" xml:space="preserve">
+    <value>Set ship on the field</value>
+  </data>
+  <data name="Ship" xml:space="preserve">
+    <value>Ship</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>size</value>
+  </data>
+  <data name="SizeXBetween" xml:space="preserve">
+    <value>Size X should be between</value>
+  </data>
+  <data name="SizeYBetween" xml:space="preserve">
+    <value>Size Y should be between</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="SomeError" xml:space="preserve">
+    <value>Some error</value>
+  </data>
+  <data name="Speed" xml:space="preserve">
+    <value>speed</value>
+  </data>
+  <data name="TargetDestroyed" xml:space="preserve">
+    <value>Target was destroyed</value>
+  </data>
+  <data name="Up" xml:space="preserve">
+    <value>Up</value>
+  </data>
+  <data name="Weapon" xml:space="preserve">
+    <value>weapon</value>
+  </data>
+  <data name="Weapons" xml:space="preserve">
+    <value>weapons</value>
+  </data>
+  <data name="Winner" xml:space="preserve">
+    <value>Winner</value>
+  </data>
+</root>

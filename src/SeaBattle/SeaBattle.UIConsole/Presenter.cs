@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using SeaBattle.Lib.Entities;
+using SeaBattle.UIConsole.Properties;
 
 namespace SeaBattle.UIConsole
 {
@@ -37,7 +38,7 @@ namespace SeaBattle.UIConsole
                 }
                 catch (ArgumentException ex)
                 {
-                    showMessage = "Wrong enter. You should repeat.\n" + message;
+                    showMessage = $"{Resources.InvalidInput}.\n{message}";
                 }
             } while (!result);
 
@@ -65,7 +66,7 @@ namespace SeaBattle.UIConsole
 
             if (pause)
             {
-                Console.Write("Press button...");
+                Console.Write($"{Resources.PressButton}...");
                 Console.ReadLine();
             }
 
@@ -243,6 +244,12 @@ namespace SeaBattle.UIConsole
             }
         }
 
+        public string GetShipStatus(IGameShip ship) =>
+            $"{Resources.Ship}: {ship.Type}, {Resources.Size}: {ship.Size}, {Resources.Hp}: {ship.Hp} {Resources.Weapons}: {ship.Weapons.Count}, {Resources.Repairs}: {ship.Repairs.Count}";
+
+        public string GetPlayerStatus(IStartField startField) =>
+            $"{Resources.Player}: {startField.GamePlayer.Name}, {Resources.Points}: {startField.Points}";
+
         /// <summary>
         /// Show Cell of <see cref="IGameField"/> by coordinates
         /// </summary>
@@ -325,8 +332,10 @@ namespace SeaBattle.UIConsole
         {
             ushort sizeNumberY = GetSizeNumber(field.SizeY);
             ushort sizeNumberX = GetSizeNumber(field.SizeX);
+
             int posLeft = sizeNumberX + sizeNumberY * (point.Y - 1) + 1;
             int posTop = 1 + point.X;
+
             Console.SetCursorPosition(posLeft, posTop);
         }
 
@@ -349,6 +358,5 @@ namespace SeaBattle.UIConsole
                 Console.Write(symbol);
             }
         }
-
     }
 }
