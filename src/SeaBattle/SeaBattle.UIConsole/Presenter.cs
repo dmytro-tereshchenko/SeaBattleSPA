@@ -207,7 +207,7 @@ namespace SeaBattle.UIConsole
 
             while (true)
             {
-                key = Console.ReadKey();
+                key = Console.ReadKey(true);
                 switch (key.Key)
                 {
                     case ConsoleKey.Enter:
