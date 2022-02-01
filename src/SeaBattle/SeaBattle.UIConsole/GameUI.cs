@@ -11,7 +11,10 @@ using SeaBattle.UIConsole.Properties;
 
 namespace SeaBattle.UIConsole
 {
-    public class GameUI
+    /// <summary>
+    /// Game "Sea battle"
+    /// </summary>
+    public class GameUI : IGameUI
     {
         private IGameManager _manager;
 
@@ -34,6 +37,9 @@ namespace SeaBattle.UIConsole
             GameProcessStart();
         }
 
+        /// <summary>
+        /// Create <see cref="IGame"/>
+        /// </summary>
         private void CreateGame()
         {
             bool DataRetrieved = false;
@@ -61,6 +67,9 @@ namespace SeaBattle.UIConsole
             } while (!DataRetrieved);
         }
 
+        /// <summary>
+        /// Create <see cref="IGameField"/>
+        /// </summary>
         private void CreateGameField()
         {
             bool isGetData = true;
@@ -94,6 +103,9 @@ namespace SeaBattle.UIConsole
             } while (isGetData);
         }
 
+        /// <summary>
+        /// Create all <see cref="IGamePlayer"/> in the game
+        /// </summary>
         private void CreatePlayers()
         {
             _players = new List<IGamePlayer>();
@@ -115,6 +127,9 @@ namespace SeaBattle.UIConsole
             }
         }
 
+        /// <summary>
+        /// Create all <see cref="IStartField"/> in the game.
+        /// </summary>
         private void CreateStartFields()
         {
             IResponseStartField response;
@@ -272,6 +287,10 @@ namespace SeaBattle.UIConsole
             _presenter.ShowMessage($"{Resources.Winner}: {_manager.GetResultGame().Name}");
         }
 
+        /// <summary>
+        /// Create ships, allocate ships on the field for <see cref="IGamePlayer"/>
+        /// </summary>
+        /// <param name="startField">The field for storing the location of ships and points for buy ships by the player when initializing game.</param>
         private void InitializeField(IStartField startField)
         {
             int choice = 0;
@@ -600,6 +619,11 @@ namespace SeaBattle.UIConsole
             return new((ushort) ((minX + maxX) / 2), (ushort) ((minY + maxY) / 2));
         }
 
+        /// <summary>
+        /// Get message depends of <see cref="StateCode"/>
+        /// </summary>
+        /// <param name="code">State code of the game actions</param>
+        /// <returns><see cref="string"/></returns>
         private string InfoState(StateCode code) => (code) switch
         {
             StateCode.InvalidPositionShip => Resources.InvalidPositionShip,

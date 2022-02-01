@@ -13,7 +13,7 @@ namespace SeaBattle.UIConsole
             IGameManager manager = new GameManager(factory);
             IPresenter presenter = new Presenter();
 
-            GameUI game = new GameUI(manager, presenter);
+            IGameUI game = new GameUI(manager, presenter);
 
             game.Start();
         }
