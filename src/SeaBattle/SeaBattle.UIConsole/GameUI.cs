@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Resources;
 using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;
 using SeaBattle.Lib.Managers;

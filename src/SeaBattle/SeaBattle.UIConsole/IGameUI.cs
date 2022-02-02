@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SeaBattle.UIConsole
+﻿namespace SeaBattle.UIConsole
 {
     /// <summary>
     /// Game "Sea battle"

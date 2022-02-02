@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;

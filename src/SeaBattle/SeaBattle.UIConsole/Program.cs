@@ -1,5 +1,4 @@
-﻿using System;
-using SeaBattle.Lib.Infrastructure;
+﻿using SeaBattle.Lib.Infrastructure;
 using SeaBattle.Lib.Managers;
 
 namespace SeaBattle.UIConsole
