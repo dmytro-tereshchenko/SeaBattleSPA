@@ -63,5 +63,37 @@ namespace SeaBattle.Lib.Entities
                 _gameShips[x - 1, y - 1] = value;
             } 
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not GameField)
+            {
+                return false;
+            }
+            GameField ob = obj as GameField;
+
+            if (this.Id.Equals(ob.Id) && this.SizeX.Equals(ob.SizeX) && this.SizeY.Equals(ob.SizeY))
+            {
+                for (int i = 0; i < SizeX; i++)
+                {
+                    for (int j = 0; j < SizeY; j++)
+                    {
+                        if ((ob._gameShips[i, j] == null && this._gameShips[i, j] != null) ||
+                            (ob._gameShips[i, j] != null && this._gameShips[i, j] == null) ||
+                            (ob._gameShips[i, j] != null && this._gameShips[i, j] != null &&
+                             !ob._gameShips[i, j].Equals(this._gameShips[i, j])))
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

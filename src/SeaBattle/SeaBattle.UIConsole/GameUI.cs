@@ -198,39 +198,44 @@ namespace SeaBattle.UIConsole
                         continue;
                     }
 
-                    choice = _presenter.MenuMultipleChoice(true, $"{Resources.ChooseDirection}:", () =>
-                        {
-                            _presenter.ShowGameField(gameField, _players);
-                            _presenter.ShowMessage(_presenter.GetShipStatus(ship), false, false);
-                            _presenter.ShowMessage($"{Resources.MovementPhase}. {Resources.Player}:", false, false, false);
-                            _presenter.ShowMessage(player.Name, false, false, true,
-                                (ConsoleColor) ((_players as IList<IGamePlayer>).IndexOf(player) + 1));
-                        },
-                        new string[]
-                        {
-                            Resources.Up, Resources.Right, Resources.Down, Resources.Left, Resources.Cancel
-                        });
+                    DirectionOfShipPosition direction = DirectionOfShipPosition.XDec;
 
-                    DirectionOfShipPosition direction = DirectionOfShipPosition.XDec; //case 0:
-
-                    switch (choice)
+                    if (ship.Size != 1)
                     {
-                        case 1:
-                            direction = DirectionOfShipPosition.YInc;
-                            break;
-                        case 2:
-                            direction = DirectionOfShipPosition.XInc;
-                            break;
-                        case 3:
-                            direction = DirectionOfShipPosition.YDec;
-                            break;
-                        case -1:
-                        case 4:
-                            state = StateCode.Success;
-                            break;
+
+                        choice = _presenter.MenuMultipleChoice(true, $"{Resources.ChooseDirection}:", () =>
+                            {
+                                _presenter.ShowGameField(gameField, _players);
+                                _presenter.ShowMessage(_presenter.GetShipStatus(ship), false, false);
+                                _presenter.ShowMessage($"{Resources.MovementPhase}. {Resources.Player}:", false, false,
+                                    false);
+                                _presenter.ShowMessage(player.Name, false, false, true,
+                                    (ConsoleColor) ((_players as IList<IGamePlayer>).IndexOf(player) + 1));
+                            },
+                            new string[]
+                            {
+                                Resources.Up, Resources.Right, Resources.Down, Resources.Left, Resources.Cancel
+                            });
+
+                        switch (choice)
+                        {
+                            case 1:
+                                direction = DirectionOfShipPosition.YInc;
+                                break;
+                            case 2:
+                                direction = DirectionOfShipPosition.XInc;
+                                break;
+                            case 3:
+                                direction = DirectionOfShipPosition.YDec;
+                                break;
+                            case -1:
+                            case 4:
+                                state = StateCode.Success;
+                                break;
+                        }
                     }
 
-                    if (choice is >= 0 and < 4)
+                    if (ship.Size == 1 || choice is >= 0 and < 4)
                     {
                         state = _manager.PutShipOnField(player, ship, selectedPlace.X, selectedPlace.Y, direction);
                     }
@@ -488,34 +493,38 @@ namespace SeaBattle.UIConsole
 
             if (point.isSelected)
             {
-                int choice = _presenter.MenuMultipleChoice(true, $"{Resources.ChooseDirection}:", () =>
-                    {
-                        _presenter.ShowGameField(startField.GameField, _players, startField.FieldLabels,
-                            startField.GamePlayer);
-                        _presenter.ShowMessage(_presenter.GetPlayerStatus(startField), false, false);
-                        _presenter.ShowMessage(_presenter.GetShipStatus(ship), false, false);
-                    },
-                    new string[]
-                    {
-                        Resources.Up, Resources.Right, Resources.Down, Resources.Left, Resources.Cancel
-                    });
+                DirectionOfShipPosition direction = DirectionOfShipPosition.XDec;
+                int choice = 1;
 
-                DirectionOfShipPosition direction = DirectionOfShipPosition.XDec; //case 0:
-
-                switch (choice)
+                if (ship.Size != 1)
                 {
-                    case 1:
-                        direction = DirectionOfShipPosition.YInc;
-                        break;
-                    case 2:
-                        direction = DirectionOfShipPosition.XInc;
-                        break;
-                    case 3:
-                        direction = DirectionOfShipPosition.YDec;
-                        break;
+                    choice = _presenter.MenuMultipleChoice(true, $"{Resources.ChooseDirection}:", () =>
+                        {
+                            _presenter.ShowGameField(startField.GameField, _players, startField.FieldLabels,
+                                startField.GamePlayer);
+                            _presenter.ShowMessage(_presenter.GetPlayerStatus(startField), false, false);
+                            _presenter.ShowMessage(_presenter.GetShipStatus(ship), false, false);
+                        },
+                        new string[]
+                        {
+                            Resources.Up, Resources.Right, Resources.Down, Resources.Left, Resources.Cancel
+                        });
+
+                    switch (choice)
+                    {
+                        case 1:
+                            direction = DirectionOfShipPosition.YInc;
+                            break;
+                        case 2:
+                            direction = DirectionOfShipPosition.XInc;
+                            break;
+                        case 3:
+                            direction = DirectionOfShipPosition.YDec;
+                            break;
+                    }
                 }
 
-                if (choice is >= 0 and < 4)
+                if (ship.Size == 1 || choice is >= 0 and < 4)
                 {
                     return _manager.PutShipOnField(startField.GamePlayer, ship, point.X, point.Y, direction);
                 }
