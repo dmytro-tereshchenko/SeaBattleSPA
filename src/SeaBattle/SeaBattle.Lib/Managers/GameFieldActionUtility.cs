@@ -143,15 +143,15 @@ namespace SeaBattle.Lib.Managers
                         coordinates.Add((i, j));
 
                         //add other vertical cells of the ship
-                        ushort tempCoordinate = i;
-                        while (++tempCoordinate <= field.SizeX && field[tempCoordinate, j] == ship)
+                        ushort tempCoordinate = (ushort)(i + 1);
+                        while (tempCoordinate++ <= field.SizeX && field[tempCoordinate, j] == ship)
                         {
                             coordinates.Add((i, j));
                         }
 
                         //add other horizontal cells of the ship
-                        tempCoordinate = j;
-                        while (++tempCoordinate <= field.SizeY && field[i, tempCoordinate] == ship)
+                        tempCoordinate = (ushort)(j + 1);
+                        while (tempCoordinate++ <= field.SizeY && field[i, tempCoordinate] == ship)
                         {
                             coordinates.Add((i, j));
                         }
