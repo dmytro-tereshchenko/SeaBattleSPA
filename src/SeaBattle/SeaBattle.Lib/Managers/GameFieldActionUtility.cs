@@ -25,7 +25,7 @@ namespace SeaBattle.Lib.Managers
             {
                 try
                 {
-                    check = CheckFreeAreaAroundShip(field, coordinates.Last().Item1, coordinates.Last().Item2, ship);
+                    check = CheckFreeAreaAroundShip(field, coordinate.Item1, coordinate.Item2, ship);
                 }
                 catch (ArgumentOutOfRangeException)
                 {

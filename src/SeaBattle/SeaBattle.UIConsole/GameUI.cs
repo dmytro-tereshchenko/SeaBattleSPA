@@ -406,6 +406,9 @@ namespace SeaBattle.UIConsole
         private void ShipManage(IStartField startField, IGameShip ship)
         {
             int choice = 0;
+            StateCode state = StateCode.Success;
+            string message = "";
+
             while (choice != -1)
             {
                 choice = _presenter.MenuMultipleChoice(true, $"{Resources.ChooseAction}:", () =>
@@ -414,6 +417,7 @@ namespace SeaBattle.UIConsole
                             startField.GamePlayer);
                         _presenter.ShowMessage(_presenter.GetPlayerStatus(startField), false, false);
                         _presenter.ShowMessage(_presenter.GetShipStatus(ship), false, false);
+                        _presenter.ShowMessage(message, false, false);
                     },
                     new string[]
                     {
@@ -431,26 +435,38 @@ namespace SeaBattle.UIConsole
                         choice = -1;
                         break;
                     case 0:
-                        SetShip(startField, ship);
-                        choice = -1;
+                        state = SetShip(startField, ship);
+
+                        if (state == StateCode.Success)
+                        {
+                            choice = -1;
+                        }
+
                         break;
                     case 1:
-                        _manager.AddWeapon(startField.GamePlayer, ship, ship.Weapons?.LastOrDefault());
+                        state = _manager.AddWeapon(startField.GamePlayer, ship, _manager.GetWeapons()?.LastOrDefault());
                         break;
                     case 2:
-                        _manager.AddRepair(startField.GamePlayer, ship, ship.Repairs?.LastOrDefault());
+                        state = _manager.AddRepair(startField.GamePlayer, ship, _manager.GetRepairs()?.LastOrDefault());
                         break;
                     case 3:
-                        _manager.RemoveWeapon(startField.GamePlayer, ship, ship.Weapons?.LastOrDefault());
+                        state = _manager.RemoveWeapon(startField.GamePlayer, ship, ship.Weapons?.LastOrDefault());
                         break;
                     case 4:
-                        _manager.RemoveRepair(startField.GamePlayer, ship, ship.Repairs?.LastOrDefault());
+                        state = _manager.RemoveRepair(startField.GamePlayer, ship, ship.Repairs?.LastOrDefault());
                         break;
                     case 5:
-                        _manager.SellShip(startField.GamePlayer, ship);
-                        choice = -1;
+                        state = _manager.SellShip(startField.GamePlayer, ship);
+
+                        if (state == StateCode.Success)
+                        {
+                            choice = -1;
+                        }
+
                         break;
                 }
+
+                message = InfoState(state);
             }
         }
 
@@ -459,7 +475,8 @@ namespace SeaBattle.UIConsole
         /// </summary>
         /// <param name="startField">The field for storing the location of ships and points for buy ships by the player when initializing game.</param>
         /// <param name="ship">Current ship</param>
-        private void SetShip(IStartField startField, IGameShip ship)
+        /// <returns><see cref="StateCode"/> status</returns>
+        private StateCode SetShip(IStartField startField, IGameShip ship)
         {
             (ushort X, ushort Y, bool isSelected) point = _presenter.SelectCell(startField.GameField, _players,
                 GetCenterOfStartField(startField),
@@ -502,9 +519,11 @@ namespace SeaBattle.UIConsole
 
                 if (choice is >= 0 and < 4)
                 {
-                    _manager.PutShipOnField(startField.GamePlayer, ship, point.X, point.Y, direction);
+                    return _manager.PutShipOnField(startField.GamePlayer, ship, point.X, point.Y, direction);
                 }
             }
+
+            return StateCode.Success;
         }
 
         /// <summary>
