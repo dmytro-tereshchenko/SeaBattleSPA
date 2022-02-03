@@ -215,6 +215,8 @@ namespace SeaBattle.Lib.Managers
         public LimitSize GetLimitSizeField() =>
             new LimitSize(_maxSizeX, _maxSizeY, _minSizeX, _minSizeY);
 
+        public byte GetMaxNumberOfPlayers() => _maxNumberOfPlayers;
+
         public IResponseGamePlayer AddPlayerToGame(IGame game, string playerName)
         {
             if (game.Players.Count == 0)
@@ -245,8 +247,9 @@ namespace SeaBattle.Lib.Managers
             IStartField startField;
 
             //in the case haven't created startFields - create them
-            if (game.StartFields.Count == 0)
+            if (game.StartFields == null)
             {
+                game.StartFields = new List<IStartField>(game.MaxNumberOfPlayers);
                 ICollection<bool[,]> fieldsOfLabels;
                 try
                 {
@@ -256,10 +259,14 @@ namespace SeaBattle.Lib.Managers
                 {
                     return new ResponseStartField(null, StateCode.ExceededMaxNumberOfPlayers);
                 }
+
+                //calculate start points for minimum size fields
+                int startPoints = fieldsOfLabels.Select(CalculateStartPoints).Min();
+
                 foreach (var labelField in fieldsOfLabels)
                 {
                     game.StartFields.Add(
-                        new StartField(++_entityCount, game.Field, labelField, null, CalculateStartPoints(labelField), new List<IGameShip>(), game.Id)
+                        new StartField(++_entityCount, game.Field, labelField, null, startPoints, new List<IGameShip>(), game.Id)
                         {
                             FieldLabels = labelField
                         });

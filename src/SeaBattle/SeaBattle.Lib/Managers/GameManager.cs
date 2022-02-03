@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;
@@ -36,6 +35,11 @@ namespace SeaBattle.Lib.Managers
         /// </summary>
         /// <value><see cref="IGame"/></value>
         private IGame _game;
+
+        public IGamePlayer CurrentGamePlayerMove
+        {
+            get => _game.CurrentGamePlayerMove;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InitializeManager"/> class
@@ -100,7 +104,7 @@ namespace SeaBattle.Lib.Managers
 
         public IResponseGameField GetGameField(IGamePlayer player) => _actionManager.GetGameField(player, _game);
 
-        public ICollection<ICommonShip> GetShips() => _shipManager.GetShips();
+        public ICollection<(ICommonShip, int)> GetShips() => _shipManager.GetShips();
 
         public ICollection<IWeapon> GetWeapons() => _shipManager.GetWeapons();
 
@@ -128,6 +132,8 @@ namespace SeaBattle.Lib.Managers
         public IGamePlayer GetResultGame() => _game.Winner;
 
         public LimitSize GetLimitSizeField() => _initializeManager.GetLimitSizeField();
+
+        public byte GetMaxNumberOfPlayers() => _game?.MaxNumberOfPlayers ?? _initializeManager.GetMaxNumberOfPlayers();
 
         #endregion
 
@@ -277,6 +283,7 @@ namespace SeaBattle.Lib.Managers
             }
 
             StateCode state = _actionManager.AttackShip(player, ship, posX, posY, _game.Field);
+
             return CheckEndGame() ? StateCode.GameFinished : state;
         }
 
@@ -304,10 +311,7 @@ namespace SeaBattle.Lib.Managers
 
         #region Services
 
-        /// <summary>
-        /// Change state <see cref="IGame"/> to next move
-        /// </summary>
-        protected void NextMove()
+        public StateCode NextMove()
         {
             ICollection<IGamePlayer> players = _game.Players;
 
@@ -317,9 +321,12 @@ namespace SeaBattle.Lib.Managers
                 {
                     _game.CurrentGamePlayerMove =
                         i + 1 < players.Count ? players.ElementAt(i + 1) : players.ElementAt(0);
-                    return;
+
+                    return StateCode.Success;
                 }
             }
+
+            return StateCode.InvalidPlayer;
         }
 
         /// <summary>

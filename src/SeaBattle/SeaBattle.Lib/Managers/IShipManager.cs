@@ -30,8 +30,8 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Getting a collection of ships, which players can buy by points.
         /// </summary>
-        /// <returns>Collection of <see cref="ICommonShip"/>, which players can buy by points</returns>
-        ICollection<ICommonShip> GetShips();
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is (<see cref="ICommonShip"/>, <see cref="int"/>) (ship, points cost)</value>
+        ICollection<(ICommonShip, int)> GetShips();
 
         /// <summary>
         /// Getting a collection of repairs, which players can equip on the ship.

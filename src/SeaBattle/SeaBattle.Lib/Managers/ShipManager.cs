@@ -19,8 +19,8 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Collection of basic types of common ships
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="ICommonShip"/></value>
-        protected readonly ICollection<ICommonShip> Ships;
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is (<see cref="ICommonShip"/>, <see cref="int"/>) (ship, points cost)</value>
+        protected readonly ICollection<(ICommonShip, int)> Ships;
 
         /// <summary>
         /// Collection of basic weapons
@@ -41,12 +41,12 @@ namespace SeaBattle.Lib.Managers
 
         public ShipManager()
         {
-            Ships = new List<ICommonShip>();
+            Ships = new List<(ICommonShip, int)>();
 
-            Ships.Add(new Ship(++_entityCount, ShipType.Auxiliary, 1, 100, 4));
-            Ships.Add(new Ship(++_entityCount, ShipType.Mixed, 2, 200, 3));
-            Ships.Add(new Ship(++_entityCount, ShipType.Mixed, 3, 300, 2));
-            Ships.Add(new Ship(++_entityCount, ShipType.Military, 4, 400, 1));
+            Ships.Add(new(new Ship(++_entityCount, ShipType.Auxiliary, 1, 100, 4), GetShipCost(1)));
+            Ships.Add(new(new Ship(++_entityCount, ShipType.Mixed, 2, 200, 3), GetShipCost(2)));
+            Ships.Add(new(new Ship(++_entityCount, ShipType.Mixed, 3, 300, 2), GetShipCost(3)));
+            Ships.Add(new(new Ship(++_entityCount, ShipType.Military, 4, 400, 1), GetShipCost(4)));
 
             Repairs = new List<IRepair>();
 
@@ -89,7 +89,7 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        public ICollection<ICommonShip> GetShips() => Ships;
+        public ICollection<(ICommonShip, int)> GetShips() => Ships;
 
         public ICollection<IRepair> GetRepairs() => Repairs;
 
@@ -129,6 +129,11 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.LimitEquipment;
             }
 
+            if (gameShip.Ship.Type == ShipType.Auxiliary)
+            {
+                return StateCode.InvalidEquipment;
+            }
+
             gameShip.Weapons.Add(weapon);
 
             return StateCode.Success;
@@ -146,6 +151,11 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.LimitEquipment;
             }
 
+            if (gameShip.Ship.Type == ShipType.Military)
+            {
+                return StateCode.InvalidEquipment;
+            }
+
             gameShip.Repairs.Add(repair);
 
             return StateCode.Success;
@@ -158,9 +168,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            gameShip.Weapons.Remove(weapon);
-
-            return StateCode.Success;
+            return gameShip.Weapons.Remove(weapon) ? StateCode.Success : StateCode.InvalidEquipment;
         }
 
         public StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair)
@@ -170,9 +178,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            gameShip.Repairs.Remove(repair);
-
-            return StateCode.Success;
+            return gameShip.Repairs.Remove(repair) ? StateCode.Success : StateCode.InvalidEquipment;
         }
 
         /// <summary>

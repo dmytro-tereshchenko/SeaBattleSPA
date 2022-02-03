@@ -1,4 +1,6 @@
-﻿namespace SeaBattle.Lib.Infrastructure
+﻿using SeaBattle.Lib.Entities;
+
+namespace SeaBattle.Lib.Infrastructure
 {
     /// <summary>
     /// Enum possible states and errors in the domain.
@@ -49,6 +51,11 @@
         /// Equipment limit reached
         /// </summary>
         LimitEquipment = 018,
+
+        /// <summary>
+        /// Can't equip for current <see cref="ShipType"/>
+        /// </summary>
+        InvalidEquipment = 019,
 
         /// <summary>
         /// Absence of a ship by coordinates

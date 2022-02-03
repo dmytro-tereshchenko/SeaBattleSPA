@@ -19,30 +19,13 @@ namespace SeaBattle.Lib.Managers
 
             byte i = 0;
             bool check = true;
-            List<(ushort, ushort)> coordinates = new List<(ushort, ushort)>(ship.Size);
+            ICollection<(ushort, ushort)> coordinates = GetCoordinatesShipByPosition(ship.Size, posX, posY, direction);
 
-            while (i++ != ship.Size)
+            foreach (var coordinate in coordinates)
             {
-                switch (direction)
-                {
-                    case DirectionOfShipPosition.XDec:
-                        coordinates.Add(new(posX--, posY));
-                        break;
-                    case DirectionOfShipPosition.XInc:
-                        coordinates.Add(new(posX++, posY));
-                        break;
-                    case DirectionOfShipPosition.YDec:
-                        coordinates.Add(new(posX, posY--));
-                        break;
-                    case DirectionOfShipPosition.YInc:
-                        coordinates.Add(new(posX, posY++));
-                        break;
-                    default:
-                        throw new InvalidEnumArgumentException();
-                }
                 try
                 {
-                    check = CheckFreeAreaAroundShip(field, coordinates.Last().Item1, coordinates.Last().Item2, ship);
+                    check = CheckFreeAreaAroundShip(field, coordinate.Item1, coordinate.Item2, ship);
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -63,12 +46,51 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
+        /// <summary>
+        /// Prognosis coordinates of the ship by position stern and direction
+        /// </summary>
+        /// <param name="shipSize">Size of <see cref="IGameShip"/></param>
+        /// <param name="posX">Coordinate X of position</param>
+        /// <param name="posY">Coordinate Y of position</param>
+        /// <param name="direction">The direction of allocating of the ship relatively by stern</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidEnumArgumentException"></exception>
+        public ICollection<(ushort, ushort)> GetCoordinatesShipByPosition(byte shipSize, ushort posX, ushort posY,
+            DirectionOfShipPosition direction)
+        {
+            byte i = 0;
+            List<(ushort, ushort)> coordinates = new List<(ushort, ushort)>(shipSize);
+
+            while (i++ != shipSize)
+            {
+                switch (direction)
+                {
+                    case DirectionOfShipPosition.XDec:
+                        coordinates.Add(new(posX--, posY));
+                        break;
+                    case DirectionOfShipPosition.XInc:
+                        coordinates.Add(new(posX++, posY));
+                        break;
+                    case DirectionOfShipPosition.YDec:
+                        coordinates.Add(new(posX, posY--));
+                        break;
+                    case DirectionOfShipPosition.YInc:
+                        coordinates.Add(new(posX, posY++));
+                        break;
+                    default:
+                        throw new InvalidEnumArgumentException("Wrong direction of ship");
+                }
+            }
+
+            return coordinates;
+        }
+
         public bool CheckFreeAreaAroundShip(IGameField field, ushort x, ushort y, IGameShip ship)
         {
             ushort sizeX = field.SizeX;
             ushort sizeY = field.SizeY;
 
-            if (x < 0 || x >= sizeX || y < 0 || y > sizeY)
+            if (x < 1 || x > sizeX || y < 1 || y > sizeY)
             {
                 throw new ArgumentOutOfRangeException();
             }
@@ -83,7 +105,7 @@ namespace SeaBattle.Lib.Managers
                 //Check free cells (absents ship or current ship) on diagonal from the cell with coordinates x,y
                 offsetXY = Convert.ToInt16(Math.Pow(-1, i / 2));
                 offsetYX = Convert.ToInt16(Math.Pow(-1, (i + 1) / 2));
-                if (x + offsetXY >= 0 && x + offsetXY < sizeX && y + offsetYX >= 0 && y + offsetYX < sizeY &&
+                if (x + offsetXY > 0 && x + offsetXY <= sizeX && y + offsetYX > 0 && y + offsetYX <= sizeY &&
                     field[(ushort)(x + offsetXY), (ushort)(y + offsetYX)] != null &&
                     field[(ushort)(x + offsetXY), (ushort)(y + offsetYX)] != ship)
                 {
@@ -91,7 +113,7 @@ namespace SeaBattle.Lib.Managers
                 }
 
                 //Check free cells (absents ship or current ship) on horizontal and vertical from the cell with coordinates x,y
-                if (x + offsetX >= 0 && x + offsetX < sizeX && y + offsetY >= 0 && y + offsetY < sizeY &&
+                if (x + offsetX > 0 && x + offsetX <= sizeX && y + offsetY > 0 && y + offsetY <= sizeY &&
                     field[(ushort)(x + offsetX), (ushort)(y + offsetY)] != null &&
                     field[(ushort)(x + offsetX), (ushort)(y + offsetY)] != ship)
                 {
@@ -121,18 +143,22 @@ namespace SeaBattle.Lib.Managers
                         coordinates.Add((i, j));
 
                         //add other vertical cells of the ship
-                        ushort tempCoordinate = i;
-                        while (field[++tempCoordinate, j] == ship)
+                        ushort tempCoordinate = (ushort)(i + 1);
+                        while (tempCoordinate <= field.SizeX && field[tempCoordinate, j] == ship)
                         {
-                            coordinates.Add((i, j));
+                            coordinates.Add((tempCoordinate, j));
+                            tempCoordinate++;
                         }
 
                         //add other horizontal cells of the ship
-                        tempCoordinate = j;
-                        while (field[i, ++tempCoordinate] == ship)
+                        tempCoordinate = (ushort)(j + 1);
+                        while (tempCoordinate <= field.SizeY && field[i, tempCoordinate] == ship)
                         {
-                            coordinates.Add((i, j));
+                            coordinates.Add((i, tempCoordinate));
+                            tempCoordinate++;
                         }
+
+                        return coordinates;
                     }
                 }
             }

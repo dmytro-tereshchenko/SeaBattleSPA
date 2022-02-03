@@ -11,6 +11,12 @@ namespace SeaBattle.Lib.Managers
     public interface IGameManager
     {
         /// <summary>
+        /// Player, which needs to move this turn.
+        /// </summary>
+        /// <value><see cref="IGamePlayer"/></value>
+        IGamePlayer CurrentGamePlayerMove { get; }
+
+        /// <summary>
         /// Create <see cref="IGame"/>
         /// </summary>
         /// <param name="numberOfPlayers">Number of players in <see cref="IGame"/></param>
@@ -49,8 +55,8 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Getting a collection of ships, which players can buy by points.
         /// </summary>
-        /// <returns>Collection of <see cref="ICommonShip"/>, which players can buy by points</returns>
-        ICollection<ICommonShip> GetShips();
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is (<see cref="ICommonShip"/>, <see cref="int"/>) (ship, points cost)</value>
+        ICollection<(ICommonShip, int)> GetShips();
 
         /// <summary>
         /// Getting a collection of weapons, which players can equip on the ship.
@@ -83,6 +89,12 @@ namespace SeaBattle.Lib.Managers
         /// </summary>
         /// <returns><see cref="LimitSize"/></returns>
         LimitSize GetLimitSizeField();
+
+        /// <summary>
+        /// Getting max number of players
+        /// </summary>
+        /// <returns><see cref="byte"/></returns>
+        byte GetMaxNumberOfPlayers();
 
         /// <summary>
         /// Buy ship and save in <see cref="IStartField"/>
@@ -200,5 +212,11 @@ namespace SeaBattle.Lib.Managers
         /// <param name="ship">Current ship</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
         StateCode RepairAllShip(IGamePlayer player, IGameShip ship);
+
+        /// <summary>
+        /// Change state <see cref="IGame"/> to next move
+        /// </summary>
+        /// <returns><see cref="StateCode"/> result of operation</returns>
+        StateCode NextMove();
     }
 }
