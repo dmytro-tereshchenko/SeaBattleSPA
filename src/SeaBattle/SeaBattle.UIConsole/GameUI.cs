@@ -298,7 +298,7 @@ namespace SeaBattle.UIConsole
         {
             int choice = 0;
 
-            while (choice != -1)
+            while (choice != -2)
             {
                 List<string> options = startField.Ships.Select(ship =>
                         _presenter.GetShipStatus(ship))
@@ -318,7 +318,22 @@ namespace SeaBattle.UIConsole
                     case -1:
                     case 0:
                         //ready and exit
-                        choice = -1;
+                        bool checkPresentShips = false;
+
+                        foreach (IGameShip ship in startField.GameField)
+                        {
+                            if (ship != null && ship.GamePlayer == startField.GamePlayer)
+                            {
+                                checkPresentShips = true;
+                                break;
+                            }
+                        }
+
+                        if (checkPresentShips)
+                        {
+                            choice = -2;
+                        }
+
                         break;
                     case 1:
                         BuyShip(startField);
@@ -549,7 +564,7 @@ namespace SeaBattle.UIConsole
                     _presenter.ShowGameField(gameField, _players);
                     _presenter.ShowMessage(_presenter.GetShipStatus(ship), false, false);
                     
-                    if (string.IsNullOrEmpty(message))
+                    if (!string.IsNullOrEmpty(message))
                     {
                         _presenter.ShowMessage(message, false, false);
                     }
