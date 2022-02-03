@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -95,5 +96,8 @@ namespace SeaBattle.Lib.Entities
                 return false;
             }
         }
+
+        public IEnumerator GetEnumerator() => _gameShips.GetEnumerator();
+
     }
 }
