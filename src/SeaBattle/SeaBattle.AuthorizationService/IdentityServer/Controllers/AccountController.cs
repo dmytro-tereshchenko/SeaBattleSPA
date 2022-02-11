@@ -8,12 +8,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityModel;
 using SeaBattle.AuthorizationService.IdentityServer.Helpers;
 using SeaBattle.AuthorizationService.IdentityServer.Options;
 using SeaBattle.AuthorizationService.IdentityServer.UI;
 using SeaBattle.AuthorizationService.IdentityServer.ViewModels.Account;
 using SeaBattle.AuthorizationService.Models;
+using Serilog;
 
 namespace SeaBattle.AuthorizationService.IdentityServer.Controllers
 {
@@ -210,6 +214,104 @@ namespace SeaBattle.AuthorizationService.IdentityServer.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+        /// <summary>
+        /// Entry point into the login workflow
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> Registration(string returnUrl)
+        {
+            return View(new RegistrationInputModel() {ReturnUrl = returnUrl});
+        }
+
+        /// <summary>
+        /// Handle postback from username/password login
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Registration(RegistrationInputModel model, string button)
+        {
+            // check if we are in the context of an authorization request
+            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+
+            // the user clicked the "cancel" button
+            if (button != "register")
+            {
+                if (context != null)
+                {
+                    // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+                    if (context.IsNativeClient())
+                    {
+                        // The client is native, so this change in how to
+                        // return the response is for better UX for the end user.
+                        return this.LoadingPage("Redirect", model.ReturnUrl);
+                    }
+
+                    return Redirect(model.ReturnUrl);
+                }
+                else
+                {
+                    // since we don't have a valid context, then we just go back to the home page
+                    return Redirect("~/");
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                var user = _userManager.FindByNameAsync(model.Username).Result;
+
+                if (user == null)
+                {
+                    user = new ApplicationUser
+                    {
+                        UserName = model.Username,
+                        Email = model.Email,
+                        EmailConfirmed = false
+                    };
+
+                    var resultCreate = _userManager.CreateAsync(user, model.Password).Result;
+
+                    if (!resultCreate.Succeeded)
+                    {
+                        ModelState.AddModelError(string.Empty,
+                            string.Join("\n", resultCreate.Errors.Select(e => e.Description)));
+                        return View(model);
+                    }
+
+                    resultCreate = _userManager.AddClaimsAsync(user, new Claim[]
+                    {
+                        new Claim(JwtClaimTypes.NickName, model.Username)
+                    }).Result;
+
+                    if (!resultCreate.Succeeded)
+                    {
+                        ModelState.AddModelError(string.Empty,
+                            string.Join("\n", resultCreate.Errors.Select(e => e.Description)));
+                        return View(model);
+                    }
+
+
+                    var result = _userManager.AddToRoleAsync(user, "user_role").Result;
+
+                    if (!result.Succeeded)
+                    {
+                        ModelState.AddModelError(string.Empty,
+                            string.Join("\n", resultCreate.Errors.Select(e => e.Description)));
+                        return View(model);
+                    }
+
+                    return RedirectToAction("Login", "Account", new {returnUrl = model.ReturnUrl});
+                }
+                else
+                {
+                    ModelState.AddModelError("Username", AccountOptions.UserAlreadyExists);
+                    return View(model);
+                }
+            }
+
+            // something went wrong, show form with error
+            return View(model);
         }
     }
 }

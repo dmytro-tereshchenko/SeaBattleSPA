@@ -15,5 +15,7 @@ namespace SeaBattle.AuthorizationService.IdentityServer.Options
         public static bool AutomaticRedirectAfterSignOut = false;
 
         public static string InvalidCredentialsErrorMessage = "Invalid username or password";
+
+        public static string UserAlreadyExists = "Nickname already exists.";
     }
 }
