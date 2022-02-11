@@ -66,6 +66,13 @@ namespace SeaBattle.AuthorizationService
                     ClientName = "Angular Client",
                     AllowedGrantTypes = GrantTypes.Code,
                     RequireClientSecret = false,
+                    AccessTokenLifetime = 3600,
+                    AllowOfflineAccess = true,
+                    RefreshTokenExpiration = TokenExpiration.Sliding,
+                    AbsoluteRefreshTokenLifetime = 360000,
+                    SlidingRefreshTokenLifetime = 36000,
+                    AlwaysSendClientClaims = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,
 
                     RedirectUris =           { "https://localhost:44391/assets/signin-callback.html" },
                     PostLogoutRedirectUris = { "https://localhost:44391/index.html" },

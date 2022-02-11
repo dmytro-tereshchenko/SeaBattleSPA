@@ -7,7 +7,8 @@ using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using SeaBattle.AuthorizationService.IdentityServer.UI;
+using SeaBattle.AuthorizationService.IdentityServer.Options;
+using SeaBattle.AuthorizationService.IdentityServer.ViewModels.Account;
 
 namespace SeaBattle.AuthorizationService.IdentityServer.Helpers
 {

@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using SeaBattle.AuthorizationService.IdentityServer.UI;
+using SeaBattle.AuthorizationService.IdentityServer.ViewModels.Account;
 
 namespace SeaBattle.AuthorizationService.IdentityServer.Helpers
 {

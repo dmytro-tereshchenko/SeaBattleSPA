@@ -1,6 +1,7 @@
 using System;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Mvc;
+using SeaBattle.AuthorizationService.IdentityServer.ViewModels.Account;
 
 namespace SeaBattle.AuthorizationService.IdentityServer.UI
 {

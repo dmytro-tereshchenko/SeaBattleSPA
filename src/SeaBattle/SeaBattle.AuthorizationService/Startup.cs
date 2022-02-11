@@ -10,6 +10,7 @@ using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SeaBattle.AuthorizationService.Data;
+using SeaBattle.AuthorizationService.IdentityServer.Helpers;
 using SeaBattle.AuthorizationService.Models;
 using SeaBattle.AuthorizationService.Services;
 
@@ -31,6 +32,7 @@ namespace SeaBattle.AuthorizationService
         {
             services.AddControllersWithViews();
 
+            services.AddScoped<IAccountControllerHelper, AccountControllerHelper>();
             services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<ProfileService>();
 

@@ -14,7 +14,9 @@ namespace SeaBattle.AuthorizationService.Services
     public class ProfileService : IProfileService
     {
         private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
+
         private readonly UserManager<ApplicationUser> _userMgr;
+
         private readonly RoleManager<ApplicationRole> _roleMgr;
 
         public ProfileService(IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory, UserManager<ApplicationUser> userMgr, RoleManager<ApplicationRole> roleMgr)
@@ -23,6 +25,7 @@ namespace SeaBattle.AuthorizationService.Services
             _userMgr = userMgr;
             _roleMgr = roleMgr;
         }
+
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             string sub = context.Subject.GetSubjectId();
