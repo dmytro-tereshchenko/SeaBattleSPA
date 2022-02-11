@@ -15,7 +15,7 @@ export class TestApiService {
   }
 
   public callApi(): Promise<any> {
-    return this.authService.getUser().then((user: User) => {
+    return this.authService.getUser().then((user: User|null) => {
       if (user && user.access_token) {
         return this._callApi(user.access_token);
       } else if (user) {
@@ -28,7 +28,7 @@ export class TestApiService {
     });
   }
 
-  _callApi(token: string) {
+  _callApi(token: string):any {
     const headers = new HttpHeaders({
       Accept: 'application/json',
       Authorization: 'Bearer ' + token

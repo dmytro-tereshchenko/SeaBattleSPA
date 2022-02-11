@@ -10,6 +10,7 @@ import { TestApiService } from '../core/services/test-api.service';
 export class UserStatusComponent implements OnInit {
 
   constructor(public authService: AuthService, public apiService: TestApiService) {
+    this.currentUser=null;
   }
 
   ngOnInit(): void {
@@ -21,7 +22,7 @@ export class UserStatusComponent implements OnInit {
   get currentUserJson(): string {
     return JSON.stringify(this.currentUser, null, 2);
   }
-  currentUser: User;
+  currentUser: User|null;
 
   public onLogin() {
     this.authService.login().catch(err => {
