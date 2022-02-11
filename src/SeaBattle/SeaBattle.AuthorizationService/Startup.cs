@@ -1,16 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using IdentityServer4;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
@@ -38,6 +32,7 @@ namespace SeaBattle.AuthorizationService
             services.AddControllersWithViews();
 
             services.AddScoped<IProfileService, ProfileService>();
+            services.AddScoped<ProfileService>();
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
@@ -46,7 +41,6 @@ namespace SeaBattle.AuthorizationService
                     sql => sql.MigrationsAssembly(migrationsAssembly)));
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
-                //.AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -63,8 +57,8 @@ namespace SeaBattle.AuthorizationService
                 .AddInMemoryIdentityResources(Config.IdentityResources)
                 .AddInMemoryApiScopes(Config.ApiScopes)
                 .AddInMemoryClients(Config.Clients)
-                .AddAspNetIdentity<ApplicationUser>();
-                //.AddAspNetIdentity<ApplicationRole>();
+                .AddAspNetIdentity<ApplicationUser>()
+                .AddProfileService<ProfileService>();
 
 
             // not recommended for production - you need to store your key material somewhere secure
