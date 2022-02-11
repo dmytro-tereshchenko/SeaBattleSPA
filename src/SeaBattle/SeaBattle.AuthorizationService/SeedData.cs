@@ -41,13 +41,13 @@ namespace SeaBattle.AuthorizationService
                     var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
-                    var adminRole = roleMgr.FindByNameAsync("admin").Result;
+                    var adminRole = roleMgr.FindByNameAsync("admin_role").Result;
 
                     if (adminRole == null)
                     {
                         adminRole = new ApplicationRole
                         {
-                            Name = "admin"
+                            Name = "admin_role"
                         };
 
                         var result = roleMgr.CreateAsync(adminRole).Result;
@@ -64,13 +64,13 @@ namespace SeaBattle.AuthorizationService
                         Log.Debug("admin role already exists");
                     }
 
-                    var userRole = roleMgr.FindByNameAsync("user").Result;
+                    var userRole = roleMgr.FindByNameAsync("user_role").Result;
 
                     if (userRole == null)
                     {
                         userRole = new ApplicationRole
                         {
-                            Name = "user"
+                            Name = "user_role"
                         };
 
                         var result = roleMgr.CreateAsync(userRole).Result;
@@ -106,7 +106,7 @@ namespace SeaBattle.AuthorizationService
                         }
 
                         result = userMgr.AddClaimsAsync(admin, new Claim[]{
-                            new Claim(JwtClaimTypes.NickName, "admin")
+                            new Claim(JwtClaimTypes.NickName, admin.UserName)
                         }).Result;
 
                         if (!result.Succeeded)
@@ -140,7 +140,7 @@ namespace SeaBattle.AuthorizationService
                         }
 
                         result = userMgr.AddClaimsAsync(user, new Claim[]{
-                            new Claim(JwtClaimTypes.NickName, "user")
+                            new Claim(JwtClaimTypes.NickName, user.UserName)
                         }).Result;
 
                         if (!result.Succeeded)
