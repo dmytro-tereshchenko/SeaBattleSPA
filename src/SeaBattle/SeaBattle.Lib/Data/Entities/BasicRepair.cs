@@ -1,15 +1,33 @@
-﻿namespace SeaBattle.Lib.Entities
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
+
+namespace SeaBattle.Lib.Entities
 {
     /// <summary>
     /// Basic repair equipment for ship
     /// </summary>
     public class BasicRepair : IRepair
     {
+        [Key]
         public uint Id { get; set; }
 
-        public ushort RepairPower { get; private set; }
+        [Required]
+        public ushort RepairPower { get; set; }
 
-        public ushort RepairRange { get; private set; }
+        [Required]
+        public ushort RepairRange { get; set; }
+
+        [JsonIgnore]
+        public ICollection<IGameShip> GameShips { get; set; }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public BasicRepair()
+        {
+            GameShips = new List<IGameShip>();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BasicRepair"/> class
@@ -29,6 +47,7 @@
         {
             RepairPower = power;
             RepairRange = range;
+            GameShips = new List<IGameShip>();
         }
     }
 }

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -8,17 +11,22 @@ namespace SeaBattle.Lib.Entities
     /// </summary>
     public class GameField : IGameField
     {
-        /// <summary>
-        /// Array of game field with <see cref="IGameShip"/> in cell
-        /// </summary>
-        /// <value><see cref="IGameShip"/>[,] with null in the cell when the ship is absent</value>
-        protected IGameShip[,] _gameShips;
-
         public uint Id { get; set; }
 
-        public ushort SizeX { get; private set; }
+        public ICollection<IGameFieldCell> GameFieldCells { get; set; }
 
-        public ushort SizeY { get; private set; }
+        public ushort SizeX { get; set; }
+
+        public ushort SizeY { get; set; }
+
+        public uint GameId { get; set; }
+
+        [JsonIgnore]
+        [ForeignKey("GameId")]
+        public IGame Game { get; set; }
+
+        [JsonIgnore]
+        public ICollection<IStartField> StartFields { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GameField"/> class
@@ -38,7 +46,7 @@ namespace SeaBattle.Lib.Entities
             SizeX = sizeX;
             SizeY = sizeY;
 
-            _gameShips = new GameShip[SizeX, SizeY];
+            GameFieldCells = new List<IGameFieldCell>();
         }
 
         public IGameShip this[ushort x, ushort y]
@@ -51,7 +59,15 @@ namespace SeaBattle.Lib.Entities
                         $"[{x},{y}] out of range [1, 1]:[{SizeX},{SizeY}] in {nameof(GameField)}");
                 }
 
-                return _gameShips[x - 1, y - 1]; 
+                foreach (var cell in GameFieldCells)
+                {
+                    if (cell.X == x && cell.Y == y)
+                    {
+                        return cell.GameShip;
+                    }
+                }
+
+                return null;
             }
             set
             {
@@ -61,8 +77,31 @@ namespace SeaBattle.Lib.Entities
                         $"[{x},{y}] out of range [1, 1]:[{SizeX},{SizeY}] in {nameof(GameField)}");
                 }
 
-                _gameShips[x - 1, y - 1] = value;
-            } 
+                IGameFieldCell fieldCell = null;
+
+                foreach (var cell in GameFieldCells)
+                {
+                    if (cell.X == x && cell.Y == y)
+                    {
+                        fieldCell = cell;
+                    }
+                }
+
+                if (fieldCell == null)
+                {
+                    fieldCell = new GameFieldCell()
+                    {
+                        X = x,
+                        Y = y,
+                        GameFieldId = Id,
+                        GameField = this
+                    };
+                    GameFieldCells.Add(fieldCell);
+                }
+
+                fieldCell.GameShip = value;
+                fieldCell.GameShipId = value.Id;
+            }
         }
 
         public override bool Equals(object? obj)
@@ -75,14 +114,14 @@ namespace SeaBattle.Lib.Entities
 
             if (this.Id.Equals(ob.Id) && this.SizeX.Equals(ob.SizeX) && this.SizeY.Equals(ob.SizeY))
             {
-                for (int i = 0; i < SizeX; i++)
+                for (ushort i = 1; i <= SizeX; i++)
                 {
-                    for (int j = 0; j < SizeY; j++)
+                    for (ushort j = 1; j <= SizeY; j++)
                     {
-                        if ((ob._gameShips[i, j] == null && this._gameShips[i, j] != null) ||
-                            (ob._gameShips[i, j] != null && this._gameShips[i, j] == null) ||
-                            (ob._gameShips[i, j] != null && this._gameShips[i, j] != null &&
-                             !ob._gameShips[i, j].Equals(this._gameShips[i, j])))
+                        if ((ob[i, j] == null && this[i, j] != null) ||
+                            (ob[i, j] != null && this[i, j] == null) ||
+                            (ob[i, j] != null && this[i, j] != null &&
+                             !ob[i, j].Equals(this[i, j])))
                         {
                             return false;
                         }
@@ -97,7 +136,7 @@ namespace SeaBattle.Lib.Entities
             }
         }
 
-        public IEnumerator GetEnumerator() => _gameShips.GetEnumerator();
+        public IEnumerator GetEnumerator() => GameFieldCells.GetEnumerator();
 
     }
 }

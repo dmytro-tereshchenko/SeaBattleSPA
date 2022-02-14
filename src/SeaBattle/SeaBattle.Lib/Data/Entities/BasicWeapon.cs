@@ -1,4 +1,7 @@
-﻿namespace SeaBattle.Lib.Entities
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+
+namespace SeaBattle.Lib.Entities
 {
     /// <summary>
     /// Basic weapon equipment for ship
@@ -7,9 +10,20 @@
     {
         public uint Id { get; set; }
 
-        public ushort Damage { get; private set; }
+        public ushort Damage { get; set; }
 
-        public ushort AttackRange { get; private set; }
+        public ushort AttackRange { get; set; }
+
+        [JsonIgnore]
+        public ICollection<IGameShip> GameShips { get; set; }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public BasicWeapon()
+        {
+            GameShips = new List<IGameShip>();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BasicWeapon"/> class
@@ -29,6 +43,7 @@
         {
             Damage = damage;
             AttackRange = aRange;
+            GameShips = new List<IGameShip>();
         }
     }
 }

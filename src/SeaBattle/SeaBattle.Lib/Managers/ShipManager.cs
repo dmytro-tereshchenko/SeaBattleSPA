@@ -43,10 +43,10 @@ namespace SeaBattle.Lib.Managers
         {
             Ships = new List<(ICommonShip, int)>();
 
-            Ships.Add(new(new Ship(++_entityCount, ShipType.Auxiliary, 1, 100, 4), GetShipCost(1)));
-            Ships.Add(new(new Ship(++_entityCount, ShipType.Mixed, 2, 200, 3), GetShipCost(2)));
-            Ships.Add(new(new Ship(++_entityCount, ShipType.Mixed, 3, 300, 2), GetShipCost(3)));
-            Ships.Add(new(new Ship(++_entityCount, ShipType.Military, 4, 400, 1), GetShipCost(4)));
+            Ships.Add(new(new CommonShip(++_entityCount, ShipType.Auxiliary, 1, 100, 4), GetShipCost(1)));
+            Ships.Add(new(new CommonShip(++_entityCount, ShipType.Mixed, 2, 200, 3), GetShipCost(2)));
+            Ships.Add(new(new CommonShip(++_entityCount, ShipType.Mixed, 3, 300, 2), GetShipCost(3)));
+            Ships.Add(new(new CommonShip(++_entityCount, ShipType.Military, 4, 400, 1), GetShipCost(4)));
 
             Repairs = new List<IRepair>();
 

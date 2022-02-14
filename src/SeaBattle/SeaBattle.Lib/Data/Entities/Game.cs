@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using SeaBattle.Lib.Infrastructure;
+using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -10,20 +11,29 @@ namespace SeaBattle.Lib.Entities
     {
         public uint Id { get; set; }
 
-        public IGameField Field { get; set; }
+        [JsonIgnore]
+        public uint GameFieldId { get; set; }
 
-        public IGamePlayer CurrentGamePlayerMove { get; set; }
+        public string CurrentGamePlayerMove { get; set; }
         
+        [NotMapped]
         public byte CurrentCountPlayers
         {
             get => (byte) Players.Count;
         }
 
-        public byte MaxNumberOfPlayers { get; private set; }
-        
-        public GameState State { get; set; }
+        public byte MaxNumberOfPlayers { get; set; }
 
-        public IGamePlayer Winner { get; set; }
+        [JsonIgnore]
+        public uint GameStateId { get; set; }
+
+        public string Winner { get; set; }
+
+        [ForeignKey("GameFieldId")]
+        public IGameField GameField { get; set; }
+
+        [ForeignKey("GameStateId")]
+        public IGameState GameState { get; set; }
 
         public ICollection<IStartField> StartFields { get; set; }
 
@@ -47,7 +57,7 @@ namespace SeaBattle.Lib.Entities
         public Game()
         {
             Players = new List<IGamePlayer>();
-            State = GameState.Created;
+            StartFields = new List<IStartField>();
         }
     }
 }

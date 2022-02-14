@@ -1,5 +1,6 @@
-﻿using SeaBattle.Lib.Data;
-using SeaBattle.Lib.Infrastructure;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -8,7 +9,32 @@ namespace SeaBattle.Lib.Entities
     /// </summary>
     public class GamePlayer : Player, IGamePlayer
     {
-        public PlayerState State { get; set; }
+        [JsonIgnore]
+        public uint PlayerStateId { get; set; }
+
+        [ForeignKey("PlayerStateId")]
+        public IPlayerState PlayerState { get; set; }
+
+        [JsonIgnore]
+        public ICollection<IGameShip> GameShips { get; set; }
+
+        [JsonIgnore]
+        public uint GameId { get; set; }
+
+        [JsonIgnore]
+        [ForeignKey("GameId")]
+        public IGame Game { get; set; }
+
+        [JsonIgnore]
+        public ICollection<IStartField> StartFields { get; set; }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public GamePlayer()
+        {
+            GameShips = new List<IGameShip>();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GamePlayer"/> class
@@ -24,7 +50,7 @@ namespace SeaBattle.Lib.Entities
         public GamePlayer(string name) : base(name)
         {
             Name = name;
-            State = PlayerState.Created;
+            GameShips = new List<IGameShip>();
         }
 
         public static bool operator ==(GamePlayer obj1, GamePlayer obj2) =>

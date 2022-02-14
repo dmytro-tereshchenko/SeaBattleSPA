@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using SeaBattle.Lib.Infrastructure;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -9,50 +8,65 @@ namespace SeaBattle.Lib.Entities
     public interface IGame: IEntity
     {
         /// <summary>
+        /// Foreign key Id <see cref="IGameField"/>
         /// Field of the game
         /// </summary>
-        /// <value><see cref="IGameField"/></value>
-        IGameField Field { get; set; }
+        /// <value><see cref="uint"/></value>
+        uint GameFieldId { get; set; }
 
         /// <summary>
         /// Current amount of players which connected to the game
         /// </summary>
         /// <value><see cref="byte"/></value>
-        public byte CurrentCountPlayers { get; }
+        byte CurrentCountPlayers { get; }
 
         /// <summary>
         /// Max amount of players
         /// </summary>
         /// <value><see cref="byte"/></value>
-        public byte MaxNumberOfPlayers { get; }
+        byte MaxNumberOfPlayers { get; set; }
 
         /// <summary>
         /// Player, which needs to move this turn.
         /// </summary>
-        /// <value><see cref="IGamePlayer"/></value>
-        public IGamePlayer CurrentGamePlayerMove { get; set; }
+        /// <value><see cref="string"/></value>
+        string CurrentGamePlayerMove { get; set; }
+
+        /// <summary>
+        /// Foreign key Id <see cref="IGameState"/>
+        /// Current state of game
+        /// </summary>
+        /// <value><see cref="uint"/></value>
+        uint GameStateId { get; set; }
+
+        /// <summary>
+        /// Winner of the game
+        /// </summary>
+        /// <value><see cref="string"/></value>
+        string Winner { get; set; }
+
+        /// <summary>
+        /// Field of the game
+        /// </summary>
+        /// <value><see cref="IGameField"/></value>
+        IGameField GameField { get; set; }
 
         /// <summary>
         /// Current state of game
         /// </summary>
         /// <value><see cref="GameState"/></value>
-        GameState State { get; set; }
-
-        /// <summary>
-        /// Winner of the game
-        /// </summary>
-        public IGamePlayer Winner { get; set; }
+        IGameState GameState { get; set; }
 
         /// <summary>
         /// Collection of fields with initializing data and parameters for every player
         /// </summary>
         /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IStartField"/></value>
-        public ICollection<IStartField> StartFields { get; set; }
+        ICollection<IStartField> StartFields { get; set; }
 
         /// <summary>
         /// Collection of players for current game.
         /// </summary>
         /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGamePlayer"/></value>
-        public ICollection<IGamePlayer> Players { get; set; }
+        ICollection<IGamePlayer> Players { get; set; }
     }
 }

@@ -11,25 +11,25 @@ namespace SeaBattle.Lib.Entities
         /// Id of game <see cref="IGame"/>
         /// </summary>
         /// <value><see cref="uint"/></value>
-        public uint GameId { get; set; }
+        uint GameId { get; set; }
 
         /// <summary>
-        /// Link to game field
+        /// Foreign key Id <see cref="IGameField"/>
         /// </summary>
-        /// <value><see cref="IGameField"/></value>
-        IGameField GameField { get; set; }
+        /// <value><see cref="uint"/></value>
+        uint GameFieldId { get; set; }
 
         /// <summary>
-        /// Array labels for game field when the player can put his own ships on start field.
+        /// Foreign key Id <see cref="IGamePlayer"/>
         /// </summary>
-        /// <value>Array <see cref="bool"/>[,], when element = true - can put ship ; false - can't</value>
-        bool[,] FieldLabels { get; set; }
+        /// <value><see cref="uint"/></value>
+        uint GamePlayerId { get; set; }
 
         /// <summary>
-        /// The player owning this starting
+        /// Collection of labels for game field when the player can put his own ships on start field
         /// </summary>
-        /// <value><see cref="IGamePlayer"/></value>
-        public IGamePlayer GamePlayer { get; set; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IStartFieldCell"/></value>
+        ICollection<IStartFieldCell> StartFieldCells { get; set; }
 
         /// <summary>
         /// Points for buying ships
@@ -38,9 +38,27 @@ namespace SeaBattle.Lib.Entities
         int Points { get; set; }
 
         /// <summary>
+        /// Navigate property <see cref="IGameField"/>
+        /// </summary>
+        /// <value><see cref="IGameField"/></value>
+        IGameField GameField { get; set; }
+
+        /// <summary>
+        /// Navigate property <see cref="IGamePlayer"/>
+        /// </summary>
+        /// <value><see cref="IGamePlayer"/></value>
+        IGamePlayer GamePlayer { get; set; }
+
+        /// <summary>
         /// Collection of ships that bought but don't put to the field
         /// </summary>
         /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGameShip"></see></value>
-        ICollection<IGameShip> Ships { get; set; }
+        ICollection<IGameShip> GameShips { get; set; }
+
+        /// <summary>
+        /// Navigate property <see cref="IGame/>
+        /// </summary>
+        /// <value><see cref="IGame"/></value>
+        IGame Game { get; set; }
     }
 }

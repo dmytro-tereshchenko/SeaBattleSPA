@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 namespace SeaBattle.Lib.Entities
 {
     /// <summary>
-    /// Types of ship
+    /// Player's state in game
     /// </summary>
-    public class ShipType : IShipType
+    public class PlayerState : IPlayerState
     {
         [Key]
         public uint Id { get; set; }
@@ -14,6 +14,6 @@ namespace SeaBattle.Lib.Entities
         [Required]
         public string Name { get; set; }
 
-        public ICollection<ICommonShip> CommonShips { get; set; } = new List<ICommonShip>();
+        public ICollection<IGamePlayer> GamePlayers { get; set; } = new List<IGamePlayer>();
     }
 }

@@ -28,10 +28,10 @@ namespace SeaBattle.Tests
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
 
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
-            IGameShip ship3 = new GameShip(new Ship(ShipType.Military, 4, 400, 1), player2, 50);
-            IGameShip ship4 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship3 = new GameShip(new CommonShip(ShipType.Military, 4, 400, 1), player2, 50);
+            IGameShip ship4 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
 
             field[3, 3] = ship;
             field[4, 3] = ship;
@@ -76,10 +76,10 @@ namespace SeaBattle.Tests
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
 
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
-            IGameShip ship3 = new GameShip(new Ship(ShipType.Military, 4, 400, 1), player2, 50);
-            IGameShip ship4 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship3 = new GameShip(new CommonShip(ShipType.Military, 4, 400, 1), player2, 50);
+            IGameShip ship4 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
 
             field[3, 3] = ship;
             field[4, 3] = ship;
@@ -120,10 +120,10 @@ namespace SeaBattle.Tests
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
 
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
-            IGameShip ship3 = new GameShip(new Ship(ShipType.Military, 4, 400, 1), player2, 50);
-            IGameShip ship4 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship3 = new GameShip(new CommonShip(ShipType.Military, 4, 400, 1), player2, 50);
+            IGameShip ship4 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
 
             field[3, 3] = ship;
             field[4, 3] = ship;
@@ -206,8 +206,8 @@ namespace SeaBattle.Tests
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
 
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship4 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship4 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
 
             field[3, 3] = ship;
             field[4, 3] = ship;
@@ -269,9 +269,9 @@ namespace SeaBattle.Tests
             IGameField field = new GameField(sizeX, sizeY, 1);
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
-            IGameShip ship3 = new GameShip(new Ship(ShipType.Military, 4, 400, 1), player2, 50);
+            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship3 = new GameShip(new CommonShip(ShipType.Military, 4, 400, 1), player2, 50);
             field[3, 3] = ship;
             field[4, 3] = ship;
             field[9, 9] = ship2;
@@ -281,7 +281,7 @@ namespace SeaBattle.Tests
             field[3, 10] = ship3;
             field[4, 10] = ship3;
 
-            IGameShip ship4 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship4 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
 
             field[5, 5] = ship4;
             field[5, 6] = ship4;
@@ -308,9 +308,9 @@ namespace SeaBattle.Tests
             IGameField field = new GameField(sizeX, sizeY, 1);
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
-            IGameShip ship3 = new GameShip(new Ship(ShipType.Military, 4, 400, 1), player2, 50);
+            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship3 = new GameShip(new CommonShip(ShipType.Military, 4, 400, 1), player2, 50);
             field[3, 3] = ship;
             field[4, 3] = ship;
             field[9, 9] = ship2;
@@ -320,7 +320,7 @@ namespace SeaBattle.Tests
             field[3, 10] = ship3;
             field[4, 10] = ship3;
 
-            IGameShip ship4 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship4 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
 
             field[5, 5] = ship4;
             field[5, 6] = ship4;
@@ -346,9 +346,9 @@ namespace SeaBattle.Tests
             IGameField field = new GameField(sizeX, sizeY, 1);
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
-            IGameShip ship3 = new GameShip(new Ship(ShipType.Military, 4, 400, 1), player2, 50);
+            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship3 = new GameShip(new CommonShip(ShipType.Military, 4, 400, 1), player2, 50);
             field[3, 3] = ship;
             field[4, 3] = ship;
             field[9, 9] = ship2;
@@ -358,7 +358,7 @@ namespace SeaBattle.Tests
             field[3, 10] = ship3;
             field[4, 10] = ship3;
 
-            IGameShip ship4 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship4 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
 
             field[5, 5] = ship4;
             field[5, 6] = ship4;
@@ -383,9 +383,9 @@ namespace SeaBattle.Tests
             IGameField field = new GameField(sizeX, sizeY, 1);
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
-            IGameShip ship3 = new GameShip(new Ship(ShipType.Military, 4, 400, 1), player2, 50);
+            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship3 = new GameShip(new CommonShip(ShipType.Military, 4, 400, 1), player2, 50);
             field[3, 3] = ship;
             field[4, 3] = ship;
             field[9, 9] = ship2;
@@ -395,7 +395,7 @@ namespace SeaBattle.Tests
             field[3, 10] = ship3;
             field[4, 10] = ship3;
 
-            IGameShip ship4 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship4 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
 
             field[5, 5] = ship4;
             field[5, 6] = ship4;
@@ -421,8 +421,8 @@ namespace SeaBattle.Tests
             IGameField field = new GameField(sizeX, sizeY, 1);
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
             field[3, 3] = ship;
             field[4, 3] = ship;
             field[9, 9] = ship2;
@@ -446,8 +446,8 @@ namespace SeaBattle.Tests
             IGameField field = new GameField(sizeX, sizeY, 1);
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
             field[3, 3] = ship;
             field[4, 3] = ship;
             field[9, 9] = ship2;
@@ -474,9 +474,9 @@ namespace SeaBattle.Tests
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
 
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
-            IGameShip ship3 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship3 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
 
             field[3, 3] = ship;
             field[4, 3] = ship;
@@ -509,7 +509,7 @@ namespace SeaBattle.Tests
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
 
-            IGameShip ship3 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship3 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
 
             ushort posX = 6;
             ushort posY = 2;
@@ -537,9 +537,9 @@ namespace SeaBattle.Tests
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
 
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
-            IGameShip ship3 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship3 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
 
             field[3, 3] = ship;
             field[4, 3] = ship;
@@ -572,9 +572,9 @@ namespace SeaBattle.Tests
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
 
-            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
-            IGameShip ship3 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship3 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
 
             field[3, 3] = ship;
             field[4, 3] = ship;
