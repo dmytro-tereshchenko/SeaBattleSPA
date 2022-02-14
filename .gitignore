@@ -457,6 +457,9 @@ $RECYCLE.BIN/
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/dev-deployment.ps1
+.angular/*
+.angular
+.vscode
 
 # SpecFlow generated files that get rebuilt
 *.feature.cs
