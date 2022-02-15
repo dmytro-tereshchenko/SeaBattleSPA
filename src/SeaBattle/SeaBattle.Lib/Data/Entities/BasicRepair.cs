@@ -43,11 +43,10 @@ namespace SeaBattle.Lib.Entities
         /// </summary>
         /// <param name="power">Amount of hp that ship can repair</param>
         /// <param name="range">Distance to target ship which can be repaired</param>
-        public BasicRepair(ushort power, ushort range)
+        public BasicRepair(ushort power, ushort range) : this()
         {
             RepairPower = power;
             RepairRange = range;
-            GameShips = new List<IGameShip>();
         }
     }
 }

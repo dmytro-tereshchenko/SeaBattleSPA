@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -11,20 +10,18 @@ namespace SeaBattle.Lib.Entities
     {
         public uint Id { get; set; }
 
-        [JsonIgnore]
-        public uint GameFieldId { get; set; }
+        public string? CurrentGamePlayerMove { get; set; }
 
-        public string CurrentGamePlayerMove { get; set; }
-        
         [NotMapped]
         public byte CurrentCountPlayers
         {
-            get => (byte) Players.Count;
+            get => (byte) GamePlayers.Count;
         }
 
         public byte MaxNumberOfPlayers { get; set; }
 
-        [JsonIgnore]
+        public uint GameFieldId { get; set; }
+
         public uint GameStateId { get; set; }
 
         public string Winner { get; set; }
@@ -37,7 +34,16 @@ namespace SeaBattle.Lib.Entities
 
         public ICollection<IStartField> StartFields { get; set; }
 
-        public ICollection<IGamePlayer> Players { get; set; }
+        public ICollection<IGamePlayer> GamePlayers { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Game"/> class
+        /// </summary>
+        public Game()
+        {
+            GamePlayers = new List<IGamePlayer>();
+            StartFields = new List<IStartField>();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class
@@ -50,14 +56,5 @@ namespace SeaBattle.Lib.Entities
         /// </summary>
         /// <param name="maxNumberOfPlayers">Max amount of players</param>
         public Game(byte maxNumberOfPlayers) : this() => MaxNumberOfPlayers = maxNumberOfPlayers;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Game"/> class
-        /// </summary>
-        public Game()
-        {
-            Players = new List<IGamePlayer>();
-            StartFields = new List<IStartField>();
-        }
     }
 }

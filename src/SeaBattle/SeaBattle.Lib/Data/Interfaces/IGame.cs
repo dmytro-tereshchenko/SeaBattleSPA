@@ -30,7 +30,7 @@ namespace SeaBattle.Lib.Entities
         /// Player, which needs to move this turn.
         /// </summary>
         /// <value><see cref="string"/></value>
-        string CurrentGamePlayerMove { get; set; }
+        string? CurrentGamePlayerMove { get; set; }
 
         /// <summary>
         /// Foreign key Id <see cref="IGameState"/>
@@ -67,6 +67,6 @@ namespace SeaBattle.Lib.Entities
         /// Collection of players for current game.
         /// </summary>
         /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGamePlayer"/></value>
-        ICollection<IGamePlayer> Players { get; set; }
+        ICollection<IGamePlayer> GamePlayers { get; set; }
     }
 }

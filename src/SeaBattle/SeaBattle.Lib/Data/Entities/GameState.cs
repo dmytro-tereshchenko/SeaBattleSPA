@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
@@ -16,10 +16,6 @@ namespace SeaBattle.Lib.Entities
         public string Name { get; set; }
 
         [JsonIgnore]
-        public uint GameId { get; set; }
-
-        [JsonIgnore]
-        [ForeignKey("GameId")]
-        public IGame Game { get; set; }
+        public ICollection<IGame> Games { get; set; } = new List<IGame>();
     }
 }

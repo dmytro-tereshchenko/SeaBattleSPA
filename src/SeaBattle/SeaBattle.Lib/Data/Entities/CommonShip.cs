@@ -50,14 +50,13 @@ namespace SeaBattle.Lib.Entities
         /// <param name="size">Length of the ship (cells) and amount of possible equipment slots</param>
         /// <param name="maxHp">Max hp of the ship that he can be damaged</param>
         /// <param name="speed">Max speed (amount of cells, that the ship can move in 1 turn)</param>
-        public CommonShip(IShipType type, byte size, ushort maxHp, byte speed)
+        public CommonShip(IShipType type, byte size, ushort maxHp, byte speed) : this()
         {
             ShipType = type;
             ShipTypeId = type.Id;
             Size = size;
             MaxHp = maxHp;
             Speed = speed;
-            GameShips = new List<IGameShip>();
         }
     }
 }

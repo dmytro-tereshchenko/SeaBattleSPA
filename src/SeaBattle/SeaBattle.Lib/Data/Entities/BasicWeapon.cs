@@ -39,11 +39,10 @@ namespace SeaBattle.Lib.Entities
         /// </summary>
         /// <param name="damage">Amount of hp that target ship can be damaged</param>
         /// <param name="aRange">Distance to target ship which can be damaged</param>
-        public BasicWeapon(ushort damage, ushort aRange)
+        public BasicWeapon(ushort damage, ushort aRange) : this()
         {
             Damage = damage;
             AttackRange = aRange;
-            GameShips = new List<IGameShip>();
         }
     }
 }

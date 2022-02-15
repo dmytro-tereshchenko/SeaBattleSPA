@@ -11,6 +11,8 @@ namespace SeaBattle.Lib.Entities
     {
         public uint Id { get; set; }
 
+        public int Points { get; set; }
+
         public uint GameId { get; set; }
 
         [JsonIgnore]
@@ -19,9 +21,9 @@ namespace SeaBattle.Lib.Entities
         [JsonIgnore]
         public uint GamePlayerId { get; set; }
 
-        public ICollection<IStartFieldCell> StartFieldCells { get; set; }
-
-        public int Points { get; set; }
+        [JsonIgnore]
+        [ForeignKey("GameId")]
+        public IGame Game { get; set; }
 
         [ForeignKey("GameFieldId")]
         public IGameField GameField { get; set; }
@@ -29,16 +31,18 @@ namespace SeaBattle.Lib.Entities
         [ForeignKey("GamePlayerId")]
         public IGamePlayer GamePlayer { get; set; }
 
-        [JsonIgnore]
-        [ForeignKey("GameId")]
-        public IGame Game { get; set; }
+        public ICollection<IStartFieldCell> StartFieldCells { get; set; }
 
+        public ICollection<IGameShip> GameShips { get; set; }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public StartField()
         {
             StartFieldCells = new List<IStartFieldCell>();
+            GameShips = new List<IGameShip>();
         }
-
-        public ICollection<IGameShip> GameShips { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StartField"/> class
@@ -76,13 +80,11 @@ namespace SeaBattle.Lib.Entities
         /// <param name="field">Game field</param>
         /// <param name="points">Points for buying ships</param>
         /// <param name="gameId">Id of game <see cref="IGame"/></param>
-        public StartField(IGameField field, int points, uint gameId)
+        public StartField(IGameField field, int points, uint gameId) : this()
         {
             GameField = field;
-            StartFieldCells = new List<IStartFieldCell>();
             Points = points;
             GameId = gameId;
-            GameShips = new List<IGameShip>();
         }
     }
 }

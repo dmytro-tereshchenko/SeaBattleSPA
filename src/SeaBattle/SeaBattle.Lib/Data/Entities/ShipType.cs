@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -14,6 +15,7 @@ namespace SeaBattle.Lib.Entities
         [Required]
         public string Name { get; set; }
 
+        [JsonIgnore]
         public ICollection<ICommonShip> CommonShips { get; set; } = new List<ICommonShip>();
     }
 }

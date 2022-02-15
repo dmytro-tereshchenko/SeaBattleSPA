@@ -13,8 +13,6 @@ namespace SeaBattle.Lib.Entities
     {
         public uint Id { get; set; }
 
-        public ICollection<IGameFieldCell> GameFieldCells { get; set; }
-
         public ushort SizeX { get; set; }
 
         public ushort SizeY { get; set; }
@@ -27,6 +25,17 @@ namespace SeaBattle.Lib.Entities
 
         [JsonIgnore]
         public ICollection<IStartField> StartFields { get; set; }
+
+        public ICollection<IGameFieldCell> GameFieldCells { get; set; }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public GameField()
+        {
+            GameFieldCells = new List<IGameFieldCell>();
+            StartFields = new List<IStartField>();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GameField"/> class
@@ -41,12 +50,10 @@ namespace SeaBattle.Lib.Entities
         /// </summary>
         /// <param name="sizeX">Size X of game field</param>
         /// <param name="sizeY">Size Y of game field</param>
-        public GameField(ushort sizeX, ushort sizeY)
+        public GameField(ushort sizeX, ushort sizeY) : this()
         {
             SizeX = sizeX;
             SizeY = sizeY;
-
-            GameFieldCells = new List<IGameFieldCell>();
         }
 
         public IGameShip this[ushort x, ushort y]

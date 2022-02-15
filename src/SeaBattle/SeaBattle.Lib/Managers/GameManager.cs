@@ -150,7 +150,7 @@ namespace SeaBattle.Lib.Managers
 
             return (response.State != StateCode.Success)
                 ? response.State
-                : _shipManager.BuyShip(_game.Players, _shipManager.GetNewShip(player, ship), response.Value);
+                : _shipManager.BuyShip(_game.GamePlayers, _shipManager.GetNewShip(player, ship), response.Value);
         }
 
         public StateCode SellShip(IGamePlayer player, IGameShip ship)
@@ -164,7 +164,7 @@ namespace SeaBattle.Lib.Managers
 
             return (response.State != StateCode.Success)
                 ? response.State
-                : _shipManager.SellShip(_game.Players, ship, response.Value);
+                : _shipManager.SellShip(_game.GamePlayers, ship, response.Value);
         }
 
         public StateCode AddWeapon(IGamePlayer player, IGameShip ship, IWeapon weapon)
@@ -252,16 +252,16 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.GameFinished;
             }
 
-            if (!_game.Players.Contains(player))
+            if (!_game.GamePlayers.Contains(player))
             {
                 return StateCode.InvalidPlayer;
             }
 
             player.State = PlayerState.Ready;
 
-            if (_game.Players.All(p => p.State == PlayerState.Ready))
+            if (_game.GamePlayers.All(p => p.State == PlayerState.Ready))
             {
-                foreach (var gamePlayer in _game.Players)
+                foreach (var gamePlayer in _game.GamePlayers)
                 {
                     gamePlayer.State = PlayerState.Process;
                 }
@@ -313,7 +313,7 @@ namespace SeaBattle.Lib.Managers
 
         public StateCode NextMove()
         {
-            ICollection<IGamePlayer> players = _game.Players;
+            ICollection<IGamePlayer> players = _game.GamePlayers;
 
             for (int i = 0; i < players.Count; i++)
             {

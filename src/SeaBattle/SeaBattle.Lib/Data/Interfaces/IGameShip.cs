@@ -21,6 +21,13 @@ namespace SeaBattle.Lib.Entities
         uint GamePlayerId { get; set; }
 
         /// <summary>
+        /// Foreign key Id <see cref="IStartField"/>
+        /// The field for storing the location of ships and points for buy ships by the player when initializing game.
+        /// </summary>
+        /// <value><see cref="uint"/></value>
+        uint? StartFieldId { get; set; }
+
+        /// <summary>
         /// Current hp of ship
         /// </summary>
         /// <value><see cref="ushort"/></value>
@@ -58,14 +65,14 @@ namespace SeaBattle.Lib.Entities
 
         /// <summary>
         /// Collection of weapons on ship
-        /// Navigate property <see cref="IWeapon/>
+        /// Navigate property <see cref="IWeapon/">
         /// </summary>
         /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IWeapon"/></value>
         ICollection<IWeapon> Weapons { get; set;  }
 
         /// <summary>
         /// Collection of weapons on ship
-        /// Navigate property <see cref="IRepair/>
+        /// Navigate property <see cref="IRepair/">
         /// </summary>
         /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IRepair"/></value>
         ICollection<IRepair> Repairs { get; set; }
@@ -77,11 +84,18 @@ namespace SeaBattle.Lib.Entities
         ICommonShip CommonShip { get; set; }
 
         /// <summary>
-        /// Navigate property <see cref="IGamePlayer/>
+        /// Navigate property <see cref="IGamePlayer"/>
         /// The player who owns this ship
         /// </summary>
         /// <value><see cref="IGamePlayer"/></value>
         IGamePlayer GamePlayer { get; set; }
+
+        /// <summary>
+        /// Navigate property <see cref="IStartField"/>
+        /// The field for storing the location of ships and points for buy ships by the player when initializing game.
+        /// </summary>
+        /// <value><see cref="IStartField"/></value>
+        IStartField StartField { get; set; }
 
         /// <summary>
         /// Collection of field's cell for allocate <see cref="IGameShip"/> on <see cref="IGameField"/> 

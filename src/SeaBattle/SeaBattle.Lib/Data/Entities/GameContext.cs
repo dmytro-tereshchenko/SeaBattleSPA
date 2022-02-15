@@ -36,9 +36,23 @@ namespace SeaBattle.Lib.Data.Entities
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<IGameShip>()
+                .HasMany(s => s.Weapons)
+                .WithMany(w => w.GameShips)
+                .UsingEntity(j => j.ToTable("GameShipWeapon"));
+
+            modelBuilder.Entity<IGameShip>()
+                .HasMany(s => s.Repairs)
+                .WithMany(r => r.GameShips)
+                .UsingEntity(j => j.ToTable("GameShipRepair"));
+
+            modelBuilder.Entity<IGame>()
+                .HasMany(g => g.GamePlayers)
+                .WithMany(p => p.Games)
+                .UsingEntity(j => j.ToTable("GamePlayerGame"));
         }
     }
-    public enum ShipType
+    /*public enum ShipType
     {
         Military,
         Auxiliary,
@@ -58,5 +72,5 @@ namespace SeaBattle.Lib.Data.Entities
         Init, //Initializing game
         Process, //Game in process
         Finished //Game was finished
-    }
+    }*/
 }

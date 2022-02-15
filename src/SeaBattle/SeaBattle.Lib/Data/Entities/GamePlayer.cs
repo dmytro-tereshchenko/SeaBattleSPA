@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
@@ -7,6 +8,7 @@ namespace SeaBattle.Lib.Entities
     /// <summary>
     /// Player (user) in the game
     /// </summary>
+    [Index("Name")]
     public class GamePlayer : Player, IGamePlayer
     {
         [JsonIgnore]
@@ -19,11 +21,7 @@ namespace SeaBattle.Lib.Entities
         public ICollection<IGameShip> GameShips { get; set; }
 
         [JsonIgnore]
-        public uint GameId { get; set; }
-
-        [JsonIgnore]
-        [ForeignKey("GameId")]
-        public IGame Game { get; set; }
+        public ICollection<IGame> Games { get; set; }
 
         [JsonIgnore]
         public ICollection<IStartField> StartFields { get; set; }
@@ -34,6 +32,8 @@ namespace SeaBattle.Lib.Entities
         public GamePlayer()
         {
             GameShips = new List<IGameShip>();
+            Games = new List<IGame>();
+            StartFields = new List<IStartField>();
         }
 
         /// <summary>
@@ -47,11 +47,7 @@ namespace SeaBattle.Lib.Entities
         /// Initializes a new instance of the <see cref="GamePlayer"/> class
         /// </summary>
         /// <param name="name">Players name</param>
-        public GamePlayer(string name) : base(name)
-        {
-            Name = name;
-            GameShips = new List<IGameShip>();
-        }
+        public GamePlayer(string name) : this() => Name = name;
 
         public static bool operator ==(GamePlayer obj1, GamePlayer obj2) =>
             obj1?.Equals(obj2) ?? false;

@@ -25,7 +25,7 @@ namespace SeaBattle.Lib.Managers
 
         public IResponseGameField GetGameField(IGamePlayer player, IGame game)
         {
-            if (!game.Players.Contains(player))
+            if (!game.GamePlayers.Contains(player))
             {
                 return new ResponseGameField(null, StateCode.InvalidPlayer);
             }

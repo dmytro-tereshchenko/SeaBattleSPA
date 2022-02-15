@@ -14,16 +14,10 @@ namespace SeaBattle.Lib.Entities
         uint PlayerStateId { get; set; }
 
         /// <summary>
-        /// Foreign key Id <see cref="IGame"/>
+        /// Navigation property to collection <see cref="IGame"/>
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint GameId { get; set; }
-
-        /// <summary>
-        /// Navigate property <see cref="IGame/>
-        /// </summary>
-        /// <value><see cref="IGame"/></value>
-        IGame Game { get; set; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGame"/>.</value>
+        ICollection<IGame> Games { get; set; }
 
         /// <summary>
         /// Navigate property <see cref="IPlayerState"/>

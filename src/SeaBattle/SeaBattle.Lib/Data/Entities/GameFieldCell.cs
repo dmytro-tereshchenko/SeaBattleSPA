@@ -11,6 +11,8 @@ namespace SeaBattle.Lib.Entities
 
         public ushort Y { get; set; }
 
+        public bool Stern { get; set; }
+
         [JsonIgnore]
         public uint GameShipId { get; set; }
 
@@ -23,7 +25,5 @@ namespace SeaBattle.Lib.Entities
         [JsonIgnore]
         [ForeignKey("GameFieldId")]
         public IGameField GameField { get; set; }
-
-        public bool Stern { get; set; }
     }
 }

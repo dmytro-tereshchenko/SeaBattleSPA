@@ -13,12 +13,6 @@ namespace SeaBattle.Lib.Entities
     {
         public uint Id { get; set; }
 
-        [JsonIgnore]
-        public uint CommonShipId { get; set; }
-
-        [JsonIgnore]
-        public uint GamePlayerId { get; set; }
-
         public ushort Hp { get; set; }
 
         public int Points { get; set; }
@@ -83,11 +77,24 @@ namespace SeaBattle.Lib.Entities
             set => CommonShip.Speed = value;
         }
 
+        [JsonIgnore]
+        public uint CommonShipId { get; set; }
+
+        [JsonIgnore]
+        public uint GamePlayerId { get; set; }
+
+        [JsonIgnore]
+        public uint? StartFieldId { get; set; }
+
         [ForeignKey("CommonShipId")]
         public ICommonShip CommonShip { get; set; }
 
         [ForeignKey("GamePlayerId")]
         public IGamePlayer GamePlayer { get; set; }
+
+        [JsonIgnore]
+        [ForeignKey("StartFieldId")]
+        public IStartField StartField { get; set; }
 
         public ICollection<IWeapon> Weapons { get; set; }
 
