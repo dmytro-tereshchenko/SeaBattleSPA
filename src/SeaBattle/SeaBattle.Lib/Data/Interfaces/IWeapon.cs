@@ -20,9 +20,9 @@ namespace SeaBattle.Lib.Entities
         ushort AttackRange { get; set; }
 
         /// <summary>
-        /// Navigation property to collection <see cref="IGameShip"/>
+        /// Navigation property to collection <see cref="GameShip"/>
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGameShip"/>.</value>
-        public ICollection<IGameShip> GameShips { get; set; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="GameShip"/>.</value>
+        public ICollection<GameShip> GameShips { get; set; }
     }
 }

@@ -18,15 +18,15 @@
         ushort Y { get; set; }
 
         /// <summary>
-        /// Foreign key Id <see cref="IStartField"/>
+        /// Foreign key Id <see cref="StartField"/>
         /// </summary>
         /// <value><see cref="uint"/></value>
         uint StartFieldId { get; set; }
 
         /// <summary>
-        /// Navigate property <see cref="IStartField"/>
+        /// Navigate property <see cref="StartField"/>
         /// </summary>
-        /// <value><see cref="IStartField"/></value>
-        IGameField StartField { get; set; }
+        /// <value><see cref="StartField"/></value>
+        StartField StartField { get; set; }
     }
 }

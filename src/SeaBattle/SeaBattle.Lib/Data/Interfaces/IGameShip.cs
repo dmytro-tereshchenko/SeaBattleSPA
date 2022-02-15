@@ -8,20 +8,20 @@ namespace SeaBattle.Lib.Entities
     public interface IGameShip : ICommonShip, IEntity
     {
         /// <summary>
-        /// Foreign key Id <see cref="IShip"/>
+        /// Foreign key Id <see cref="Ship"/>
         /// </summary>
         /// <value><see cref="uint"/></value>
         uint ShipId { get; set; }
 
         /// <summary>
-        /// Foreign key Id <see cref="IGamePlayer"/>
+        /// Foreign key Id <see cref="GamePlayer"/>
         /// The player who owns this ship
         /// </summary>
         /// <value><see cref="uint"/></value>
         uint GamePlayerId { get; set; }
 
         /// <summary>
-        /// Foreign key Id <see cref="IStartField"/>
+        /// Foreign key Id <see cref="StartField"/>
         /// The field for storing the location of ships and points for buy ships by the player when initializing game.
         /// </summary>
         /// <value><see cref="uint"/></value>
@@ -65,48 +65,48 @@ namespace SeaBattle.Lib.Entities
 
         /// <summary>
         /// Collection of weapons on ship
-        /// Navigate property <see cref="IWeapon/">
+        /// Navigate property <see cref="BasicWeapon"/>
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IWeapon"/></value>
-        ICollection<IWeapon> Weapons { get; set;  }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="BasicWeapon"/></value>
+        ICollection<BasicWeapon> Weapons { get; set;  }
 
         /// <summary>
         /// Collection of weapons on ship
-        /// Navigate property <see cref="IRepair/">
+        /// Navigate property <see cref="BasicRepair"/>
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IRepair"/></value>
-        ICollection<IRepair> Repairs { get; set; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="BasicRepair"/></value>
+        ICollection<BasicRepair> Repairs { get; set; }
 
         /// <summary>
-        /// Navigate property <see cref="IShip"/>
+        /// Navigate property <see cref="Ship"/>
         /// </summary>
-        /// <value><see cref="IShip"/></value>
-        IShip Ship { get; set; }
+        /// <value><see cref="Ship"/></value>
+        Ship Ship { get; set; }
 
         /// <summary>
-        /// Navigate property <see cref="IGamePlayer"/>
+        /// Navigate property <see cref="GamePlayer"/>
         /// The player who owns this ship
         /// </summary>
-        /// <value><see cref="IGamePlayer"/></value>
-        IGamePlayer GamePlayer { get; set; }
+        /// <value><see cref="GamePlayer"/></value>
+        GamePlayer GamePlayer { get; set; }
 
         /// <summary>
-        /// Navigate property <see cref="IStartField"/>
+        /// Navigate property <see cref="StartField"/>
         /// The field for storing the location of ships and points for buy ships by the player when initializing game.
         /// </summary>
-        /// <value><see cref="IStartField"/></value>
-        IStartField StartField { get; set; }
+        /// <value><see cref="StartField"/></value>
+        StartField StartField { get; set; }
 
         /// <summary>
-        /// Collection of field's cell for allocate <see cref="IGameShip"/> on <see cref="IGameField"/> 
+        /// Collection of field's cell for allocate <see cref="GameShip"/> on <see cref="GameField"/> 
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGameFieldCell"/></value>
-        ICollection<IGameFieldCell> GameFieldCells { get; set; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="GameFieldCell"/></value>
+        ICollection<GameFieldCell> GameFieldCells { get; set; }
 
         /// <summary>
         /// Collection of field's cell for storing the location of ships and points for buy ships by the player when initializing game.
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IStartFieldCell"/></value>
-        ICollection<IStartFieldCell> StartFieldCells { get; set; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="StartFieldCell"/></value>
+        ICollection<StartFieldCell> StartFieldCells { get; set; }
     }
 }

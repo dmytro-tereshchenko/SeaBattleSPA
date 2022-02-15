@@ -14,9 +14,9 @@ namespace SeaBattle.Lib.Entities
         string Name { get; set; }
 
         /// <summary>
-        /// Navigation property to collection <see cref="IGamePlayer"/>
+        /// Navigation property to collection <see cref="GamePlayer"/>
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGamePlayer"/>.</value>
-        ICollection<IGamePlayer> GamePlayers { get; set; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="GamePlayer"/>.</value>
+        ICollection<GamePlayer> GamePlayers { get; set; }
     }
 }

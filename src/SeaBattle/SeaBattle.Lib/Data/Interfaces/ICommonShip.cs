@@ -24,9 +24,9 @@
         byte Speed { get; set; }
 
         /// <summary>
-        /// Navigate property <see cref="IShipType"/>
+        /// Navigate property <see cref="ShipType"/>
         /// </summary>
-        /// <value><see cref="IShipType"/></value>
-        IShipType ShipType { get; set; }
+        /// <value><see cref="ShipType"/></value>
+        ShipType ShipType { get; set; }
     }
 }

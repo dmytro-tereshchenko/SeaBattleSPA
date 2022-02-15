@@ -8,13 +8,6 @@ namespace SeaBattle.Lib.Entities
     public interface IGame: IEntity
     {
         /// <summary>
-        /// Foreign key Id <see cref="IGameField"/>
-        /// Field of the game
-        /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint GameFieldId { get; set; }
-
-        /// <summary>
         /// Current amount of players which connected to the game
         /// </summary>
         /// <value><see cref="byte"/></value>
@@ -33,7 +26,7 @@ namespace SeaBattle.Lib.Entities
         string? CurrentGamePlayerMove { get; set; }
 
         /// <summary>
-        /// Foreign key Id <see cref="IGameState"/>
+        /// Foreign key Id <see cref="GameState"/>
         /// Current state of game
         /// </summary>
         /// <value><see cref="uint"/></value>
@@ -48,25 +41,25 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Field of the game
         /// </summary>
-        /// <value><see cref="IGameField"/></value>
-        IGameField GameField { get; set; }
+        /// <value><see cref="GameField"/></value>
+        GameField GameField { get; set; }
 
         /// <summary>
         /// Current state of game
         /// </summary>
         /// <value><see cref="GameState"/></value>
-        IGameState GameState { get; set; }
+        GameState GameState { get; set; }
 
         /// <summary>
         /// Collection of fields with initializing data and parameters for every player
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IStartField"/></value>
-        ICollection<IStartField> StartFields { get; set; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="StartField"/></value>
+        ICollection<StartField> StartFields { get; set; }
 
         /// <summary>
         /// Collection of players for current game.
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGamePlayer"/></value>
-        ICollection<IGamePlayer> GamePlayers { get; set; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="GamePlayer"/></value>
+        ICollection<GamePlayer> GamePlayers { get; set; }
     }
 }

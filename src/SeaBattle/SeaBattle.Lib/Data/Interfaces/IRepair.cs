@@ -23,6 +23,6 @@ namespace SeaBattle.Lib.Entities
         /// Navigation property to collection <see cref="IGameShip"/>
         /// </summary>
         /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGameShip"/>.</value>
-        public ICollection<IGameShip> GameShips { get; set; }
+        public ICollection<GameShip> GameShips { get; set; }
     }
 }
