@@ -18,7 +18,6 @@ namespace SeaBattle.Lib.Entities
         public uint StartFieldId { get; set; }
 
         [JsonIgnore]
-        [ForeignKey("StartFieldId")]
-        public IGameField StartField { get; set; }
+        public StartField StartField { get; set; }
     }
 }

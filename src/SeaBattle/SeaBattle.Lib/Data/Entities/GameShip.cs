@@ -47,7 +47,7 @@ namespace SeaBattle.Lib.Entities
 
         [NotMapped]
         [JsonIgnore]
-        public IShipType ShipType
+        public ShipType ShipType
         {
             get => Ship.ShipType;
             set => Ship.ShipType = value;
@@ -86,35 +86,32 @@ namespace SeaBattle.Lib.Entities
         [JsonIgnore]
         public uint? StartFieldId { get; set; }
 
-        [ForeignKey("ShipId")]
-        public IShip Ship { get; set; }
+        public Ship Ship { get; set; }
 
-        [ForeignKey("GamePlayerId")]
-        public IGamePlayer GamePlayer { get; set; }
+        public GamePlayer GamePlayer { get; set; }
 
         [JsonIgnore]
-        [ForeignKey("StartFieldId")]
-        public IStartField StartField { get; set; }
+        public StartField StartField { get; set; }
 
-        public ICollection<IWeapon> Weapons { get; set; }
+        public ICollection<BasicWeapon> Weapons { get; set; }
 
-        public ICollection<IRepair> Repairs { get; set; }
-
-        [JsonIgnore]
-        public ICollection<IGameFieldCell> GameFieldCells { get; set; }
+        public ICollection<BasicRepair> Repairs { get; set; }
 
         [JsonIgnore]
-        public ICollection<IStartFieldCell> StartFieldCells { get; set; }
+        public ICollection<GameFieldCell> GameFieldCells { get; set; }
+
+        [JsonIgnore]
+        public ICollection<StartFieldCell> StartFieldCells { get; set; }
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public GameShip()
         {
-            Weapons = new List<IWeapon>();
-            Repairs = new List<IRepair>();
-            GameFieldCells = new List<IGameFieldCell>();
-            StartFieldCells = new List<IStartFieldCell>();
+            Weapons = new List<BasicWeapon>();
+            Repairs = new List<BasicRepair>();
+            GameFieldCells = new List<GameFieldCell>();
+            StartFieldCells = new List<StartFieldCell>();
         }
 
         /// <summary>
@@ -125,7 +122,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
         /// <param name="hp">Current hp of ship</param>
-        public GameShip(uint id, IShip ship, IGamePlayer gamePlayer, int points, ushort hp)
+        public GameShip(uint id, Ship ship, GamePlayer gamePlayer, int points, ushort hp)
             : this(ship, gamePlayer, points, hp) => Id = id;
 
         /// <summary>
@@ -135,7 +132,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="ship">Basic ship</param>
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
-        public GameShip(uint id, IShip ship, IGamePlayer gamePlayer, int points) 
+        public GameShip(uint id, Ship ship, GamePlayer gamePlayer, int points) 
             : this(id, ship, gamePlayer, points, ship.MaxHp) { }
 
         /// <summary>
@@ -145,15 +142,12 @@ namespace SeaBattle.Lib.Entities
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
         /// <param name="hp">Current hp of ship</param>
-        public GameShip(IShip ship, IGamePlayer gamePlayer, int points, ushort hp)
+        public GameShip(Ship ship, GamePlayer gamePlayer, int points, ushort hp) : this()
         {
             Ship = ship;
             GamePlayer = gamePlayer;
             Points = points;
             Hp = hp;
-            Weapons = new List<IWeapon>();
-            Repairs = new List<IRepair>();
-            GameFieldCells = new List<IGameFieldCell>();
         }
 
         /// <summary>
@@ -162,7 +156,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="ship">Basic ship</param>
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
-        public GameShip(IShip ship, IGamePlayer gamePlayer, int points)
+        public GameShip(Ship ship, GamePlayer gamePlayer, int points)
             : this(ship, gamePlayer, points, ship.MaxHp) { }
 
         public static bool operator ==(GameShip obj1, GameShip obj2) =>

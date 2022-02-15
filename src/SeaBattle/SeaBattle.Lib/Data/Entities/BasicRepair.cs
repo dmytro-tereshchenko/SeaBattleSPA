@@ -19,14 +19,14 @@ namespace SeaBattle.Lib.Entities
         public ushort RepairRange { get; set; }
 
         [JsonIgnore]
-        public ICollection<IGameShip> GameShips { get; set; }
+        public ICollection<GameShip> GameShips { get; set; }
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public BasicRepair()
         {
-            GameShips = new List<IGameShip>();
+            GameShips = new List<GameShip>();
         }
 
         /// <summary>

@@ -20,21 +20,21 @@ namespace SeaBattle.Lib.Entities
         public uint GameId { get; set; }
 
         [JsonIgnore]
-        [ForeignKey("GameId")]
-        public IGame Game { get; set; }
+        [ForeignKey(nameof(GameId))]
+        public Game Game { get; set; }
 
         [JsonIgnore]
-        public ICollection<IStartField> StartFields { get; set; }
+        public ICollection<StartField> StartFields { get; set; }
 
-        public ICollection<IGameFieldCell> GameFieldCells { get; set; }
+        public ICollection<GameFieldCell> GameFieldCells { get; set; }
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public GameField()
         {
-            GameFieldCells = new List<IGameFieldCell>();
-            StartFields = new List<IStartField>();
+            GameFieldCells = new List<GameFieldCell>();
+            StartFields = new List<StartField>();
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace SeaBattle.Lib.Entities
             SizeY = sizeY;
         }
 
-        public IGameShip this[ushort x, ushort y]
+        public GameShip this[ushort x, ushort y]
         {
             get
             {
@@ -84,7 +84,7 @@ namespace SeaBattle.Lib.Entities
                         $"[{x},{y}] out of range [1, 1]:[{SizeX},{SizeY}] in {nameof(GameField)}");
                 }
 
-                IGameFieldCell fieldCell = null;
+                GameFieldCell fieldCell = null;
 
                 foreach (var cell in GameFieldCells)
                 {

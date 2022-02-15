@@ -19,17 +19,19 @@ namespace SeaBattle.Lib.Entities
 
         public byte Speed { get; set; }
 
-        public IShipType ShipType { get; set; }
+        public ShipType ShipType { get; set; }
+
+        public uint Cost { get; set; }
 
         [JsonIgnore]
-        public ICollection<IGameShip> GameShips { get; set; }
+        public ICollection<GameShip> GameShips { get; set; }
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public Ship()
         {
-            GameShips = new List<IGameShip>();
+            GameShips = new List<GameShip>();
         }
 
         /// <summary>
@@ -40,7 +42,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="size">Length of the ship (cells) and amount of possible equipment slots</param>
         /// <param name="maxHp">Max hp of the ship that he can be damaged</param>
         /// <param name="speed">Max speed (amount of cells, that the ship can move in 1 turn)</param>
-        public Ship(uint id, IShipType type, byte size, ushort maxHp, byte speed)
+        public Ship(uint id, ShipType type, byte size, ushort maxHp, byte speed)
         : this(type, size, maxHp, speed) => Id = id;
 
         /// <summary>
@@ -50,7 +52,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="size">Length of the ship (cells) and amount of possible equipment slots</param>
         /// <param name="maxHp">Max hp of the ship that he can be damaged</param>
         /// <param name="speed">Max speed (amount of cells, that the ship can move in 1 turn)</param>
-        public Ship(IShipType type, byte size, ushort maxHp, byte speed) : this()
+        public Ship(ShipType type, byte size, ushort maxHp, byte speed) : this()
         {
             ShipType = type;
             ShipTypeId = type.Id;

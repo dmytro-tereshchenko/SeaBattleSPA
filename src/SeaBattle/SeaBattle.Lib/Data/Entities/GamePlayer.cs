@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -14,26 +15,26 @@ namespace SeaBattle.Lib.Entities
         [JsonIgnore]
         public uint PlayerStateId { get; set; }
 
-        [ForeignKey("PlayerStateId")]
-        public IPlayerState PlayerState { get; set; }
+        [ForeignKey(nameof(PlayerStateId))]
+        public PlayerState PlayerState { get; set; }
 
         [JsonIgnore]
-        public ICollection<IGameShip> GameShips { get; set; }
+        public ICollection<GameShip> GameShips { get; set; }
 
         [JsonIgnore]
-        public ICollection<IGame> Games { get; set; }
+        public ICollection<Game> Games { get; set; }
 
         [JsonIgnore]
-        public ICollection<IStartField> StartFields { get; set; }
+        public ICollection<StartField> StartFields { get; set; }
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public GamePlayer()
         {
-            GameShips = new List<IGameShip>();
-            Games = new List<IGame>();
-            StartFields = new List<IStartField>();
+            GameShips = new List<GameShip>();
+            Games = new List<Game>();
+            StartFields = new List<StartField>();
         }
 
         /// <summary>

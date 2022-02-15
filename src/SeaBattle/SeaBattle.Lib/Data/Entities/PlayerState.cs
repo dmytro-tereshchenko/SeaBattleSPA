@@ -16,6 +16,11 @@ namespace SeaBattle.Lib.Entities
         public string Name { get; set; }
 
         [JsonIgnore]
-        public ICollection<IGamePlayer> GamePlayers { get; set; } = new List<IGamePlayer>();
+        public ICollection<GamePlayer> GamePlayers { get; set; } = new List<GamePlayer>();
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public PlayerState(){}
     }
 }

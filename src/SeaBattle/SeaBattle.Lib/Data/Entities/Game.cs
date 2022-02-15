@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SeaBattle.Lib.Entities
@@ -20,29 +21,25 @@ namespace SeaBattle.Lib.Entities
 
         public byte MaxNumberOfPlayers { get; set; }
 
-        public uint GameFieldId { get; set; }
-
         public uint GameStateId { get; set; }
 
         public string Winner { get; set; }
 
-        [ForeignKey("GameFieldId")]
-        public IGameField GameField { get; set; }
+        public GameField GameField { get; set; }
 
-        [ForeignKey("GameStateId")]
-        public IGameState GameState { get; set; }
+        public GameState GameState { get; set; }
 
-        public ICollection<IStartField> StartFields { get; set; }
+        public ICollection<StartField> StartFields { get; set; }
 
-        public ICollection<IGamePlayer> GamePlayers { get; set; }
+        public ICollection<GamePlayer> GamePlayers { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class
         /// </summary>
         public Game()
         {
-            GamePlayers = new List<IGamePlayer>();
-            StartFields = new List<IStartField>();
+            GamePlayers = new List<GamePlayer>();
+            StartFields = new List<StartField>();
         }
 
         /// <summary>

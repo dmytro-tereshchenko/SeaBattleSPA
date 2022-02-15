@@ -19,11 +19,9 @@ namespace SeaBattle.Lib.Entities
         [JsonIgnore]
         public uint GameFieldId { get; set; }
 
-        [ForeignKey("GameShipId")]
-        public IGameShip GameShip { get; set; }
+        public GameShip GameShip { get; set; }
 
         [JsonIgnore]
-        [ForeignKey("GameFieldId")]
-        public IGameField GameField { get; set; }
+        public GameField GameField { get; set; }
     }
 }

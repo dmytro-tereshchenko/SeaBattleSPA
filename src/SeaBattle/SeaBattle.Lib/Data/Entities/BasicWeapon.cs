@@ -15,14 +15,14 @@ namespace SeaBattle.Lib.Entities
         public ushort AttackRange { get; set; }
 
         [JsonIgnore]
-        public ICollection<IGameShip> GameShips { get; set; }
+        public ICollection<GameShip> GameShips { get; set; }
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public BasicWeapon()
         {
-            GameShips = new List<IGameShip>();
+            GameShips = new List<GameShip>();
         }
 
         /// <summary>

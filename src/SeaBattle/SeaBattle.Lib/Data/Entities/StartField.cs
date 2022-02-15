@@ -22,26 +22,25 @@ namespace SeaBattle.Lib.Entities
         public uint GamePlayerId { get; set; }
 
         [JsonIgnore]
-        [ForeignKey("GameId")]
-        public IGame Game { get; set; }
+        public Game Game { get; set; }
 
-        [ForeignKey("GameFieldId")]
-        public IGameField GameField { get; set; }
+        [ForeignKey(nameof(GameFieldId))]
+        public GameField GameField { get; set; }
 
-        [ForeignKey("GamePlayerId")]
-        public IGamePlayer GamePlayer { get; set; }
+        [ForeignKey(nameof(GamePlayerId))]
+        public GamePlayer GamePlayer { get; set; }
 
-        public ICollection<IStartFieldCell> StartFieldCells { get; set; }
+        public ICollection<StartFieldCell> StartFieldCells { get; set; }
 
-        public ICollection<IGameShip> GameShips { get; set; }
+        public ICollection<GameShip> GameShips { get; set; }
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public StartField()
         {
-            StartFieldCells = new List<IStartFieldCell>();
-            GameShips = new List<IGameShip>();
+            StartFieldCells = new List<StartFieldCell>();
+            GameShips = new List<GameShip>();
         }
 
         /// <summary>
@@ -50,11 +49,11 @@ namespace SeaBattle.Lib.Entities
         /// <param name="id">Id of start field</param>
         /// <param name="field">Game field</param>
         /// <param name="fieldLabels">Array labels for game field when the player can put his own ships on start field</param>
-        /// <param name="gamePlayer">Player who own this <see cref="IStartField"/></param>
+        /// <param name="gamePlayer">Player who own this <see cref="StartField"/></param>
         /// <param name="points">Points for buying ships</param>
         /// <param name="gameShips">Collection of ships that bought but don't put to the field</param>
-        /// <param name="gameId">Id of game <see cref="IGame"/></param>
-        public StartField(uint id, IGameField field, ICollection<IStartFieldCell> fieldLabels, IGamePlayer gamePlayer, int points, ICollection<IGameShip> gameShips, uint gameId)
+        /// <param name="gameId">Id of game <see cref="Game"/></param>
+        public StartField(uint id, GameField field, ICollection<StartFieldCell> fieldLabels, GamePlayer gamePlayer, int points, ICollection<GameShip> gameShips, uint gameId)
         :this(field, fieldLabels, gamePlayer,  points,  gameShips, gameId) => Id = id;
 
         /// <summary>
@@ -62,11 +61,11 @@ namespace SeaBattle.Lib.Entities
         /// </summary>
         /// <param name="field">Game field</param>
         /// <param name="fieldLabels">Array labels for game field when the player can put his own ships on start field</param>
-        /// <param name="gamePlayer">Player who own this <see cref="IStartField"/></param>
+        /// <param name="gamePlayer">Player who own this <see cref="StartField"/></param>
         /// <param name="points">Points for buying ships</param>
         /// <param name="gameShips">Collection of ships that bought but don't put to the field</param>
-        /// <param name="gameId">Id of game <see cref="IGame"/></param>
-        public StartField(IGameField field, ICollection<IStartFieldCell> fieldLabels, IGamePlayer gamePlayer, int points, ICollection<IGameShip> gameShips, uint gameId) 
+        /// <param name="gameId">Id of game <see cref="Game"/></param>
+        public StartField(GameField field, ICollection<StartFieldCell> fieldLabels, GamePlayer gamePlayer, int points, ICollection<GameShip> gameShips, uint gameId) 
             : this(field, points, gameId)
         {
             StartFieldCells = fieldLabels;
@@ -79,8 +78,8 @@ namespace SeaBattle.Lib.Entities
         /// </summary>
         /// <param name="field">Game field</param>
         /// <param name="points">Points for buying ships</param>
-        /// <param name="gameId">Id of game <see cref="IGame"/></param>
-        public StartField(IGameField field, int points, uint gameId) : this()
+        /// <param name="gameId">Id of game <see cref="Game"/></param>
+        public StartField(GameField field, int points, uint gameId) : this()
         {
             GameField = field;
             Points = points;
