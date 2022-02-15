@@ -6,7 +6,7 @@ namespace SeaBattle.Lib.Entities
     /// <summary>
     /// Basic ship
     /// </summary>
-    public class CommonShip : ICommonShip
+    public class Ship : IShip
     {
         public uint Id { get; set; }
 
@@ -27,30 +27,30 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Default constructor
         /// </summary>
-        public CommonShip()
+        public Ship()
         {
             GameShips = new List<IGameShip>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommonShip"/> class
+        /// Initializes a new instance of the <see cref="Ship"/> class
         /// </summary>
         /// <param name="id">Ship's id</param>
         /// <param name="type">Type of ship</param>
         /// <param name="size">Length of the ship (cells) and amount of possible equipment slots</param>
         /// <param name="maxHp">Max hp of the ship that he can be damaged</param>
         /// <param name="speed">Max speed (amount of cells, that the ship can move in 1 turn)</param>
-        public CommonShip(uint id, IShipType type, byte size, ushort maxHp, byte speed)
+        public Ship(uint id, IShipType type, byte size, ushort maxHp, byte speed)
         : this(type, size, maxHp, speed) => Id = id;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommonShip"/> class
+        /// Initializes a new instance of the <see cref="Ship"/> class
         /// </summary>
         /// <param name="type">Type of ship</param>
         /// <param name="size">Length of the ship (cells) and amount of possible equipment slots</param>
         /// <param name="maxHp">Max hp of the ship that he can be damaged</param>
         /// <param name="speed">Max speed (amount of cells, that the ship can move in 1 turn)</param>
-        public CommonShip(IShipType type, byte size, ushort maxHp, byte speed) : this()
+        public Ship(IShipType type, byte size, ushort maxHp, byte speed) : this()
         {
             ShipType = type;
             ShipTypeId = type.Id;

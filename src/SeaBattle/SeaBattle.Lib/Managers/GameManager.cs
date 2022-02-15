@@ -104,7 +104,7 @@ namespace SeaBattle.Lib.Managers
 
         public IResponseGameField GetGameField(IGamePlayer player) => _actionManager.GetGameField(player, _game);
 
-        public ICollection<(ICommonShip, int)> GetShips() => _shipManager.GetShips();
+        public ICollection<(IShip, int)> GetShips() => _shipManager.GetShips();
 
         public ICollection<IWeapon> GetWeapons() => _shipManager.GetWeapons();
 
@@ -139,7 +139,7 @@ namespace SeaBattle.Lib.Managers
 
         #region Update ship
 
-        public StateCode BuyShip(IGamePlayer player, ICommonShip ship)
+        public StateCode BuyShip(IGamePlayer player, IShip ship)
         {
             if (_game.State == GameState.Finished)
             {

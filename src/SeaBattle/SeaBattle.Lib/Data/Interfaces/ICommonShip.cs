@@ -1,18 +1,10 @@
-﻿using System.Collections.Generic;
-
-namespace SeaBattle.Lib.Entities
+﻿namespace SeaBattle.Lib.Entities
 {
     /// <summary>
-    /// Basic ship
+    /// Generic ship
     /// </summary>
-    public interface ICommonShip: IEntity
+    public interface ICommonShip
     {
-        /// <summary>
-        /// Foreign key Id <see cref="IShipType"/>
-        /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint ShipTypeId { get; set; }
-
         /// <summary>
         /// Length of the ship (cells) and amount of possible equipment slots, width = 1 cell
         /// </summary>
@@ -36,11 +28,5 @@ namespace SeaBattle.Lib.Entities
         /// </summary>
         /// <value><see cref="IShipType"/></value>
         IShipType ShipType { get; set; }
-
-        /// <summary>
-        /// Navigation property to collection <see cref="IGameShip"/>
-        /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGameShip"/>.</value>
-        public ICollection<IGameShip> GameShips { get; set; }
     }
 }

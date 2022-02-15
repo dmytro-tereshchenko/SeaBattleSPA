@@ -16,6 +16,6 @@ namespace SeaBattle.Lib.Entities
         public string Name { get; set; }
 
         [JsonIgnore]
-        public ICollection<ICommonShip> CommonShips { get; set; } = new List<ICommonShip>();
+        public ICollection<IShip> Ships { get; set; } = new List<IShip>();
     }
 }

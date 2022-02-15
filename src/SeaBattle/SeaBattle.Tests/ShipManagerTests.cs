@@ -39,7 +39,7 @@ namespace SeaBattle.Tests
                 GamePlayer = player1
             };
 
-            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
 
             var expected = StateCode.Success;
 
@@ -75,7 +75,7 @@ namespace SeaBattle.Tests
                 GamePlayer = player3
             };
 
-            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
 
             var expected = StateCode.InvalidPlayer;
 
@@ -110,7 +110,7 @@ namespace SeaBattle.Tests
                 GamePlayer = player1
             };
 
-            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 2000);
+            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 2000);
 
             var expected = StateCode.PointsShortage;
 
@@ -138,8 +138,8 @@ namespace SeaBattle.Tests
             players.Add(player1);
             players.Add(player2);
 
-            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 2000);
-            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 2000);
+            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 2000);
+            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 2000);
 
             int points = 10000;
 
@@ -175,8 +175,8 @@ namespace SeaBattle.Tests
             players.Add(player1);
             players.Add(player2);
 
-            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 2000);
-            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 2000);
+            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 2000);
+            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 2000);
 
             int points = 10000;
 
@@ -212,8 +212,8 @@ namespace SeaBattle.Tests
             players.Add(player1);
             players.Add(player2);
 
-            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 2000);
-            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 2000);
+            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 2000);
+            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 2000);
 
             int points = 10000;
 
@@ -250,8 +250,8 @@ namespace SeaBattle.Tests
             players.Add(player1);
             players.Add(player2);
 
-            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 2000);
-            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 2000);
+            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 2000);
+            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 2000);
 
             int points = 10000;
 
@@ -287,8 +287,8 @@ namespace SeaBattle.Tests
             players.Add(player1);
             players.Add(player2);
 
-            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 2000);
-            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 2000);
+            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 2000);
+            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 2000);
 
             int points = 10000;
 
@@ -324,8 +324,8 @@ namespace SeaBattle.Tests
             players.Add(player1);
             players.Add(player2);
 
-            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 2000);
-            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 2000);
+            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 2000);
+            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 2000);
 
             int points = 10000;
 

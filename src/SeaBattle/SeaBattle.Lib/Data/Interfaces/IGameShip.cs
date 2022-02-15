@@ -5,13 +5,13 @@ namespace SeaBattle.Lib.Entities
     /// <summary>
     /// An expanded ship that is used in the game
     /// </summary>
-    public interface IGameShip : IEntity
+    public interface IGameShip : ICommonShip, IEntity
     {
         /// <summary>
-        /// Foreign key Id <see cref="ICommonShip"/>
+        /// Foreign key Id <see cref="IShip"/>
         /// </summary>
         /// <value><see cref="uint"/></value>
-        uint CommonShipId { get; set; }
+        uint ShipId { get; set; }
 
         /// <summary>
         /// Foreign key Id <see cref="IGamePlayer"/>
@@ -78,10 +78,10 @@ namespace SeaBattle.Lib.Entities
         ICollection<IRepair> Repairs { get; set; }
 
         /// <summary>
-        /// Navigate property <see cref="ICommonShip"/>
+        /// Navigate property <see cref="IShip"/>
         /// </summary>
-        /// <value><see cref="ICommonShip"/></value>
-        ICommonShip CommonShip { get; set; }
+        /// <value><see cref="IShip"/></value>
+        IShip Ship { get; set; }
 
         /// <summary>
         /// Navigate property <see cref="IGamePlayer"/>

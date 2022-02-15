@@ -55,8 +55,8 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Getting a collection of ships, which players can buy by points.
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is (<see cref="ICommonShip"/>, <see cref="int"/>) (ship, points cost)</value>
-        ICollection<(ICommonShip, int)> GetShips();
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is (<see cref="IShip"/>, <see cref="int"/>) (ship, points cost)</value>
+        ICollection<(IShip, int)> GetShips();
 
         /// <summary>
         /// Getting a collection of weapons, which players can equip on the ship.
@@ -102,7 +102,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="player">The player who request buying ship</param>
         /// <param name="ship">The base ship that is buying</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        StateCode BuyShip(IGamePlayer player, ICommonShip ship);
+        StateCode BuyShip(IGamePlayer player, IShip ship);
 
         /// <summary>
         /// Sell ship and save in <see cref="IStartField"/>

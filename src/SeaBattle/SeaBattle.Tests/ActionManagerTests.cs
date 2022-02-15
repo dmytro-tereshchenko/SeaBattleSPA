@@ -26,11 +26,11 @@ namespace SeaBattle.Tests
             IGamePlayer player1 = new GamePlayer(1, "Player 1");
             IGamePlayer player2 = new GamePlayer(2, "Player 2");
 
-            IGameShip ship = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player1, 50);
-            IGameShip ship2 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3){Id=2}, player2, 50){Id=1};
+            IGameShip ship = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player1, 50);
+            IGameShip ship2 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3){Id=2}, player2, 50){Id=1};
             ship2.Weapons.Add(new BasicWeapon(1, 50, 10));
             ship2.Repairs.Add(new BasicRepair(1, 40, 10));
-            IGameShip ship3 = new GameShip(new CommonShip(ShipType.Mixed, 2, 200, 3), player2, 50);
+            IGameShip ship3 = new GameShip(new Ship(ShipType.Mixed, 2, 200, 3), player2, 50);
 
             field[3, 3] = ship;
             field[4, 3] = ship;

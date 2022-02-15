@@ -9,7 +9,7 @@ namespace SeaBattle.Lib.Data.Entities
 
         public DbSet<IRepair> Repairs { get; set; }
 
-        public DbSet<ICommonShip> CommonShips { get; set; }
+        public DbSet<IShip> Ships { get; set; }
 
         public DbSet<IGame> Games { get; set; }
 

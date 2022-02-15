@@ -14,9 +14,9 @@ namespace SeaBattle.Lib.Entities
         string Name { get; set; }
 
         /// <summary>
-        /// Navigation property to collection <see cref="ICommonShip"/>
+        /// Navigation property to collection <see cref="IShip"/>
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="ICommonShip"/>.</value>
-        ICollection<ICommonShip> CommonShips { get; set; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IShip"/>.</value>
+        ICollection<IShip> Ships { get; set; }
     }
 }

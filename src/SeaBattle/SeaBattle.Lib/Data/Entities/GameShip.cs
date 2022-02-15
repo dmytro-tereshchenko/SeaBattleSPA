@@ -49,36 +49,36 @@ namespace SeaBattle.Lib.Entities
         [JsonIgnore]
         public IShipType ShipType
         {
-            get => CommonShip.ShipType;
-            set => CommonShip.ShipType = value;
+            get => Ship.ShipType;
+            set => Ship.ShipType = value;
         }
 
         [NotMapped]
         [JsonIgnore]
         public byte Size
         {
-            get => CommonShip.Size;
-            set => CommonShip.Size = value;
+            get => Ship.Size;
+            set => Ship.Size = value;
         }
 
         [NotMapped]
         [JsonIgnore]
         public ushort MaxHp
         {
-            get => CommonShip.MaxHp;
-            set => CommonShip.MaxHp = value;
+            get => Ship.MaxHp;
+            set => Ship.MaxHp = value;
         }
 
         [NotMapped]
         [JsonIgnore]
         public byte Speed
         {
-            get => CommonShip.Speed;
-            set => CommonShip.Speed = value;
+            get => Ship.Speed;
+            set => Ship.Speed = value;
         }
 
         [JsonIgnore]
-        public uint CommonShipId { get; set; }
+        public uint ShipId { get; set; }
 
         [JsonIgnore]
         public uint GamePlayerId { get; set; }
@@ -86,8 +86,8 @@ namespace SeaBattle.Lib.Entities
         [JsonIgnore]
         public uint? StartFieldId { get; set; }
 
-        [ForeignKey("CommonShipId")]
-        public ICommonShip CommonShip { get; set; }
+        [ForeignKey("ShipId")]
+        public IShip Ship { get; set; }
 
         [ForeignKey("GamePlayerId")]
         public IGamePlayer GamePlayer { get; set; }
@@ -125,7 +125,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
         /// <param name="hp">Current hp of ship</param>
-        public GameShip(uint id, ICommonShip ship, IGamePlayer gamePlayer, int points, ushort hp)
+        public GameShip(uint id, IShip ship, IGamePlayer gamePlayer, int points, ushort hp)
             : this(ship, gamePlayer, points, hp) => Id = id;
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="ship">Basic ship</param>
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
-        public GameShip(uint id, ICommonShip ship, IGamePlayer gamePlayer, int points) 
+        public GameShip(uint id, IShip ship, IGamePlayer gamePlayer, int points) 
             : this(id, ship, gamePlayer, points, ship.MaxHp) { }
 
         /// <summary>
@@ -145,9 +145,9 @@ namespace SeaBattle.Lib.Entities
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
         /// <param name="hp">Current hp of ship</param>
-        public GameShip(ICommonShip ship, IGamePlayer gamePlayer, int points, ushort hp)
+        public GameShip(IShip ship, IGamePlayer gamePlayer, int points, ushort hp)
         {
-            CommonShip = ship;
+            Ship = ship;
             GamePlayer = gamePlayer;
             Points = points;
             Hp = hp;
@@ -162,7 +162,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="ship">Basic ship</param>
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
-        public GameShip(ICommonShip ship, IGamePlayer gamePlayer, int points)
+        public GameShip(IShip ship, IGamePlayer gamePlayer, int points)
             : this(ship, gamePlayer, points, ship.MaxHp) { }
 
         public static bool operator ==(GameShip obj1, GameShip obj2) =>
