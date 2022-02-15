@@ -9,7 +9,7 @@ namespace SeaBattle.Lib.Managers
     /// </summary>
     public interface IShipManager
     {
-        /// <summary>
+        /*/// <summary>
         /// Buy ship and add to <see cref="IStartField"/>
         /// </summary>
         /// <param name="players">Collection of players in the game</param>
@@ -87,6 +87,6 @@ namespace SeaBattle.Lib.Managers
         /// <param name="gameShip">Game ship which removes a repair.</param>
         /// <param name="repair">Repair (<see cref="IRepair"/>) which removes.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair);
+        StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair);*/
     }
 }

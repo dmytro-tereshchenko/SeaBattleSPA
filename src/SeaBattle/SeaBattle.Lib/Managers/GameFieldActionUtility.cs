@@ -40,7 +40,7 @@ namespace SeaBattle.Lib.Managers
 
             foreach (var cell in coordinates)
             {
-                field[cell.Item1, cell.Item2] = ship;
+                field[cell.Item1, cell.Item2] = ship as GameShip;
             }
 
             return StateCode.Success;

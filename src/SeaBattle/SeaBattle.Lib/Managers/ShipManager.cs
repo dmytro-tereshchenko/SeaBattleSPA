@@ -39,7 +39,7 @@ namespace SeaBattle.Lib.Managers
         /// </summary>
         private uint _entityCount;
 
-        public ShipManager()
+        /*public ShipManager()
         {
             Ships = new List<(IShip, int)>();
 
@@ -159,7 +159,7 @@ namespace SeaBattle.Lib.Managers
             gameShip.Repairs.Add(repair);
 
             return StateCode.Success;
-        }
+        }*/
 
         public StateCode RemoveWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon)
         {
@@ -168,7 +168,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            return gameShip.Weapons.Remove(weapon) ? StateCode.Success : StateCode.InvalidEquipment;
+            return gameShip.Weapons.Remove(weapon as BasicWeapon) ? StateCode.Success : StateCode.InvalidEquipment;
         }
 
         public StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair)
@@ -178,7 +178,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            return gameShip.Repairs.Remove(repair) ? StateCode.Success : StateCode.InvalidEquipment;
+            return gameShip.Repairs.Remove(repair as BasicRepair) ? StateCode.Success : StateCode.InvalidEquipment;
         }
 
         /// <summary>

@@ -10,11 +10,11 @@ namespace SeaBattle.Lib.Managers
     /// </summary>
     public interface IGameManager
     {
-        /// <summary>
+        /*/// <summary>
         /// Player, which needs to move this turn.
         /// </summary>
         /// <value><see cref="IGamePlayer"/></value>
-        IGamePlayer CurrentGamePlayerMove { get; }
+        string CurrentGamePlayerMove { get; }
 
         /// <summary>
         /// Create <see cref="IGame"/>
@@ -217,6 +217,6 @@ namespace SeaBattle.Lib.Managers
         /// Change state <see cref="IGame"/> to next move
         /// </summary>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode NextMove();
+        StateCode NextMove();*/
     }
 }

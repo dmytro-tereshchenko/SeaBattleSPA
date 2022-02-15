@@ -30,7 +30,7 @@ namespace SeaBattle.Lib.Managers
                 return new ResponseGameField(null, StateCode.InvalidPlayer);
             }
 
-            return new ResponseGameField(game.Field, StateCode.Success);
+            return new ResponseGameField(game.GameField, StateCode.Success);
         }
 
         public IDictionary<IGameShip, ICollection<(ushort, ushort)>> GetFieldWithShips(IGameField field, IGamePlayer player = null)
@@ -107,7 +107,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            startField.Ships.Add(ship);
+            startField.GameShips.Add(ship as GameShip);
             ActionUtility.RemoveShipFromField(ship, startField.GameField);
 
             return StateCode.Success;
@@ -116,7 +116,7 @@ namespace SeaBattle.Lib.Managers
         public StateCode TransferShipToGameField(IGamePlayer player, ushort tPosX, ushort tPosY,
             DirectionOfShipPosition direction, IStartField startField, IGameShip ship)
         {
-            if (!startField.Ships.Contains(ship))
+            if (!startField.GameShips.Contains(ship))
             {
                 return StateCode.InvalidShip;
             }
@@ -138,7 +138,7 @@ namespace SeaBattle.Lib.Managers
 
             if (result == StateCode.Success)
             {
-                startField.Ships.Remove(ship);
+                startField.GameShips.Remove(ship as GameShip);
             }
 
             return result;
@@ -189,7 +189,7 @@ namespace SeaBattle.Lib.Managers
                 //if can't place the ship in the new position, then restore the old position of the ship
                 foreach (var loc in locOfShip)
                 {
-                    field[loc.Item1, loc.Item2] = ship;
+                    field[loc.Item1, loc.Item2] = ship as GameShip;
                 }
             }
 

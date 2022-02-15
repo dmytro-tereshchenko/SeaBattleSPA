@@ -26,7 +26,7 @@ namespace SeaBattle.UIConsole
             _presenter = presenter;
         }
 
-        public void Start()
+        /*public void Start()
         {
             CreateGame();
             CreateGameField();
@@ -658,7 +658,7 @@ namespace SeaBattle.UIConsole
             }
 
             return new((ushort) ((minX + maxX) / 2), (ushort) ((minY + maxY) / 2));
-        }
+        }*/
 
         /// <summary>
         /// Get message depends of <see cref="StateCode"/>

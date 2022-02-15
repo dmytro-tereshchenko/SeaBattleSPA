@@ -36,7 +36,7 @@ namespace SeaBattle.Lib.Managers
         /// <value><see cref="IGame"/></value>
         private IGame _game;
 
-        public IGamePlayer CurrentGamePlayerMove
+        public string CurrentGamePlayerMove
         {
             get => _game.CurrentGamePlayerMove;
         }
@@ -61,7 +61,7 @@ namespace SeaBattle.Lib.Managers
 
         #region Data access
 
-        public StateCode CreateGame(byte numberOfPlayers)
+        /*public StateCode CreateGame(byte numberOfPlayers)
         {
             if (_game != null)
             {
@@ -358,7 +358,7 @@ namespace SeaBattle.Lib.Managers
             _game.Winner = player;
 
             return true;
-        }
+        }*/
 
 #endregion
 

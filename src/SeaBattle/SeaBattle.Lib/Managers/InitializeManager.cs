@@ -217,7 +217,7 @@ namespace SeaBattle.Lib.Managers
 
         public byte GetMaxNumberOfPlayers() => _maxNumberOfPlayers;
 
-        public IResponseGamePlayer AddPlayerToGame(IGame game, string playerName)
+        /*public IResponseGamePlayer AddPlayerToGame(IGame game, string playerName)
         {
             if (game.GamePlayers.Count == 0)
             {
@@ -309,7 +309,7 @@ namespace SeaBattle.Lib.Managers
             }
 
             return new Game(numberOfPlayers) {Id = ++_entityCount};
-        }
+        }*/
 
         /// <summary>
         /// Calculation ship cost by his size.
