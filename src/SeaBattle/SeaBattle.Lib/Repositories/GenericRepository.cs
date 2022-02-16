@@ -205,11 +205,11 @@ namespace SeaBattle.Lib.Repositories
             return previous;
 
             /*Example:
-            GameRepository<User> _gameRepository = new GameRepository<User>(new GameContext());
+            GenericRepository<User> _genericRepository = new GenericRepository<User>(new GameContext());
             User user = new User();
-            _gameRepository.Update(u => u.UserId == user.UserId,
+            _genericRepository.Update(u => u.UserId == user.UserId,
                 user.BusinessModels, // Many-to-many relationship to update
-                _gameRepository.Get(), // Full set
+                _genericRepository.GetAll(), // Full set
                 "BusinessModels"); // Property name*/
         }
     }

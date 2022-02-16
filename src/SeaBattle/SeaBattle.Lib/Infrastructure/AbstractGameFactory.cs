@@ -6,7 +6,7 @@ namespace SeaBattle.Lib.Infrastructure
     /// <summary>
     /// Abstract factory to initialize <see cref="IGameManager"/>
     /// </summary>
-    public class AbstractGameFactory : IAbstractGameFactory
+    public class AbstractGameFactory //: IAbstractGameFactory
     {
         /// <summary>
         /// Max number of players in <see cref="IGame"/>
@@ -60,7 +60,7 @@ namespace SeaBattle.Lib.Infrastructure
         public IInitializeManager GetInitializeManager() =>
             new InitializeManager(_minSizeX, _maxSizeX, _minSizeY, _maxSizeY, _maxNumberOfPlayers);
 
-        public IShipManager GetShipManager() => new ShipManager();
+        //public IShipManager GetShipManager() => new ShipManager();
 
         public IActionManager GetActionManager() => new ActionManager(_actionUtility);
     }

@@ -8,11 +8,11 @@ namespace SeaBattle.UIConsole
         static void Main(string[] args)
         {
             IGameFieldActionUtility utility = new GameFieldActionUtility();
-            IAbstractGameFactory factory = new AbstractGameFactory(2, 1000, 5, 1000, 5, utility);
-            IGameManager manager = new GameManager(factory);
+            //IAbstractGameFactory factory = new AbstractGameFactory(2, 1000, 5, 1000, 5, utility);
+            //IGameManager manager = new GameManager(factory);
             IPresenter presenter = new Presenter();
 
-            IGameUI game = new GameUI(manager, presenter);
+            //IGameUI game = new GameUI(manager, presenter);
 
             //game.Start();
         }

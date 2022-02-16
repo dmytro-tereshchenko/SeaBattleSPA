@@ -1,6 +1,9 @@
-﻿using SeaBattle.Lib.Entities;
+﻿using System;
+using SeaBattle.Lib.Entities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using SeaBattle.Lib.Infrastructure;
+using SeaBattle.Lib.Repositories;
 
 namespace SeaBattle.Lib.Managers
 {
@@ -9,15 +12,27 @@ namespace SeaBattle.Lib.Managers
     /// </summary>
     public class ShipManager : IShipManager
     {
-        public ShipManager() { }
+        private readonly IShipStorageUtility _storageUtility;
 
-        public StateCode BuyShip(ICollection<GamePlayer> players, GameShip gameShip, StartField startField)
+        private readonly GenericRepository<StartField> _startFieldRepository;
+
+        private readonly GenericRepository<GameShip> _gameShipRepository;
+
+        private readonly GenericRepository<Weapon> _weaponRepository;
+
+        private readonly GenericRepository<Repair> _repairRepository;
+
+        public ShipManager(IShipStorageUtility storageUtility, GenericRepository<StartField> startFieldRepository, GenericRepository<GameShip> gameShipRepository, GenericRepository<Weapon> weaponRepository, GenericRepository<Repair> repairRepository)
         {
-            if (!players.Contains(startField.GamePlayer))
-            {
-                return StateCode.InvalidPlayer;
-            }
+            _startFieldRepository = startFieldRepository;
+            _gameShipRepository = gameShipRepository;
+            _weaponRepository = weaponRepository;
+            _repairRepository = repairRepository;
+            _storageUtility = storageUtility;
+        }
 
+        public async Task<StateCode> BuyShip(ICollection<GamePlayer> players, GameShip gameShip, StartField startField)
+        {
             if (gameShip.Points > startField.Points)
             {
                 return StateCode.PointsShortage;
@@ -26,52 +41,58 @@ namespace SeaBattle.Lib.Managers
             startField.GameShips.Add(gameShip);
             startField.Points -= gameShip.Points;
 
+            await _gameShipRepository.CreateAsync(gameShip);
+
+            await _startFieldRepository.UpdateAsync(s => s.Id == startField.Id, startField.GameShips,
+                _startFieldRepository.GetAll(), "GameShips");
 
             return StateCode.Success;
         }
 
-        public StateCode SellShip(ICollection<GamePlayer> players, GameShip gameShip, StartField startField)
+        public async Task<StateCode> SellShip(ICollection<GamePlayer> players, GameShip gameShip, StartField startField)
         {
-            if (!players.Contains(startField.GamePlayer))
-            {
-                return StateCode.InvalidPlayer;
-            }
-
             startField.GameShips.Remove(gameShip);
             startField.Points += gameShip.Points;
 
+            await _gameShipRepository.DeleteAsync(gameShip);
+
+            await _startFieldRepository.UpdateAsync(s => s.Id == startField.Id, startField.GameShips,
+                _startFieldRepository.GetAll(), "GameShips");
+
             return StateCode.Success;
         }
 
-       /* public ICollection<(IShip, int)> GetShips() => Ships;
-
-        public ICollection<IRepair> GetRepairs() => Repairs;
-
-        public ICollection<IWeapon> GetWeapons() => Weapons;
-
-        public IGameShip GetNewShip(GamePlayer gamePlayer, Ship ship)
+        public async Task<GameShip> GetNewShip(GamePlayer gamePlayer, Ship ship)
         {
-            IGameShip gameShip = new GameShip(ship, gamePlayer, GetShipCost(ship.Size));
-            switch (ship.Type)
+            GameShip gameShip = new GameShip(ship, gamePlayer, _storageUtility.CalculatePointCost(ship.Size,ship.ShipTypeId));
+            switch (ship.ShipTypeId)
             {
-                case ShipType.Military:
+                case 1:
+                    Weapon weapon = _weaponRepository.FindById(1);
                     for (int i = 0; i < ship.Size; i++)
                     {
-                        AddWeapon(gamePlayer, gameShip, Weapons.First());
+                        await AddWeapon(gamePlayer, gameShip, weapon);
                     }
                     break;
-                case ShipType.Auxiliary:
+                case 2:
+                    break;
+                case 3:
+                    Repair repair = _repairRepository.FindById(1);
                     for (int i = 0; i < ship.Size; i++)
                     {
-                        AddRepair(gamePlayer, gameShip, Repairs.First());
+                        await AddRepair(gamePlayer, gameShip, repair);
                     }
                     break;
+                default:
+                    Exception e = new Exception("Wrong shipTypeId (not implemented)");
+                    e.Data.Add("Data", ship);
+                    throw e;
             }
 
             return gameShip;
         }
 
-        public StateCode AddWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon)
+        public async Task<StateCode> AddWeapon(GamePlayer gamePlayer, GameShip gameShip, Weapon weapon)
         {
             if (gameShip.GamePlayer != gamePlayer)
             {
@@ -83,7 +104,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.LimitEquipment;
             }
 
-            if (gameShip.Ship.Type == ShipType.Auxiliary)
+            if (gameShip.Ship.ShipTypeId == 3)
             {
                 return StateCode.InvalidEquipment;
             }
@@ -93,7 +114,7 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        public StateCode AddRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair)
+        public async Task<StateCode> AddRepair(GamePlayer gamePlayer, GameShip gameShip, Repair repair)
         {
             if (gameShip.GamePlayer != gamePlayer)
             {
@@ -105,7 +126,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.LimitEquipment;
             }
 
-            if (gameShip.Ship.Type == ShipType.Military)
+            if (gameShip.Ship.ShipTypeId == 1)
             {
                 return StateCode.InvalidEquipment;
             }
@@ -113,7 +134,7 @@ namespace SeaBattle.Lib.Managers
             gameShip.Repairs.Add(repair);
 
             return StateCode.Success;
-        }*/
+        }
 
         public StateCode RemoveWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon)
         {
