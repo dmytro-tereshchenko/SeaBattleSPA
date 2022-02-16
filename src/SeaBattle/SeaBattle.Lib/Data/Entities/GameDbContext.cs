@@ -31,6 +31,8 @@ namespace SeaBattle.Lib.Data.Entities
 
         public DbSet<StartFieldCell> StartFieldCells { get; set; }
 
+        public DbSet<SearchGame> SearchGames { get; set; }
+
         public GameDbContext(DbContextOptions<GameDbContext> options)
             : base(options)
         {
@@ -109,6 +111,12 @@ namespace SeaBattle.Lib.Data.Entities
                 .HasMany(s => s.Games)
                 .WithOne(g => g.GameState)
                 .HasForeignKey(g => g.GameStateId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Game>()
+                .HasMany(g => g.SearchGames)
+                .WithOne(s => s.Game)
+                .HasForeignKey(s => s.GameId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             //add default values

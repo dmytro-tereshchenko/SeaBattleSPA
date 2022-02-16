@@ -43,7 +43,7 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        /*public ICollection<(IShip, int)> GetShips() => Ships;
+       /* public ICollection<(IShip, int)> GetShips() => Ships;
 
         public ICollection<IRepair> GetRepairs() => Repairs;
 
