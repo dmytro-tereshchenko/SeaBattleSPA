@@ -15,17 +15,22 @@ namespace SeaBattle.Lib.Entities
         public int Id { get; set; }
 
         [JsonIgnore]
+        [Required]
         public short ShipTypeId { get; set; }
 
+        [Required]
         public byte Size { get; set; }
 
+        [Required]
         public ushort MaxHp { get; set; }
 
+        [Required]
         public byte Speed { get; set; }
 
         [ForeignKey(nameof(ShipTypeId))]
         public ShipType ShipType { get; set; }
 
+        [Required]
         public uint Cost { get; set; }
 
         [JsonIgnore]

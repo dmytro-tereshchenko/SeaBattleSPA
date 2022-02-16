@@ -14,14 +14,18 @@ namespace SeaBattle.Lib.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        [Required]
         public int Points { get; set; }
 
+        [Required]
         public int GameId { get; set; }
 
+        [Required]
         [JsonIgnore]
         public int GameFieldId { get; set; }
 
         [JsonIgnore]
+        [Required]
         public int GamePlayerId { get; set; }
 
         [JsonIgnore]

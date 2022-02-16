@@ -10,7 +10,7 @@ namespace SeaBattle.Lib.Repositories
     /// Generic interface for a repository for storage Entities and CRUD-operations for manipulation of them
     /// </summary>
     /// <param name="TEntity">Entity of database</param>
-    public interface IGameRepository<TEntity> where TEntity : class
+    public interface IGenericRepository<TEntity> where TEntity : class
     {
         /// <summary>
         /// Get all objects from repository.

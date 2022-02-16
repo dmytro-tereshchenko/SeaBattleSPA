@@ -13,11 +13,14 @@ namespace SeaBattle.Lib.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        [Required]
         public ushort X { get; set; }
 
+        [Required]
         public ushort Y { get; set; }
 
         [JsonIgnore]
+        [Required]
         public int StartFieldId { get; set; }
 
         [JsonIgnore]

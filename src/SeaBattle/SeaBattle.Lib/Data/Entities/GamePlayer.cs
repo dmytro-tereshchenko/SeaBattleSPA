@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -15,6 +16,7 @@ namespace SeaBattle.Lib.Entities
         public short PlayerStateId { get; set; }
 
         [ForeignKey(nameof(PlayerStateId))]
+        [Required]
         public PlayerState PlayerState { get; set; }
 
         [JsonIgnore]

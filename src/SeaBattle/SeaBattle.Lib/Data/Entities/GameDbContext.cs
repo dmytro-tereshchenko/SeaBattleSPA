@@ -116,6 +116,8 @@ namespace SeaBattle.Lib.Data.Entities
 
             modelBuilder.Entity<Game>().Property(p => p.GameStateId).HasDefaultValue(1u);
 
+            modelBuilder.Entity<GameFieldCell>().Property(p => p.Stern).HasDefaultValue(false);
+
             //initialize data
             modelBuilder.Entity<ShipType>().HasData(
                 new ShipType[]

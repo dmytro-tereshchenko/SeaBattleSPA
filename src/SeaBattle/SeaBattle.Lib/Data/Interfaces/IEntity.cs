@@ -9,6 +9,6 @@
         /// Id of entity
         /// </summary>
         /// <value><see cref="int"/></value>
-        //int Id { get; set; }
+        int Id { get; set; }
     }
 }

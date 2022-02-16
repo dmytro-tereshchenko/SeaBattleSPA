@@ -34,7 +34,7 @@ namespace SeaBattle.Lib.Managers
 
         public string CurrentGamePlayerMove
         {
-            get => _game.CurrentGamePlayerMove.ToString();
+            get => _game.CurrentGamePlayerMoveId.ToString();
         }
 
         /// <summary>

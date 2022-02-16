@@ -23,7 +23,7 @@ namespace SeaBattle.Lib.Entities
         /// Player, which needs to move this turn.
         /// </summary>
         /// <value><see cref="string"/></value>
-        int? CurrentGamePlayerMove { get; set; }
+        int? CurrentGamePlayerMoveId { get; set; }
 
         /// <summary>
         /// Foreign key Id <see cref="GameState"/>
@@ -36,7 +36,7 @@ namespace SeaBattle.Lib.Entities
         /// Winner of the game
         /// </summary>
         /// <value><see cref="string"/></value>
-        int? Winner { get; set; }
+        int? WinnerId { get; set; }
 
         /// <summary>
         /// Field of the game

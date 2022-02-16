@@ -5,7 +5,7 @@ namespace SeaBattle.Lib.Entities
     /// <summary>
     /// Types of common ship.
     /// </summary>
-    public interface IShipType : IEntity
+    public interface IShipType : IShortEntity
     {
         /// <summary>
         /// Ship's name.

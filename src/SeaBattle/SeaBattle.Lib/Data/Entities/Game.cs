@@ -13,7 +13,7 @@ namespace SeaBattle.Lib.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public int? CurrentGamePlayerMove { get; set; }
+        public int? CurrentGamePlayerMoveId { get; set; }
 
         [NotMapped]
         public byte CurrentCountPlayers
@@ -21,11 +21,12 @@ namespace SeaBattle.Lib.Entities
             get => (byte)GamePlayers.Count;
         }
 
+        [Required]
         public byte MaxNumberOfPlayers { get; set; }
 
         public short GameStateId { get; set; }
 
-        public int? Winner { get; set; }
+        public int? WinnerId { get; set; }
 
         public GameField GameField { get; set; }
 

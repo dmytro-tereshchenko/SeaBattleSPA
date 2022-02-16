@@ -16,8 +16,10 @@ namespace SeaBattle.Lib.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        [Required]
         public ushort Hp { get; set; }
 
+        [Required]
         public int Points { get; set; }
 
         [NotMapped]

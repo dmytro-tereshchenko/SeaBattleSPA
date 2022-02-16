@@ -13,7 +13,7 @@ namespace SeaBattle.Lib.Repositories
     /// Implements generic interface IRepository
     /// </summary>
     /// <param name="TEntity">Entity of database</param>
-    public class GameRepository<TEntity> : IGameRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         /// <summary>
         /// Data context for EF
@@ -28,7 +28,7 @@ namespace SeaBattle.Lib.Repositories
         /// <summary>
         /// Default constructor that initializes an empty object of collection. 
         /// </summary>
-        public GameRepository(DbContext context)
+        public GenericRepository(DbContext context)
         {
             _context = context;
             _dbSet = context.Set<TEntity>();

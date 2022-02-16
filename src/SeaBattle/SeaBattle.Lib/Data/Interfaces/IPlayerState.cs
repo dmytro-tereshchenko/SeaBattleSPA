@@ -5,7 +5,7 @@ namespace SeaBattle.Lib.Entities
     /// <summary>
     /// Player's state in game
     /// </summary>
-    public interface IPlayerState : IEntity
+    public interface IPlayerState : IShortEntity
     {
         /// <summary>
         /// Name of the player state.

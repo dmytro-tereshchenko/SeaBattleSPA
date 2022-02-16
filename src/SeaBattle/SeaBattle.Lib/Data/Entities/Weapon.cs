@@ -14,8 +14,10 @@ namespace SeaBattle.Lib.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        [Required]
         public ushort Damage { get; set; }
 
+        [Required]
         public ushort AttackRange { get; set; }
 
         [JsonIgnore]
