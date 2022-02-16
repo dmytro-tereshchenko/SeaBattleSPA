@@ -44,7 +44,7 @@ namespace SeaBattle.Lib.Data.Entities
             base.OnModelCreating(modelBuilder);
 
             //Add special foreign key
-            modelBuilder.Entity<GameShip>()
+            /*modelBuilder.Entity<GameShip>()
                 .HasMany(s => s.Weapons)
                 .WithMany(w => w.GameShips)
                 .UsingEntity(j => j.ToTable("GameShipWeapon"));
@@ -52,7 +52,52 @@ namespace SeaBattle.Lib.Data.Entities
             modelBuilder.Entity<GameShip>()
                 .HasMany(s => s.Repairs)
                 .WithMany(r => r.GameShips)
-                .UsingEntity(j => j.ToTable("GameShipRepair"));
+                .UsingEntity(j => j.ToTable("GameShipRepair"));*/
+
+            modelBuilder
+                .Entity<GameShip>()
+                .HasMany(c => c.Weapons)
+                .WithMany(s => s.GameShips)
+                .UsingEntity<EquippedWeapon>(
+                    j => j
+                        .HasOne(pt => pt.Weapon)
+                        .WithMany(t => t.EquippedWeapons)
+                        .HasForeignKey(pt => pt.WeaponId)
+                        .OnDelete(DeleteBehavior.Restrict),
+                    j => j
+                        .HasOne(pt => pt.GameShip)
+                        .WithMany(p => p.EquippedWeapons)
+                        .HasForeignKey(pt => pt.GameShipId)
+                        .OnDelete(DeleteBehavior.Restrict),
+                    j =>
+                    {
+                        j.Property(pt => pt.Id).ValueGeneratedOnAdd();
+                        j.HasKey(t => new { t.Id, t.GameShipId, t.WeaponId });
+                        j.ToTable("EquippedWeapons");
+                    });
+
+            modelBuilder
+                .Entity<GameShip>()
+                .HasMany(c => c.Repairs)
+                .WithMany(s => s.GameShips)
+                .UsingEntity<EquippedRepair>(
+                    j => j
+                        .HasOne(pt => pt.Repair)
+                        .WithMany(t => t.EquippedRepairs)
+                        .HasForeignKey(pt => pt.RepairId)
+                        .OnDelete(DeleteBehavior.Restrict)
+                        ,
+                    j => j
+                        .HasOne(pt => pt.GameShip)
+                        .WithMany(p => p.EquippedRepairs)
+                        .HasForeignKey(pt => pt.GameShipId)
+                        .OnDelete(DeleteBehavior.Restrict),
+                    j =>
+                    {
+                        j.Property(pt => pt.Id).ValueGeneratedOnAdd();
+                        j.HasKey(t => new { t.Id, t.GameShipId, t.RepairId });
+                        j.ToTable("EquippedRepairs");
+                    });
 
             modelBuilder.Entity<Game>()
                 .HasMany(g => g.GamePlayers)

@@ -24,12 +24,16 @@ namespace SeaBattle.Lib.Entities
         [JsonIgnore]
         public ICollection<GameShip> GameShips { get; set; }
 
+        [JsonIgnore]
+        public ICollection<EquippedRepair> EquippedRepairs { get; set; }
+
         /// <summary>
         /// Default constructor
         /// </summary>
         public Repair()
         {
             GameShips = new List<GameShip>();
+            EquippedRepairs = new List<EquippedRepair>();
         }
 
         /// <summary>

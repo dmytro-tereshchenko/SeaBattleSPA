@@ -108,6 +108,12 @@ namespace SeaBattle.Lib.Entities
         [JsonIgnore]
         public ICollection<StartFieldCell> StartFieldCells { get; set; }
 
+        [JsonIgnore]
+        public ICollection<EquippedWeapon> EquippedWeapons { get; set; }
+
+        [JsonIgnore]
+        public ICollection<EquippedRepair> EquippedRepairs { get; set; }
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -117,6 +123,8 @@ namespace SeaBattle.Lib.Entities
             Repairs = new List<Repair>();
             GameFieldCells = new List<GameFieldCell>();
             StartFieldCells = new List<StartFieldCell>();
+            EquippedWeapons = new List<EquippedWeapon>();
+            EquippedRepairs = new List<EquippedRepair>();
         }
 
         /// <summary>
