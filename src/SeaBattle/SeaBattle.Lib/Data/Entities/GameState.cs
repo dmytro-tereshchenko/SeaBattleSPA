@@ -14,7 +14,8 @@ namespace SeaBattle.Lib.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public short Id { get; set; }
 
-        [Required] 
+        [Required]
+        [Column(TypeName = "nvarchar(50)")]
         public string Name { get; set; }
 
         [JsonIgnore]

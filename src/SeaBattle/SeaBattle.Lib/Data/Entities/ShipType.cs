@@ -15,6 +15,7 @@ namespace SeaBattle.Lib.Entities
         public short Id { get; set; }
 
         [Required]
+        [Column(TypeName = "nvarchar(50)")]
         public string Name { get; set; }
 
         [JsonIgnore]
