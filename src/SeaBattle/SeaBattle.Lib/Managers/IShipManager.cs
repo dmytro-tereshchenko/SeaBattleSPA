@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using SeaBattle.Lib.Entities;
-using SeaBattle.Lib.Infrastructure;
-
-namespace SeaBattle.Lib.Managers
+﻿namespace SeaBattle.Lib.Managers
 {
     /// <summary>
     /// Manager which response for creating and change ships.
@@ -16,7 +12,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="gameShip">Game ship</param>
         /// <param name="startField">Start field with initializing data and parameters for the player</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode BuyShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField);
+        /*StateCode BuyShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField);
 
         /// <summary>
         /// Sell ship and remove from <see cref="IStartField"/>
@@ -30,8 +26,8 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Getting a collection of ships, which players can buy by points.
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is (<see cref="ICommonShip"/>, <see cref="int"/>) (ship, points cost)</value>
-        ICollection<(ICommonShip, int)> GetShips();
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is (<see cref="IShip"/>, <see cref="int"/>) (ship, points cost)</value>
+        ICollection<(IShip, int)> GetShips();
 
         /// <summary>
         /// Getting a collection of repairs, which players can equip on the ship.
@@ -49,9 +45,9 @@ namespace SeaBattle.Lib.Managers
         /// Creation and getting a new game ship.
         /// </summary>
         /// <param name="gamePlayer">Player(user) in game</param>
-        /// <param name="ship">Type of <see cref="ICommonShip"/>, which player wants to buy.</param>
+        /// <param name="ship">Type of <see cref="IShip"/>, which player wants to buy.</param>
         /// <returns><see cref="IGameShip"/> Game ship.</returns>
-        IGameShip GetNewShip(IGamePlayer gamePlayer, ICommonShip ship);
+        IGameShip GetNewShip(IGamePlayer gamePlayer, IShip ship);
 
         /// <summary>
         /// Add weapon to game ship.
@@ -87,6 +83,6 @@ namespace SeaBattle.Lib.Managers
         /// <param name="gameShip">Game ship which removes a repair.</param>
         /// <param name="repair">Repair (<see cref="IRepair"/>) which removes.</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair);
+        StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair);*/
     }
 }

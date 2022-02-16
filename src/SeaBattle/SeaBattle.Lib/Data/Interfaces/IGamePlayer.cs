@@ -1,4 +1,4 @@
-﻿using SeaBattle.Lib.Infrastructure;
+﻿using System.Collections.Generic;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -8,9 +8,33 @@ namespace SeaBattle.Lib.Entities
     public interface IGamePlayer : IPlayer
     {
         /// <summary>
-        /// Player's state
+        /// Foreign key Id <see cref="PlayerState"/>
+        /// </summary>
+        /// <value><see cref="int"/></value>
+        short PlayerStateId { get; set; }
+
+        /// <summary>
+        /// Navigation property to collection <see cref="Game"/>
+        /// </summary>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="Game"/>.</value>
+        ICollection<Game> Games { get; set; }
+
+        /// <summary>
+        /// Navigate property <see cref="PlayerState"/>
         /// </summary>
         /// <value><see cref="PlayerState"/></value>
-        public PlayerState State { get; set; }
+        PlayerState PlayerState { get; set; }
+
+        /// <summary>
+        /// Navigation property to collection <see cref="GameShip"/>
+        /// </summary>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="GameShip"/>.</value>
+        ICollection<GameShip> GameShips { get; set; }
+
+        /// <summary>
+        /// Navigation property to collection <see cref="StartField"/>
+        /// </summary>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="StartField"/>.</value>
+        ICollection<StartField> StartFields { get; set; }
     }
 }

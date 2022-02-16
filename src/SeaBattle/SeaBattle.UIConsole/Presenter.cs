@@ -244,7 +244,7 @@ namespace SeaBattle.UIConsole
         }
 
         public string GetShipStatus(IGameShip ship) =>
-            $"{Resources.Ship}: {ship.Type}, {Resources.Size}: {ship.Size}, {Resources.Hp}: {ship.Hp} {Resources.Weapons}: {ship.Weapons.Count}, {Resources.Repairs}: {ship.Repairs.Count}";
+            $"{Resources.Ship}: {ship.ShipType.Name}, {Resources.Size}: {ship.Size}, {Resources.Hp}: {ship.Hp} {Resources.Weapons}: {ship.Weapons.Count}, {Resources.Repairs}: {ship.Repairs.Count}";
 
         public string GetPlayerStatus(IStartField startField) =>
             $"{Resources.Player}: {startField.GamePlayer.Name}, {Resources.Points}: {startField.Points}";
@@ -269,7 +269,7 @@ namespace SeaBattle.UIConsole
             }
             else if (field[point.X, point.Y] != null && player == null)
             {
-                Console.BackgroundColor = (ConsoleColor)(playersList.IndexOf(field[point.X, point.Y].GamePlayer) + 1);
+                Console.BackgroundColor = (ConsoleColor)(playersList.IndexOf(field[point.X, point.Y].GamePlayer as IGamePlayer) + 1);
                 PrintSymbol(' ', sizeNumberY);
                 Console.BackgroundColor = ConsoleColor.Black;
             }

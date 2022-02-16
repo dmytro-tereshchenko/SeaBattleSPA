@@ -1,31 +1,55 @@
-﻿using SeaBattle.Lib.Data;
-using SeaBattle.Lib.Infrastructure;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
 {
     /// <summary>
     /// Player (user) in the game
     /// </summary>
+    [Index("Name")]
     public class GamePlayer : Player, IGamePlayer
     {
-        public PlayerState State { get; set; }
+        [JsonIgnore]
+        public short PlayerStateId { get; set; }
+
+        [ForeignKey(nameof(PlayerStateId))]
+        [Required]
+        public PlayerState PlayerState { get; set; }
+
+        [JsonIgnore]
+        public ICollection<GameShip> GameShips { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Game> Games { get; set; }
+
+        [JsonIgnore]
+        public ICollection<StartField> StartFields { get; set; }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public GamePlayer()
+        {
+            GameShips = new List<GameShip>();
+            Games = new List<Game>();
+            StartFields = new List<StartField>();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GamePlayer"/> class
         /// </summary>
         /// <param name="id">Id of game player</param>
         /// <param name="name">Players name</param>
-        public GamePlayer(uint id, string name) : this(name) => Id = id;
+        public GamePlayer(int id, string name) : this(name) => Id = id;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GamePlayer"/> class
         /// </summary>
         /// <param name="name">Players name</param>
-        public GamePlayer(string name) : base(name)
-        {
-            Name = name;
-            State = PlayerState.Created;
-        }
+        public GamePlayer(string name) : this() => Name = name;
 
         public static bool operator ==(GamePlayer obj1, GamePlayer obj2) =>
             obj1?.Equals(obj2) ?? false;

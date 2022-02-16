@@ -26,7 +26,7 @@ namespace SeaBattle.UIConsole
             _presenter = presenter;
         }
 
-        public void Start()
+        /*public void Start()
         {
             CreateGame();
             CreateGameField();
@@ -361,7 +361,7 @@ namespace SeaBattle.UIConsole
 
             while (choice != -1)
             {
-                ICollection<(ICommonShip, int)> commonShips = _manager.GetShips();
+                ICollection<(IShip, int)> commonShips = _manager.GetShips();
 
                 List<string> options = commonShips.Select(ship =>
                         $"{ship.Item1.Type}, {Resources.Size}: {ship.Item1.Size}, {Resources.MaxHp}: {ship.Item1.MaxHp}, {Resources.Speed}: {ship.Item1.Speed}, {Resources.Cost}: {ship.Item2}")
@@ -658,7 +658,7 @@ namespace SeaBattle.UIConsole
             }
 
             return new((ushort) ((minX + maxX) / 2), (ushort) ((minY + maxY) / 2));
-        }
+        }*/
 
         /// <summary>
         /// Get message depends of <see cref="StateCode"/>

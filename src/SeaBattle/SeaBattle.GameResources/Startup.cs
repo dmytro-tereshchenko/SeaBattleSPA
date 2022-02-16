@@ -1,9 +1,12 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using SeaBattle.Lib.Data.Entities;
 
 namespace SeaBattle.GameResources
 {
@@ -49,6 +52,11 @@ namespace SeaBattle.GameResources
                         .AllowAnyMethod();
                 });
             });
+
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
+            services.AddDbContext<GameDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly)));
 
             services.AddControllers();
         }

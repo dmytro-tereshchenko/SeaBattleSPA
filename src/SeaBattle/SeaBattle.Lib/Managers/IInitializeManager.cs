@@ -61,7 +61,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="game">Current game</param>
         /// <param name="gamePlayer">Current player</param>
         /// <returns><see cref="IResponseStartField"/></returns>
-        IResponseStartField GetStartField(IGame game, IGamePlayer gamePlayer);
+        IResponseStartField GetStartField(Game game, GamePlayer gamePlayer);
 
         /// <summary>
         /// Create <see cref="IGame"/> by <paramref name="numberOfPlayers"/>

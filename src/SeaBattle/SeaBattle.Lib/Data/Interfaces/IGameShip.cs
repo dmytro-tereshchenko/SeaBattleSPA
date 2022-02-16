@@ -5,13 +5,27 @@ namespace SeaBattle.Lib.Entities
     /// <summary>
     /// An expanded ship that is used in the game
     /// </summary>
-    public interface IGameShip : ICommonShip
+    public interface IGameShip : ICommonShip, IEntity
     {
         /// <summary>
-        /// Basic ship
+        /// Foreign key Id <see cref="Ship"/>
         /// </summary>
-        /// <value><see cref="ICommonShip"/></value>
-        ICommonShip Ship { get; }
+        /// <value><see cref="int"/></value>
+        int ShipId { get; set; }
+
+        /// <summary>
+        /// Foreign key Id <see cref="GamePlayer"/>
+        /// The player who owns this ship
+        /// </summary>
+        /// <value><see cref="int"/></value>
+        int GamePlayerId { get; set; }
+
+        /// <summary>
+        /// Foreign key Id <see cref="StartField"/>
+        /// The field for storing the location of ships and points for buy ships by the player when initializing game.
+        /// </summary>
+        /// <value><see cref="int"/></value>
+        int? StartFieldId { get; set; }
 
         /// <summary>
         /// Current hp of ship
@@ -20,16 +34,10 @@ namespace SeaBattle.Lib.Entities
         ushort Hp { get; set; }
 
         /// <summary>
-        /// The player who owns this ship
-        /// </summary>
-        /// <value><see cref="IGamePlayer"/></value>
-        IGamePlayer GamePlayer { get; }
-
-        /// <summary>
         /// Number of ship cost points
         /// </summary>
         /// <value><see cref="int"/></value>
-        int Points { get; }
+        int Points { get; set; }
 
         /// <summary>
         /// Distance to target ship which can be damaged.
@@ -57,14 +65,48 @@ namespace SeaBattle.Lib.Entities
 
         /// <summary>
         /// Collection of weapons on ship
+        /// Navigate property <see cref="Weapon"/>
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IWeapon"/></value>
-        ICollection<IWeapon> Weapons { get; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="Weapon"/></value>
+        ICollection<Weapon> Weapons { get; set;  }
 
         /// <summary>
         /// Collection of weapons on ship
+        /// Navigate property <see cref="Repair"/>
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IRepair"/></value>
-        ICollection<IRepair> Repairs { get; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="Repair"/></value>
+        ICollection<Repair> Repairs { get; set; }
+
+        /// <summary>
+        /// Navigate property <see cref="Ship"/>
+        /// </summary>
+        /// <value><see cref="Ship"/></value>
+        Ship Ship { get; set; }
+
+        /// <summary>
+        /// Navigate property <see cref="GamePlayer"/>
+        /// The player who owns this ship
+        /// </summary>
+        /// <value><see cref="GamePlayer"/></value>
+        GamePlayer GamePlayer { get; set; }
+
+        /// <summary>
+        /// Navigate property <see cref="StartField"/>
+        /// The field for storing the location of ships and points for buy ships by the player when initializing game.
+        /// </summary>
+        /// <value><see cref="StartField"/></value>
+        StartField StartField { get; set; }
+
+        /// <summary>
+        /// Collection of field's cell for allocate <see cref="GameShip"/> on <see cref="GameField"/> 
+        /// </summary>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="GameFieldCell"/></value>
+        ICollection<GameFieldCell> GameFieldCells { get; set; }
+
+        /// <summary>
+        /// Collection of field's cell for storing the location of ships and points for buy ships by the player when initializing game.
+        /// </summary>
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="StartFieldCell"/></value>
+        ICollection<StartFieldCell> StartFieldCells { get; set; }
     }
 }

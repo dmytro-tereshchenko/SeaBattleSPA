@@ -14,7 +14,7 @@ namespace SeaBattle.UIConsole
 
             IGameUI game = new GameUI(manager, presenter);
 
-            game.Start();
+            //game.Start();
         }
     }
 

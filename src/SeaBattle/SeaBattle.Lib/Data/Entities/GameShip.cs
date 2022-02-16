@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -9,35 +12,112 @@ namespace SeaBattle.Lib.Entities
     /// </summary>
     public class GameShip : IGameShip
     {
-        public uint Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
-        public ICommonShip Ship { get; private set; }
-
+        [Required]
         public ushort Hp { get; set; }
 
-        public IGamePlayer GamePlayer { get; private set; }
+        [Required]
+        public int Points { get; set; }
 
-        public int Points { get; private set; }
+        [NotMapped]
+        [JsonIgnore]
+        public ushort AttackRange
+        {
+            get => Weapons?.FirstOrDefault()?.AttackRange ?? 0;
+        }
 
-        public ushort AttackRange { get => Weapons?.FirstOrDefault()?.AttackRange ?? 0; }
+        [NotMapped]
+        [JsonIgnore]
+        public ushort RepairRange
+        {
+            get => Repairs?.FirstOrDefault()?.RepairRange ?? 0;
+        }
 
-        public ushort RepairRange { get => Repairs?.FirstOrDefault()?.RepairRange ?? 0; }
+        [NotMapped]
+        [JsonIgnore]
+        public ushort Damage
+        {
+            get => Convert.ToUInt16(Weapons?.Sum(w => w.Damage) ?? 0);
+        }
 
-        public ushort Damage { get => Convert.ToUInt16(Weapons?.Sum(w => w.Damage) ?? 0); }
+        [NotMapped]
+        [JsonIgnore]
+        public ushort RepairPower
+        {
+            get => Convert.ToUInt16(Repairs?.Sum(r => r.RepairPower) ?? 0);
+        }
 
-        public ushort RepairPower { get => Convert.ToUInt16(Repairs?.Sum(r => r.RepairPower) ?? 0); }
+        [NotMapped]
+        [JsonIgnore]
+        public ShipType ShipType
+        {
+            get => Ship.ShipType;
+            set => Ship.ShipType = value;
+        }
 
-        public ShipType Type { get => Ship.Type; }
+        [NotMapped]
+        [JsonIgnore]
+        public byte Size
+        {
+            get => Ship.Size;
+            set => Ship.Size = value;
+        }
 
-        public byte Size { get => Ship.Size; }
+        [NotMapped]
+        [JsonIgnore]
+        public ushort MaxHp
+        {
+            get => Ship.MaxHp;
+            set => Ship.MaxHp = value;
+        }
 
-        public ushort MaxHp { get => Ship.MaxHp; }
+        [NotMapped]
+        [JsonIgnore]
+        public byte Speed
+        {
+            get => Ship.Speed;
+            set => Ship.Speed = value;
+        }
 
-        public byte Speed { get => Ship.Speed; }
+        [JsonIgnore]
+        public int ShipId { get; set; }
 
-        public ICollection<IWeapon> Weapons { get; private set; }
+        [JsonIgnore]
+        public int GamePlayerId { get; set; }
 
-        public ICollection<IRepair> Repairs { get; private set; }
+        [JsonIgnore]
+        public int? StartFieldId { get; set; }
+
+        public Ship Ship { get; set; }
+
+        public GamePlayer GamePlayer { get; set; }
+
+        [JsonIgnore]
+        public StartField StartField { get; set; }
+
+        public ICollection<Weapon> Weapons { get; set; }
+
+        public ICollection<Repair> Repairs { get; set; }
+
+        [JsonIgnore]
+        public ICollection<GameFieldCell> GameFieldCells { get; set; }
+
+        [JsonIgnore]
+        public ICollection<StartFieldCell> StartFieldCells { get; set; }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public GameShip()
+        {
+            Weapons = new List<Weapon>();
+            Repairs = new List<Repair>();
+            GameFieldCells = new List<GameFieldCell>();
+            StartFieldCells = new List<StartFieldCell>();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GameShip"/> class
@@ -47,7 +127,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
         /// <param name="hp">Current hp of ship</param>
-        public GameShip(uint id, ICommonShip ship, IGamePlayer gamePlayer, int points, ushort hp)
+        public GameShip(int id, Ship ship, GamePlayer gamePlayer, int points, ushort hp)
             : this(ship, gamePlayer, points, hp) => Id = id;
 
         /// <summary>
@@ -57,7 +137,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="ship">Basic ship</param>
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
-        public GameShip(uint id, ICommonShip ship, IGamePlayer gamePlayer, int points) 
+        public GameShip(int id, Ship ship, GamePlayer gamePlayer, int points)
             : this(id, ship, gamePlayer, points, ship.MaxHp) { }
 
         /// <summary>
@@ -67,14 +147,12 @@ namespace SeaBattle.Lib.Entities
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
         /// <param name="hp">Current hp of ship</param>
-        public GameShip(ICommonShip ship, IGamePlayer gamePlayer, int points, ushort hp)
+        public GameShip(Ship ship, GamePlayer gamePlayer, int points, ushort hp) : this()
         {
             Ship = ship;
             GamePlayer = gamePlayer;
             Points = points;
             Hp = hp;
-            Weapons = new List<IWeapon>();
-            Repairs = new List<IRepair>();
         }
 
         /// <summary>
@@ -83,7 +161,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="ship">Basic ship</param>
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
-        public GameShip(ICommonShip ship, IGamePlayer gamePlayer, int points)
+        public GameShip(Ship ship, GamePlayer gamePlayer, int points)
             : this(ship, gamePlayer, points, ship.MaxHp) { }
 
         public static bool operator ==(GameShip obj1, GameShip obj2) =>
@@ -101,13 +179,13 @@ namespace SeaBattle.Lib.Entities
 
             GameShip gameShip = (obj as GameShip)!;
 
-            return gameShip?.Type == this.Type && gameShip.Id == this.Id && gameShip.Speed == this.Speed &&
+            return gameShip?.ShipType == this.ShipType && gameShip.Id == this.Id && gameShip.Speed == this.Speed &&
                    gameShip.Size == this.Size;
         }
 
         public override int GetHashCode()
         {
-            return (Id + Type.ToString() + Speed + Size + MaxHp).GetHashCode() + base.GetHashCode();
+            return (Id + ShipType.ToString() + Speed + Size + MaxHp).GetHashCode() + base.GetHashCode();
         }
     }
 }

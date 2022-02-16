@@ -1,20 +1,15 @@
-﻿using System.Collections.Generic;
-using SeaBattle.Lib.Entities;
-using SeaBattle.Lib.Infrastructure;
-using SeaBattle.Lib.Responses;
-
-namespace SeaBattle.Lib.Managers
+﻿namespace SeaBattle.Lib.Managers
 {
     /// <summary>
     /// Manager which response for game flow of "Sea battle"
     /// </summary>
     public interface IGameManager
     {
-        /// <summary>
+        /*/// <summary>
         /// Player, which needs to move this turn.
         /// </summary>
         /// <value><see cref="IGamePlayer"/></value>
-        IGamePlayer CurrentGamePlayerMove { get; }
+        string CurrentGamePlayerMove { get; }
 
         /// <summary>
         /// Create <see cref="IGame"/>
@@ -55,8 +50,8 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Getting a collection of ships, which players can buy by points.
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is (<see cref="ICommonShip"/>, <see cref="int"/>) (ship, points cost)</value>
-        ICollection<(ICommonShip, int)> GetShips();
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is (<see cref="IShip"/>, <see cref="int"/>) (ship, points cost)</value>
+        ICollection<(IShip, int)> GetShips();
 
         /// <summary>
         /// Getting a collection of weapons, which players can equip on the ship.
@@ -102,7 +97,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="player">The player who request buying ship</param>
         /// <param name="ship">The base ship that is buying</param>
         /// <returns><see cref="StateCode"/> is result of operation</returns>
-        StateCode BuyShip(IGamePlayer player, ICommonShip ship);
+        StateCode BuyShip(IGamePlayer player, IShip ship);
 
         /// <summary>
         /// Sell ship and save in <see cref="IStartField"/>
@@ -217,6 +212,6 @@ namespace SeaBattle.Lib.Managers
         /// Change state <see cref="IGame"/> to next move
         /// </summary>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode NextMove();
+        StateCode NextMove();*/
     }
 }

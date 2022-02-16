@@ -45,7 +45,7 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Count of created entities.
         /// </summary>
-        private uint _entityCount;
+        private int _entityCount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InitializeManager"/> class
@@ -71,7 +71,8 @@ namespace SeaBattle.Lib.Managers
                 return new ResponseGameField(null, StateCode.InvalidFieldSize);
             }
 
-            GameField field = new GameField(sizeX, sizeY, ++_entityCount);
+            //GameField field = new GameField(sizeX, sizeY, ++_entityCount);
+            GameField field = new GameField();
 
             return new ResponseGameField(field, StateCode.Success);
         }
@@ -219,29 +220,30 @@ namespace SeaBattle.Lib.Managers
 
         public IResponseGamePlayer AddPlayerToGame(IGame game, string playerName)
         {
-            if (game.Players.Count == 0)
+            /*if (game.GamePlayers.Count == 0)
             {
                 game.State = GameState.SearchPlayers;
-            }
-            
+            }*/
+
             if (game.CurrentCountPlayers == game.MaxNumberOfPlayers)
             {
                 return new ResponseGamePlayer(null, StateCode.ExceededMaxNumberOfPlayers);
             }
 
-            IGamePlayer player = new GamePlayer(++_entityCount, playerName);
+            //IGamePlayer player = new GamePlayer(++_entityCount, playerName);
+            GamePlayer player = new GamePlayer();
 
-            game.Players.Add(player);
+            /*game.GamePlayers.Add(player);
 
-            if (game.Players.Count == game.MaxNumberOfPlayers)
+            if (game.GamePlayers.Count == game.MaxNumberOfPlayers)
             {
                 game.State = GameState.Init;
-            }
+            }*/
 
-            return new ResponseGamePlayer(player, StateCode.Success);
+            return new ResponseGamePlayer(player as IGamePlayer, StateCode.Success);
         }
 
-        public IResponseStartField GetStartField(IGame game, IGamePlayer gamePlayer)
+        public IResponseStartField GetStartField(Game game, GamePlayer gamePlayer)
         {
             //Variable for result
             IStartField startField;
@@ -249,11 +251,11 @@ namespace SeaBattle.Lib.Managers
             //in the case haven't created startFields - create them
             if (game.StartFields == null)
             {
-                game.StartFields = new List<IStartField>(game.MaxNumberOfPlayers);
-                ICollection<bool[,]> fieldsOfLabels;
-                try
+                game.StartFields = new List<StartField>(game.MaxNumberOfPlayers);
+                ICollection<StartFieldCell> fieldsOfLabels;
+                /*try
                 {
-                    fieldsOfLabels = GenerateStartFields(game.Field, game.MaxNumberOfPlayers);
+                    fieldsOfLabels = GenerateStartFields(game.GameField, game.MaxNumberOfPlayers);
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -266,11 +268,11 @@ namespace SeaBattle.Lib.Managers
                 foreach (var labelField in fieldsOfLabels)
                 {
                     game.StartFields.Add(
-                        new StartField(++_entityCount, game.Field, labelField, null, startPoints, new List<IGameShip>(), game.Id)
+                        new StartField(++_entityCount, game.GameField, labelField, null, startPoints, new List<GameShip>(), game.Id)
                         {
                             FieldLabels = labelField
                         });
-                }
+                }*/
 
                 //get first of start fields for the current player
                 startField = game.StartFields.FirstOrDefault();
@@ -292,7 +294,7 @@ namespace SeaBattle.Lib.Managers
                 startField.GamePlayer = gamePlayer;
 
                 //change status player
-                startField.GamePlayer.State = PlayerState.InitializeField;
+                startField.GamePlayer.PlayerStateId = 2;
 
                 return new ResponseStartField(startField, StateCode.Success);
             }
@@ -308,7 +310,8 @@ namespace SeaBattle.Lib.Managers
                     $"{nameof(numberOfPlayers)} is out of range [0;{_maxNumberOfPlayers}]");
             }
 
-            return new Game(numberOfPlayers) {Id = ++_entityCount};
+            //return new Game(numberOfPlayers) { Id = ++_entityCount };
+            return new Game() as IGame;
         }
 
         /// <summary>

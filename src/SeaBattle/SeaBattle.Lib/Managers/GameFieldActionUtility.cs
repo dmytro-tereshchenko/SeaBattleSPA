@@ -40,7 +40,7 @@ namespace SeaBattle.Lib.Managers
 
             foreach (var cell in coordinates)
             {
-                field[cell.Item1, cell.Item2] = ship;
+                field[cell.Item1, cell.Item2] = ship as GameShip;
             }
 
             return StateCode.Success;
@@ -177,7 +177,7 @@ namespace SeaBattle.Lib.Managers
                 for (ushort j = 1; j <= field.SizeY; j++)
                 {
                     //filtering by team and empty cell
-                    if (field[i, j] != null && (player == null || player == field[i, j].GamePlayer))
+                    /*if (field[i, j] != null && (player == null || player == field[i, j].GamePlayer))
                     {
                         if (!ships.ContainsKey(field[i, j]))
                         {
@@ -186,7 +186,7 @@ namespace SeaBattle.Lib.Managers
                         }
 
                         ships[field[i, j]].Add((i, j));
-                    }
+                    }*/
                 }
             }
 

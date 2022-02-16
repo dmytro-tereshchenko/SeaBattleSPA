@@ -8,6 +8,6 @@
         /// <summary>
         /// Start the game (creating all entities and actions during the game.
         /// </summary>
-        void Start();
+        //void Start();
     }
 }
