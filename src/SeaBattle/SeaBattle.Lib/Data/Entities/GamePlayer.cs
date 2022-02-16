@@ -12,7 +12,7 @@ namespace SeaBattle.Lib.Entities
     public class GamePlayer : Player, IGamePlayer
     {
         [JsonIgnore]
-        public int PlayerStateId { get; set; }
+        public short PlayerStateId { get; set; }
 
         [ForeignKey(nameof(PlayerStateId))]
         public PlayerState PlayerState { get; set; }

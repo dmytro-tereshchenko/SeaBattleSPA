@@ -12,7 +12,7 @@ namespace SeaBattle.Lib.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public short Id { get; set; }
 
         [Required]
         public string Name { get; set; }

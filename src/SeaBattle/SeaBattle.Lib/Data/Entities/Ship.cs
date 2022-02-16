@@ -15,7 +15,7 @@ namespace SeaBattle.Lib.Entities
         public int Id { get; set; }
 
         [JsonIgnore]
-        public int ShipTypeId { get; set; }
+        public short ShipTypeId { get; set; }
 
         public byte Size { get; set; }
 
@@ -23,6 +23,7 @@ namespace SeaBattle.Lib.Entities
 
         public byte Speed { get; set; }
 
+        [ForeignKey(nameof(ShipTypeId))]
         public ShipType ShipType { get; set; }
 
         public uint Cost { get; set; }

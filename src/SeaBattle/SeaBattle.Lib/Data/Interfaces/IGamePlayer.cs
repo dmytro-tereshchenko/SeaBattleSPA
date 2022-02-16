@@ -11,7 +11,7 @@ namespace SeaBattle.Lib.Entities
         /// Foreign key Id <see cref="PlayerState"/>
         /// </summary>
         /// <value><see cref="int"/></value>
-        int PlayerStateId { get; set; }
+        short PlayerStateId { get; set; }
 
         /// <summary>
         /// Navigation property to collection <see cref="Game"/>
