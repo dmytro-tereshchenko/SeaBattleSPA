@@ -16,7 +16,7 @@ namespace SeaBattle.Tests
             _utility = new GameFieldActionUtility();
         }
 
-        [Fact]
+        /*[Fact]
         public void CheckFreeAreaAroundShipReturnFalse()
         {
             // Arrange
@@ -651,6 +651,6 @@ namespace SeaBattle.Tests
             // Assert
             Assert.All(expectedCoordinates,
                 ((ushort X, ushort Y) coord) => Assert.Equal(ship3, field[coord.X, coord.Y]));
-        }
+        }*/
     }
 }

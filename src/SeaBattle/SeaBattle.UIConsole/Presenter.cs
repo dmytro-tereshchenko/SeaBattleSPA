@@ -269,7 +269,7 @@ namespace SeaBattle.UIConsole
             }
             else if (field[point.X, point.Y] != null && player == null)
             {
-                Console.BackgroundColor = (ConsoleColor)(playersList.IndexOf(field[point.X, point.Y].GamePlayer) + 1);
+                Console.BackgroundColor = (ConsoleColor)(playersList.IndexOf(field[point.X, point.Y].GamePlayer as IGamePlayer) + 1);
                 PrintSymbol(' ', sizeNumberY);
                 Console.BackgroundColor = ConsoleColor.Black;
             }

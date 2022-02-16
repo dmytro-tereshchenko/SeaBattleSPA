@@ -20,14 +20,14 @@
         /// <summary>
         /// Foreign key Id <see cref="GameShip"/>
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint GameShipId { get; set; }
+        /// <value><see cref="int"/></value>
+        int GameShipId { get; set; }
 
         /// <summary>
         /// Foreign key Id <see cref="GameField"/>
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint GameFieldId { get; set; }
+        /// <value><see cref="int"/></value>
+        int GameFieldId { get; set; }
 
         /// <summary>
         /// Navigate property <see cref="GameShip"/>

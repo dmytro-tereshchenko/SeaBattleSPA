@@ -8,7 +8,7 @@
         /// <summary>
         /// Id of entity
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint Id { get; set; }
+        /// <value><see cref="int"/></value>
+        //int Id { get; set; }
     }
 }

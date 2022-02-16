@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
@@ -8,14 +9,16 @@ namespace SeaBattle.Lib.Entities
     /// </summary>
     public class StartFieldCell : IStartFieldCell
     {
-        public uint Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         public ushort X { get; set; }
 
         public ushort Y { get; set; }
 
         [JsonIgnore]
-        public uint StartFieldId { get; set; }
+        public int StartFieldId { get; set; }
 
         [JsonIgnore]
         public StartField StartField { get; set; }

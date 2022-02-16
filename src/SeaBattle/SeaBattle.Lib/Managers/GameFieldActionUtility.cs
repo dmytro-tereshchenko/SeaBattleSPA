@@ -177,7 +177,7 @@ namespace SeaBattle.Lib.Managers
                 for (ushort j = 1; j <= field.SizeY; j++)
                 {
                     //filtering by team and empty cell
-                    if (field[i, j] != null && (player == null || player == field[i, j].GamePlayer))
+                    /*if (field[i, j] != null && (player == null || player == field[i, j].GamePlayer))
                     {
                         if (!ships.ContainsKey(field[i, j]))
                         {
@@ -186,7 +186,7 @@ namespace SeaBattle.Lib.Managers
                         }
 
                         ships[field[i, j]].Add((i, j));
-                    }
+                    }*/
                 }
             }
 

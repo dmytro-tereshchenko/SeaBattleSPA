@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using SeaBattle.Lib.Entities;
-using SeaBattle.Lib.Infrastructure;
-using SeaBattle.Lib.Responses;
-
-namespace SeaBattle.Lib.Managers
+﻿namespace SeaBattle.Lib.Managers
 {
     /// <summary>
     /// Manager which response for game flow of "Sea battle"

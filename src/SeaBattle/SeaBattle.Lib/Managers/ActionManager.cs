@@ -25,7 +25,7 @@ namespace SeaBattle.Lib.Managers
 
         public IResponseGameField GetGameField(IGamePlayer player, IGame game)
         {
-            if (!game.GamePlayers.Contains(player))
+            if (!game.GamePlayers.Contains(player as GamePlayer))
             {
                 return new ResponseGameField(null, StateCode.InvalidPlayer);
             }
@@ -95,7 +95,7 @@ namespace SeaBattle.Lib.Managers
         public StateCode TransferShipFromGameField(IPlayer player, ushort tPosX, ushort tPosY,
             IStartField startField)
         {
-            IGameShip ship = startField.GameField[tPosX, tPosY];
+            GameShip ship = startField.GameField[tPosX, tPosY];
 
             if (ship == null)
             {
@@ -108,7 +108,7 @@ namespace SeaBattle.Lib.Managers
             }
 
             startField.GameShips.Add(ship as GameShip);
-            ActionUtility.RemoveShipFromField(ship, startField.GameField);
+            ActionUtility.RemoveShipFromField(ship as IGameShip, startField.GameField);
 
             return StateCode.Success;
         }
@@ -116,7 +116,7 @@ namespace SeaBattle.Lib.Managers
         public StateCode TransferShipToGameField(IGamePlayer player, ushort tPosX, ushort tPosY,
             DirectionOfShipPosition direction, IStartField startField, IGameShip ship)
         {
-            if (!startField.GameShips.Contains(ship))
+            if (!startField.GameShips.Contains(ship as GameShip))
             {
                 return StateCode.InvalidShip;
             }
@@ -219,7 +219,7 @@ namespace SeaBattle.Lib.Managers
 
             if (field[tPosX, tPosY].Hp <= ship.Damage)
             {
-                ActionUtility.RemoveShipFromField(field[tPosX, tPosY], field);
+               // ActionUtility.RemoveShipFromField(field[tPosX, tPosY], field);
 
                 return StateCode.TargetDestroyed;
             }

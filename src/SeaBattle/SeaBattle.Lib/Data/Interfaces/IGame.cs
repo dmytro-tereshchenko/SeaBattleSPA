@@ -29,8 +29,8 @@ namespace SeaBattle.Lib.Entities
         /// Foreign key Id <see cref="GameState"/>
         /// Current state of game
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint GameStateId { get; set; }
+        /// <value><see cref="int"/></value>
+        int GameStateId { get; set; }
 
         /// <summary>
         /// Winner of the game

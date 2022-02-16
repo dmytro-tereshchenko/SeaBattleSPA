@@ -5,9 +5,9 @@ namespace SeaBattle.Lib.Data.Entities
 {
     public class GameDbContext : DbContext
     {
-        public DbSet<BasicWeapon> Weapons { get; set; }
+        public DbSet<Weapon> Weapons { get; set; }
 
-        public DbSet<BasicRepair> Repairs { get; set; }
+        public DbSet<Repair> Repairs { get; set; }
 
         public DbSet<Ship> Ships { get; set; }
 
@@ -144,19 +144,18 @@ namespace SeaBattle.Lib.Data.Entities
                     new GameState {Id = 5, Name = "Finished"} //Game was finished
                 });
 
-            modelBuilder.Entity<BasicWeapon>().HasData(new BasicWeapon() {Id = 1, AttackRange = 10, Damage = 50});
+            modelBuilder.Entity<Weapon>().HasData(new Weapon() { Id = 1, AttackRange = 10, Damage = 50 });
 
-            modelBuilder.Entity<BasicRepair>().HasData(new BasicRepair() {Id = 1, RepairRange = 10, RepairPower = 40});
+            modelBuilder.Entity<Repair>().HasData(new Repair() { Id = 1, RepairRange = 10, RepairPower = 40 });
 
             modelBuilder.Entity<Ship>().HasData(
                 new Ship[]
                 {
-                    new Ship {Id = 1, Size = 1, MaxHp = 100, Speed = 4, ShipTypeId = 3, Cost = 1000}, 
-                    new Ship {Id = 2, Size = 2, MaxHp = 200, Speed = 3, ShipTypeId = 2, Cost = 2000}, 
-                    new Ship {Id = 3, Size = 3, MaxHp = 300, Speed = 2, ShipTypeId = 2, Cost = 3000}, 
-                    new Ship {Id = 4, Size = 4, MaxHp = 400, Speed = 1, ShipTypeId = 1, Cost = 4000} 
+                    new Ship {Id = 1, Size = 1, MaxHp = 100, Speed = 4, ShipTypeId = 3, Cost = 1000},
+                    new Ship {Id = 2, Size = 2, MaxHp = 200, Speed = 3, ShipTypeId = 2, Cost = 2000},
+                    new Ship {Id = 3, Size = 3, MaxHp = 300, Speed = 2, ShipTypeId = 2, Cost = 3000},
+                    new Ship {Id = 4, Size = 4, MaxHp = 400, Speed = 1, ShipTypeId = 1, Cost = 4000}
                 });
-
         }
     }
 }

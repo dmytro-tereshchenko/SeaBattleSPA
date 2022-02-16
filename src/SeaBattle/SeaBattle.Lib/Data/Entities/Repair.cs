@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
@@ -7,10 +8,12 @@ namespace SeaBattle.Lib.Entities
     /// <summary>
     /// Basic repair equipment for ship
     /// </summary>
-    public class BasicRepair : IRepair
+    public class Repair : IRepair
     {
         [Key]
-        public uint Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
 
         [Required]
         public ushort RepairPower { get; set; }
@@ -24,26 +27,26 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Default constructor
         /// </summary>
-        public BasicRepair()
+        public Repair()
         {
             GameShips = new List<GameShip>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BasicRepair"/> class
+        /// Initializes a new instance of the <see cref="Repair"/> class
         /// </summary>
         /// <param name="id">Id of repair</param>
         /// <param name="power">Amount of hp that ship can repair</param>
         /// <param name="range">Distance to target ship which can be repaired</param>
-        public BasicRepair(uint id, ushort power, ushort range)
+        public Repair(int id, ushort power, ushort range)
             : this(power, range) => Id = id;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BasicRepair"/> class
+        /// Initializes a new instance of the <see cref="Repair"/> class
         /// </summary>
         /// <param name="power">Amount of hp that ship can repair</param>
         /// <param name="range">Distance to target ship which can be repaired</param>
-        public BasicRepair(ushort power, ushort range) : this()
+        public Repair(ushort power, ushort range) : this()
         {
             RepairPower = power;
             RepairRange = range;

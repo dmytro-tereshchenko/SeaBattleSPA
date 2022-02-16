@@ -15,7 +15,7 @@ namespace SeaBattle.Tests
             _manager = new ShipManager();
         }
 
-        [Fact]
+        /*[Fact]
         public void BuyShipResultSucces()
         {
             // Arrange
@@ -360,6 +360,6 @@ namespace SeaBattle.Tests
 
             // Assert
             //Assert.Equal(expected, startField.Points);
-        }
+        }*/
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
@@ -9,8 +10,9 @@ namespace SeaBattle.Lib.Entities
     /// </summary>
     public class GameState : IGameState
     {
-        [Key] 
-        public uint Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         [Required] 
         public string Name { get; set; }

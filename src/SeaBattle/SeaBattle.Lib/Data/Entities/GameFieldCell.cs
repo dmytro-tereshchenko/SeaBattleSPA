@@ -1,11 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
 {
     public class GameFieldCell : IGameFieldCell
     {
-        public uint Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         public ushort X { get; set; }
 
@@ -14,10 +17,10 @@ namespace SeaBattle.Lib.Entities
         public bool Stern { get; set; }
 
         [JsonIgnore]
-        public uint GameShipId { get; set; }
+        public int GameShipId { get; set; }
 
         [JsonIgnore]
-        public uint GameFieldId { get; set; }
+        public int GameFieldId { get; set; }
 
         public GameShip GameShip { get; set; }
 

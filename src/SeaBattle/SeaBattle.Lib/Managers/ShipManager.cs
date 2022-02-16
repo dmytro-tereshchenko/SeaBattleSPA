@@ -1,6 +1,5 @@
 ﻿using SeaBattle.Lib.Entities;
 using System.Collections.Generic;
-using System.Linq;
 using SeaBattle.Lib.Infrastructure;
 
 namespace SeaBattle.Lib.Managers
@@ -10,54 +9,9 @@ namespace SeaBattle.Lib.Managers
     /// </summary>
     public class ShipManager : IShipManager
     {
-        /// <summary>
-        /// Price for 1 cell of ship
-        /// </summary>
-        /// <value><see cref="int"/></value>
-        protected const int PriceCoefficient = 1000;
+        public ShipManager() { }
 
-        /// <summary>
-        /// Collection of basic types of common ships
-        /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is (<see cref="IShip"/>, <see cref="int"/>) (ship, points cost)</value>
-        protected readonly ICollection<(IShip, int)> Ships;
-
-        /// <summary>
-        /// Collection of basic weapons
-        /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IWeapon"/></value>
-        protected readonly ICollection<IWeapon> Weapons;
-
-        /// <summary>
-        /// Collection of basic repairs
-        /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="IRepair"/></value>
-        protected readonly ICollection<IRepair> Repairs;
-
-        /// <summary>
-        /// Count of created entities.
-        /// </summary>
-        private uint _entityCount;
-
-        /*public ShipManager()
-        {
-            Ships = new List<(IShip, int)>();
-
-            Ships.Add(new(new Ship(++_entityCount, ShipType.Auxiliary, 1, 100, 4), GetShipCost(1)));
-            Ships.Add(new(new Ship(++_entityCount, ShipType.Mixed, 2, 200, 3), GetShipCost(2)));
-            Ships.Add(new(new Ship(++_entityCount, ShipType.Mixed, 3, 300, 2), GetShipCost(3)));
-            Ships.Add(new(new Ship(++_entityCount, ShipType.Military, 4, 400, 1), GetShipCost(4)));
-
-            Repairs = new List<IRepair>();
-
-            Repairs.Add(new BasicRepair(++_entityCount, 40, 10));
-
-            Weapons = new List<IWeapon>();
-
-            Weapons.Add(new BasicWeapon(++_entityCount, 50, 10));
-        }
-
-        public StateCode BuyShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField)
+        public StateCode BuyShip(ICollection<GamePlayer> players, GameShip gameShip, StartField startField)
         {
             if (!players.Contains(startField.GamePlayer))
             {
@@ -69,35 +23,35 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.PointsShortage;
             }
 
-            startField.Ships.Add(gameShip);
+            startField.GameShips.Add(gameShip);
             startField.Points -= gameShip.Points;
 
 
             return StateCode.Success;
         }
 
-        public StateCode SellShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField)
+        public StateCode SellShip(ICollection<GamePlayer> players, GameShip gameShip, StartField startField)
         {
             if (!players.Contains(startField.GamePlayer))
             {
                 return StateCode.InvalidPlayer;
             }
 
-            startField.Ships.Remove(gameShip);
+            startField.GameShips.Remove(gameShip);
             startField.Points += gameShip.Points;
 
             return StateCode.Success;
         }
 
-        public ICollection<(IShip, int)> GetShips() => Ships;
+        /*public ICollection<(IShip, int)> GetShips() => Ships;
 
         public ICollection<IRepair> GetRepairs() => Repairs;
 
         public ICollection<IWeapon> GetWeapons() => Weapons;
 
-        public IGameShip GetNewShip(IGamePlayer gamePlayer, IShip ship)
+        public IGameShip GetNewShip(GamePlayer gamePlayer, Ship ship)
         {
-            IGameShip gameShip = new GameShip(++_entityCount, ship, gamePlayer, GetShipCost(ship.Size));
+            IGameShip gameShip = new GameShip(ship, gamePlayer, GetShipCost(ship.Size));
             switch (ship.Type)
             {
                 case ShipType.Military:
@@ -168,7 +122,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            return gameShip.Weapons.Remove(weapon as BasicWeapon) ? StateCode.Success : StateCode.InvalidEquipment;
+            return gameShip.Weapons.Remove(weapon as Weapon) ? StateCode.Success : StateCode.InvalidEquipment;
         }
 
         public StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair)
@@ -178,14 +132,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            return gameShip.Repairs.Remove(repair as BasicRepair) ? StateCode.Success : StateCode.InvalidEquipment;
+            return gameShip.Repairs.Remove(repair as Repair) ? StateCode.Success : StateCode.InvalidEquipment;
         }
-
-        /// <summary>
-        /// Calculation ship cost by his size.
-        /// </summary>
-        /// <param name="size">Size (length) of ship.</param>
-        /// <returns>Amount of points of cost ship.</returns>
-        protected int GetShipCost(byte size) => size * PriceCoefficient;
     }
 }

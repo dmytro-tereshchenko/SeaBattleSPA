@@ -30,8 +30,8 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Foreign key Id <see cref="Game"/>
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint GameId { get; set; }
+        /// <value><see cref="int"/></value>
+        int GameId { get; set; }
 
         /// <summary>
         /// Navigate property <see cref="Game"/>

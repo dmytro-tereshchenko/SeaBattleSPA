@@ -10,20 +10,20 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Id of game <see cref="Game"/>
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint GameId { get; set; }
+        /// <value><see cref="int"/></value>
+        int GameId { get; set; }
 
         /// <summary>
         /// Foreign key Id <see cref="GameField"/>
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint GameFieldId { get; set; }
+        /// <value><see cref="int"/></value>
+        int GameFieldId { get; set; }
 
         /// <summary>
         /// Foreign key Id <see cref="GamePlayer"/>
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint GamePlayerId { get; set; }
+        /// <value><see cref="int"/></value>
+        int GamePlayerId { get; set; }
 
         /// <summary>
         /// Collection of labels for game field when the player can put his own ships on start field

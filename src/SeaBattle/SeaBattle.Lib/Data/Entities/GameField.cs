@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
@@ -11,13 +12,15 @@ namespace SeaBattle.Lib.Entities
     /// </summary>
     public class GameField : IGameField
     {
-        public uint Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         public ushort SizeX { get; set; }
 
         public ushort SizeY { get; set; }
 
-        public uint GameId { get; set; }
+        public int GameId { get; set; }
 
         [JsonIgnore]
         [ForeignKey(nameof(GameId))]
@@ -43,7 +46,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="sizeX">Size X of game field</param>
         /// <param name="sizeY">Size Y of game field</param>
         /// <param name="id">Id of game field</param>
-        public GameField(ushort sizeX, ushort sizeY, uint id) : this(sizeX, sizeY) => Id = id;
+        public GameField(ushort sizeX, ushort sizeY, int id) : this(sizeX, sizeY) => Id = id;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GameField"/> class

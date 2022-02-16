@@ -1,22 +1,18 @@
-﻿using System.Collections.Generic;
-using SeaBattle.Lib.Entities;
-using SeaBattle.Lib.Infrastructure;
-
-namespace SeaBattle.Lib.Managers
+﻿namespace SeaBattle.Lib.Managers
 {
     /// <summary>
     /// Manager which response for creating and change ships.
     /// </summary>
     public interface IShipManager
     {
-        /*/// <summary>
+        /// <summary>
         /// Buy ship and add to <see cref="IStartField"/>
         /// </summary>
         /// <param name="players">Collection of players in the game</param>
         /// <param name="gameShip">Game ship</param>
         /// <param name="startField">Start field with initializing data and parameters for the player</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode BuyShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField);
+        /*StateCode BuyShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField);
 
         /// <summary>
         /// Sell ship and remove from <see cref="IStartField"/>

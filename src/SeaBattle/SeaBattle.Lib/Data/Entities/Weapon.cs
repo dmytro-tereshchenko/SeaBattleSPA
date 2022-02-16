@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
@@ -6,9 +8,11 @@ namespace SeaBattle.Lib.Entities
     /// <summary>
     /// Basic weapon equipment for ship
     /// </summary>
-    public class BasicWeapon : IWeapon
+    public class Weapon : IWeapon
     {
-        public uint Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         public ushort Damage { get; set; }
 
@@ -20,26 +24,26 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Default constructor
         /// </summary>
-        public BasicWeapon()
+        public Weapon()
         {
             GameShips = new List<GameShip>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BasicWeapon"/> class
+        /// Initializes a new instance of the <see cref="Weapon"/> class
         /// </summary>
         /// <param name="id">Id of weapon</param>
         /// <param name="damage">Amount of hp that target ship can be damaged</param>
         /// <param name="aRange">Distance to target ship which can be damaged</param>
-        public BasicWeapon(uint id, ushort damage, ushort aRange)
+        public Weapon(int id, ushort damage, ushort aRange)
             : this(damage, aRange) => Id = id;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BasicWeapon"/> class
+        /// Initializes a new instance of the <see cref="Weapon"/> class
         /// </summary>
         /// <param name="damage">Amount of hp that target ship can be damaged</param>
         /// <param name="aRange">Distance to target ship which can be damaged</param>
-        public BasicWeapon(ushort damage, ushort aRange) : this()
+        public Weapon(ushort damage, ushort aRange) : this()
         {
             Damage = damage;
             AttackRange = aRange;

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -13,7 +12,7 @@ namespace SeaBattle.Lib.Entities
     public class GamePlayer : Player, IGamePlayer
     {
         [JsonIgnore]
-        public uint PlayerStateId { get; set; }
+        public int PlayerStateId { get; set; }
 
         [ForeignKey(nameof(PlayerStateId))]
         public PlayerState PlayerState { get; set; }
@@ -42,7 +41,7 @@ namespace SeaBattle.Lib.Entities
         /// </summary>
         /// <param name="id">Id of game player</param>
         /// <param name="name">Players name</param>
-        public GamePlayer(uint id, string name) : this(name) => Id = id;
+        public GamePlayer(int id, string name) : this(name) => Id = id;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GamePlayer"/> class

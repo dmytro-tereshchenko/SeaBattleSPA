@@ -11,7 +11,7 @@ namespace SeaBattle.Lib.Managers
     /// </summary>
     public interface IInitializeManager
     {
-       /* /// <summary>
+        /// <summary>
         /// Creating and getting game field.
         /// </summary>
         /// <param name="sizeX">Size X of created game field.</param>
@@ -61,7 +61,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="game">Current game</param>
         /// <param name="gamePlayer">Current player</param>
         /// <returns><see cref="IResponseStartField"/></returns>
-        IResponseStartField GetStartField(IGame game, IGamePlayer gamePlayer);
+        IResponseStartField GetStartField(Game game, GamePlayer gamePlayer);
 
         /// <summary>
         /// Create <see cref="IGame"/> by <paramref name="numberOfPlayers"/>
@@ -69,6 +69,6 @@ namespace SeaBattle.Lib.Managers
         /// <param name="numberOfPlayers">Number of players in the game</param>
         /// <returns><see cref="IGame"/> Created game</returns>
         /// <exception cref="ArgumentOutOfRangeException">A number of teams are out of possible values.</exception>
-        IGame CreateGame(byte numberOfPlayers);*/
+        IGame CreateGame(byte numberOfPlayers);
     }
 }

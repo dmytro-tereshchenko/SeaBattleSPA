@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SeaBattle.Lib.Data.Entities;
 
 namespace SeaBattle.GameResources.Migrations
 {
     [DbContext(typeof(GameDbContext))]
-    partial class GameDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220216112118_DropPrimaryKey")]
+    partial class DropPrimaryKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,54 +21,9 @@ namespace SeaBattle.GameResources.Migrations
                 .HasAnnotation("ProductVersion", "5.0.14")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BasicRepairGameShip", b =>
-                {
-                    b.Property<int>("GameShipsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RepairsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GameShipsId", "RepairsId");
-
-                    b.HasIndex("RepairsId");
-
-                    b.ToTable("GameShipRepair");
-                });
-
-            modelBuilder.Entity("BasicWeaponGameShip", b =>
-                {
-                    b.Property<int>("GameShipsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WeaponsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GameShipsId", "WeaponsId");
-
-                    b.HasIndex("WeaponsId");
-
-                    b.ToTable("GameShipWeapon");
-                });
-
-            modelBuilder.Entity("GameGamePlayer", b =>
-                {
-                    b.Property<int>("GamePlayersId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GamesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GamePlayersId", "GamesId");
-
-                    b.HasIndex("GamesId");
-
-                    b.ToTable("GamePlayerGame");
-                });
-
             modelBuilder.Entity("SeaBattle.Lib.Entities.BasicRepair", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("NewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -77,22 +34,14 @@ namespace SeaBattle.GameResources.Migrations
                     b.Property<int>("RepairRange")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("NewId");
 
                     b.ToTable("Repairs");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            RepairPower = 40,
-                            RepairRange = 10
-                        });
                 });
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.BasicWeapon", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("NewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -103,22 +52,14 @@ namespace SeaBattle.GameResources.Migrations
                     b.Property<int>("Damage")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("NewId");
 
                     b.ToTable("Weapons");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AttackRange = 10,
-                            Damage = 50
-                        });
                 });
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.Game", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("NewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -137,7 +78,7 @@ namespace SeaBattle.GameResources.Migrations
                     b.Property<string>("Winner")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("NewId");
 
                     b.HasIndex("GameStateId");
 
@@ -146,7 +87,7 @@ namespace SeaBattle.GameResources.Migrations
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.GameField", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("NewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -160,7 +101,7 @@ namespace SeaBattle.GameResources.Migrations
                     b.Property<int>("SizeY")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("NewId");
 
                     b.HasIndex("GameId")
                         .IsUnique();
@@ -170,7 +111,7 @@ namespace SeaBattle.GameResources.Migrations
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.GameFieldCell", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("NewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -190,7 +131,7 @@ namespace SeaBattle.GameResources.Migrations
                     b.Property<int>("Y")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("NewId");
 
                     b.HasIndex("GameFieldId");
 
@@ -201,7 +142,7 @@ namespace SeaBattle.GameResources.Migrations
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.GamePlayer", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("NewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -215,7 +156,7 @@ namespace SeaBattle.GameResources.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(1);
 
-                    b.HasKey("Id");
+                    b.HasKey("NewId");
 
                     b.HasIndex("Name");
 
@@ -226,7 +167,7 @@ namespace SeaBattle.GameResources.Migrations
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.GameShip", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("NewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -246,7 +187,7 @@ namespace SeaBattle.GameResources.Migrations
                     b.Property<int?>("StartFieldId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("NewId");
 
                     b.HasIndex("GamePlayerId");
 
@@ -259,7 +200,7 @@ namespace SeaBattle.GameResources.Migrations
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.GameState", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("NewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -268,41 +209,14 @@ namespace SeaBattle.GameResources.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("NewId");
 
                     b.ToTable("GameStates");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Created"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "SearchPlayers"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Init"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Process"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Finished"
-                        });
                 });
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.PlayerState", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("NewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -311,36 +225,14 @@ namespace SeaBattle.GameResources.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("NewId");
 
                     b.ToTable("PlayerStates");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Created"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "InitializeField"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Ready"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Process"
-                        });
                 });
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.Ship", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("NewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -360,54 +252,16 @@ namespace SeaBattle.GameResources.Migrations
                     b.Property<byte>("Speed")
                         .HasColumnType("tinyint");
 
-                    b.HasKey("Id");
+                    b.HasKey("NewId");
 
                     b.HasIndex("ShipTypeId");
 
                     b.ToTable("Ships");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Cost = 1000L,
-                            MaxHp = 100,
-                            ShipTypeId = 3,
-                            Size = (byte)1,
-                            Speed = (byte)4
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Cost = 2000L,
-                            MaxHp = 200,
-                            ShipTypeId = 2,
-                            Size = (byte)2,
-                            Speed = (byte)3
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Cost = 3000L,
-                            MaxHp = 300,
-                            ShipTypeId = 2,
-                            Size = (byte)3,
-                            Speed = (byte)2
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Cost = 4000L,
-                            MaxHp = 400,
-                            ShipTypeId = 1,
-                            Size = (byte)4,
-                            Speed = (byte)1
-                        });
                 });
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.ShipType", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("NewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -416,31 +270,14 @@ namespace SeaBattle.GameResources.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("NewId");
 
                     b.ToTable("ShipTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Military"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Auxiliary"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Mixed"
-                        });
                 });
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.StartField", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("NewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -457,7 +294,7 @@ namespace SeaBattle.GameResources.Migrations
                     b.Property<int>("Points")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("NewId");
 
                     b.HasIndex("GameFieldId");
 
@@ -470,12 +307,12 @@ namespace SeaBattle.GameResources.Migrations
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.StartFieldCell", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("NewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("GameShipId")
+                    b.Property<int?>("GameShipNewId")
                         .HasColumnType("int");
 
                     b.Property<int>("StartFieldId")
@@ -487,58 +324,13 @@ namespace SeaBattle.GameResources.Migrations
                     b.Property<int>("Y")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("NewId");
 
-                    b.HasIndex("GameShipId");
+                    b.HasIndex("GameShipNewId");
 
                     b.HasIndex("StartFieldId");
 
                     b.ToTable("StartFieldCells");
-                });
-
-            modelBuilder.Entity("BasicRepairGameShip", b =>
-                {
-                    b.HasOne("SeaBattle.Lib.Entities.GameShip", null)
-                        .WithMany()
-                        .HasForeignKey("GameShipsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SeaBattle.Lib.Entities.BasicRepair", null)
-                        .WithMany()
-                        .HasForeignKey("RepairsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BasicWeaponGameShip", b =>
-                {
-                    b.HasOne("SeaBattle.Lib.Entities.GameShip", null)
-                        .WithMany()
-                        .HasForeignKey("GameShipsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SeaBattle.Lib.Entities.BasicWeapon", null)
-                        .WithMany()
-                        .HasForeignKey("WeaponsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GameGamePlayer", b =>
-                {
-                    b.HasOne("SeaBattle.Lib.Entities.GamePlayer", null)
-                        .WithMany()
-                        .HasForeignKey("GamePlayersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SeaBattle.Lib.Entities.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.Game", b =>
@@ -661,7 +453,7 @@ namespace SeaBattle.GameResources.Migrations
                 {
                     b.HasOne("SeaBattle.Lib.Entities.GameShip", null)
                         .WithMany("StartFieldCells")
-                        .HasForeignKey("GameShipId");
+                        .HasForeignKey("GameShipNewId");
 
                     b.HasOne("SeaBattle.Lib.Entities.StartField", "StartField")
                         .WithMany("StartFieldCells")

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -8,7 +9,8 @@ namespace SeaBattle.Lib.Entities
     public class Player : IPlayer
     {
         [Key]
-        public uint Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -23,7 +25,7 @@ namespace SeaBattle.Lib.Entities
         /// </summary>
         /// <param name="id">Player's id</param>
         /// <param name="name">Player's name</param>
-        public Player(uint id, string name) : this(name) => Id = id;
+        public Player(int id, string name) : this(name) => Id = id;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Player"/> class

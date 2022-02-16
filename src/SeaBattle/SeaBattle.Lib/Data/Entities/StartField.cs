@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
@@ -9,17 +10,19 @@ namespace SeaBattle.Lib.Entities
     /// </summary>
     public class StartField : IStartField
     {
-        public uint Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         public int Points { get; set; }
 
-        public uint GameId { get; set; }
+        public int GameId { get; set; }
 
         [JsonIgnore]
-        public uint GameFieldId { get; set; }
+        public int GameFieldId { get; set; }
 
         [JsonIgnore]
-        public uint GamePlayerId { get; set; }
+        public int GamePlayerId { get; set; }
 
         [JsonIgnore]
         public Game Game { get; set; }
@@ -53,8 +56,8 @@ namespace SeaBattle.Lib.Entities
         /// <param name="points">Points for buying ships</param>
         /// <param name="gameShips">Collection of ships that bought but don't put to the field</param>
         /// <param name="gameId">Id of game <see cref="Game"/></param>
-        public StartField(uint id, GameField field, ICollection<StartFieldCell> fieldLabels, GamePlayer gamePlayer, int points, ICollection<GameShip> gameShips, uint gameId)
-        :this(field, fieldLabels, gamePlayer,  points,  gameShips, gameId) => Id = id;
+        public StartField(int id, GameField field, ICollection<StartFieldCell> fieldLabels, GamePlayer gamePlayer, int points, ICollection<GameShip> gameShips, int gameId)
+        : this(field, fieldLabels, gamePlayer, points, gameShips, gameId) => Id = id;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StartField"/> class
@@ -65,7 +68,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="points">Points for buying ships</param>
         /// <param name="gameShips">Collection of ships that bought but don't put to the field</param>
         /// <param name="gameId">Id of game <see cref="Game"/></param>
-        public StartField(GameField field, ICollection<StartFieldCell> fieldLabels, GamePlayer gamePlayer, int points, ICollection<GameShip> gameShips, uint gameId) 
+        public StartField(GameField field, ICollection<StartFieldCell> fieldLabels, GamePlayer gamePlayer, int points, ICollection<GameShip> gameShips, int gameId) 
             : this(field, points, gameId)
         {
             StartFieldCells = fieldLabels;
@@ -79,7 +82,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="field">Game field</param>
         /// <param name="points">Points for buying ships</param>
         /// <param name="gameId">Id of game <see cref="Game"/></param>
-        public StartField(GameField field, int points, uint gameId) : this()
+        public StartField(GameField field, int points, int gameId) : this()
         {
             GameField = field;
             Points = points;

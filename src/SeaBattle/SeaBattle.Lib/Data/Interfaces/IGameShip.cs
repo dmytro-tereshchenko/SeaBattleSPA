@@ -10,22 +10,22 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Foreign key Id <see cref="Ship"/>
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint ShipId { get; set; }
+        /// <value><see cref="int"/></value>
+        int ShipId { get; set; }
 
         /// <summary>
         /// Foreign key Id <see cref="GamePlayer"/>
         /// The player who owns this ship
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint GamePlayerId { get; set; }
+        /// <value><see cref="int"/></value>
+        int GamePlayerId { get; set; }
 
         /// <summary>
         /// Foreign key Id <see cref="StartField"/>
         /// The field for storing the location of ships and points for buy ships by the player when initializing game.
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint? StartFieldId { get; set; }
+        /// <value><see cref="int"/></value>
+        int? StartFieldId { get; set; }
 
         /// <summary>
         /// Current hp of ship
@@ -65,17 +65,17 @@ namespace SeaBattle.Lib.Entities
 
         /// <summary>
         /// Collection of weapons on ship
-        /// Navigate property <see cref="BasicWeapon"/>
+        /// Navigate property <see cref="Weapon"/>
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="BasicWeapon"/></value>
-        ICollection<BasicWeapon> Weapons { get; set;  }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="Weapon"/></value>
+        ICollection<Weapon> Weapons { get; set;  }
 
         /// <summary>
         /// Collection of weapons on ship
-        /// Navigate property <see cref="BasicRepair"/>
+        /// Navigate property <see cref="Repair"/>
         /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="BasicRepair"/></value>
-        ICollection<BasicRepair> Repairs { get; set; }
+        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="Repair"/></value>
+        ICollection<Repair> Repairs { get; set; }
 
         /// <summary>
         /// Navigate property <see cref="Ship"/>

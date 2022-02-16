@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
@@ -8,10 +10,12 @@ namespace SeaBattle.Lib.Entities
     /// </summary>
     public class Ship : IShip
     {
-        public uint Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         [JsonIgnore]
-        public uint ShipTypeId { get; set; }
+        public int ShipTypeId { get; set; }
 
         public byte Size { get; set; }
 
@@ -42,7 +46,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="size">Length of the ship (cells) and amount of possible equipment slots</param>
         /// <param name="maxHp">Max hp of the ship that he can be damaged</param>
         /// <param name="speed">Max speed (amount of cells, that the ship can move in 1 turn)</param>
-        public Ship(uint id, ShipType type, byte size, ushort maxHp, byte speed)
+        public Ship(int id, ShipType type, byte size, ushort maxHp, byte speed)
         : this(type, size, maxHp, speed) => Id = id;
 
         /// <summary>

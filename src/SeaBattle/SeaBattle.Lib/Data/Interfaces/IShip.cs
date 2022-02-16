@@ -10,8 +10,8 @@ namespace SeaBattle.Lib.Entities
         /// <summary>
         /// Foreign key Id <see cref="ShipType"/>
         /// </summary>
-        /// <value><see cref="uint"/></value>
-        uint ShipTypeId { get; set; }
+        /// <value><see cref="int"/></value>
+        int ShipTypeId { get; set; }
 
         /// <summary>
         /// Ship's cost

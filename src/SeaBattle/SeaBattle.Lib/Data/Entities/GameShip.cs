@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Newtonsoft.Json;
@@ -11,7 +12,9 @@ namespace SeaBattle.Lib.Entities
     /// </summary>
     public class GameShip : IGameShip
     {
-        public uint Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         public ushort Hp { get; set; }
 
@@ -78,13 +81,13 @@ namespace SeaBattle.Lib.Entities
         }
 
         [JsonIgnore]
-        public uint ShipId { get; set; }
+        public int ShipId { get; set; }
 
         [JsonIgnore]
-        public uint GamePlayerId { get; set; }
+        public int GamePlayerId { get; set; }
 
         [JsonIgnore]
-        public uint? StartFieldId { get; set; }
+        public int? StartFieldId { get; set; }
 
         public Ship Ship { get; set; }
 
@@ -93,9 +96,9 @@ namespace SeaBattle.Lib.Entities
         [JsonIgnore]
         public StartField StartField { get; set; }
 
-        public ICollection<BasicWeapon> Weapons { get; set; }
+        public ICollection<Weapon> Weapons { get; set; }
 
-        public ICollection<BasicRepair> Repairs { get; set; }
+        public ICollection<Repair> Repairs { get; set; }
 
         [JsonIgnore]
         public ICollection<GameFieldCell> GameFieldCells { get; set; }
@@ -108,8 +111,8 @@ namespace SeaBattle.Lib.Entities
         /// </summary>
         public GameShip()
         {
-            Weapons = new List<BasicWeapon>();
-            Repairs = new List<BasicRepair>();
+            Weapons = new List<Weapon>();
+            Repairs = new List<Repair>();
             GameFieldCells = new List<GameFieldCell>();
             StartFieldCells = new List<StartFieldCell>();
         }
@@ -122,7 +125,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
         /// <param name="hp">Current hp of ship</param>
-        public GameShip(uint id, Ship ship, GamePlayer gamePlayer, int points, ushort hp)
+        public GameShip(int id, Ship ship, GamePlayer gamePlayer, int points, ushort hp)
             : this(ship, gamePlayer, points, hp) => Id = id;
 
         /// <summary>
@@ -132,7 +135,7 @@ namespace SeaBattle.Lib.Entities
         /// <param name="ship">Basic ship</param>
         /// <param name="gamePlayer">The player who owns the ship</param>
         /// <param name="points">Ship's cost</param>
-        public GameShip(uint id, Ship ship, GamePlayer gamePlayer, int points) 
+        public GameShip(int id, Ship ship, GamePlayer gamePlayer, int points)
             : this(id, ship, gamePlayer, points, ship.MaxHp) { }
 
         /// <summary>

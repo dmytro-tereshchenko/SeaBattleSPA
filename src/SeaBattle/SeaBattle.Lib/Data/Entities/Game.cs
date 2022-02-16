@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SeaBattle.Lib.Entities
@@ -9,19 +9,21 @@ namespace SeaBattle.Lib.Entities
     /// </summary>
     public class Game : IGame
     {
-        public uint Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         public string? CurrentGamePlayerMove { get; set; }
 
         [NotMapped]
         public byte CurrentCountPlayers
         {
-            get => (byte) GamePlayers.Count;
+            get => (byte)GamePlayers.Count;
         }
 
         public byte MaxNumberOfPlayers { get; set; }
 
-        public uint GameStateId { get; set; }
+        public int GameStateId { get; set; }
 
         public string Winner { get; set; }
 
@@ -46,7 +48,7 @@ namespace SeaBattle.Lib.Entities
         /// Initializes a new instance of the <see cref="Game"/> class
         /// </summary>
         /// <param name="id">Id of game</param>
-        public Game(uint id): this() => Id = id;
+        public Game(int id) : this() => Id = id;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class
