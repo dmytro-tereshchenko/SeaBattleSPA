@@ -57,11 +57,11 @@ namespace SeaBattle.Lib.Infrastructure
             _actionUtility = actionUtility;
         }
 
-        public IInitializeManager GetInitializeManager() =>
-            new InitializeManager(_minSizeX, _maxSizeX, _minSizeY, _maxSizeY, _maxNumberOfPlayers);
+        /*public IInitializeManager GetInitializeManager() =>
+            new InitializeManager(_minSizeX, _maxSizeX, _minSizeY, _maxSizeY, _maxNumberOfPlayers);*/
 
         //public IShipManager GetShipManager() => new ShipManager();
 
-        public IActionManager GetActionManager() => new ActionManager(_actionUtility);
+        //public IActionManager GetActionManager() => new ActionManager(_actionUtility);
     }
 }

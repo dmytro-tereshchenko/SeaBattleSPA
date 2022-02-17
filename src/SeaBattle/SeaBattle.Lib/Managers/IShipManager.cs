@@ -28,10 +28,10 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Creation and getting a new game ship.
         /// </summary>
-        /// <param name="gamePlayerId">Id of Player(user) in game</param>
+        /// <param name="gamePlayerName">Name of Player(user) in game</param>
         /// <param name="shipId">Id of Type of <see cref="Ship"/>, which player wants to buy.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous operation. The task result contains <see cref="IGameShip"/> or <see cref="null"/> in case of error</returns>
-        Task<IGameShip> GetNewShip(int gamePlayerId, int shipId);
+        Task<IGameShip> GetNewShip(string gamePlayerName, int shipId);
 
         /// <summary>
         /// Add weapon to game ship.

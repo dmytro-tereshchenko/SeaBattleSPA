@@ -114,16 +114,17 @@ namespace SeaBattle.Lib.Managers
             return StateCode.Success;
         }
 
-        public async Task<IGameShip> GetNewShip(int gamePlayerId, int shipId)
+        public async Task<IGameShip> GetNewShip(string gamePlayerName, int shipId)
         {
-            GamePlayer gamePlayer = await _gamePlayerRepository.FindByIdAsync(gamePlayerId);
+            var query = await _gamePlayerRepository.GetAsync(p => p.Name == gamePlayerName);
+            GamePlayer gamePlayer = query.FirstOrDefault();
 
             Ship ship = await _shipRepository.FindByIdAsync(shipId);
 
             if (gamePlayer == null || ship == null)
             {
                 _logger.LogWarning($"Invalid Id arguments in progress {nameof(GetNewShip)}", shipId,
-                    gamePlayerId);
+                    gamePlayerName);
 
                 return null;
             }
