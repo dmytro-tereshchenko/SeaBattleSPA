@@ -2,7 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SeaBattle.Lib.Infrastructure;
+using SeaBattle.Lib.Repositories;
 using SeaBattle.Lib.Responses;
 
 namespace SeaBattle.Lib.Managers
@@ -12,76 +15,62 @@ namespace SeaBattle.Lib.Managers
     /// </summary>
     public class InitializeManager : IInitializeManager
     {
-        /// <summary>
-        /// Price (amount of points) for 1 cell of ship
-        /// </summary>
-        private const int PriceCoefficient = 1000;
+        private readonly IShipStorageUtility _storageUtility;
 
-        /// <summary>
-        /// Min size X of <see cref="IGameField"/>
-        /// </summary>
-        private ushort _minSizeX;
+        private readonly ILogger<InitializeManager> _logger;
 
-        /// <summary>
-        /// Max size X of <see cref="IGameField"/>
-        /// </summary>
-        private ushort _maxSizeX;
+        private readonly IGameConfig _gameConfig;
 
-        /// <summary>
-        /// Min size Y of <see cref="IGameField"/>
-        /// </summary>
-        private ushort _minSizeY;
+        private readonly GenericRepository<Game> _gameRepository;
 
-        /// <summary>
-        /// Max size Y of <see cref="IGameField"/>
-        /// </summary>
-        private ushort _maxSizeY;
+        private readonly GenericRepository<GameField> _gameFieldRepository;
 
-        /// <summary>
-        /// Max number of players in <see cref="IGame"/>
-        /// </summary>
-        private byte _maxNumberOfPlayers;
-
-        /// <summary>
-        /// Count of created entities.
-        /// </summary>
-        private int _entityCount;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InitializeManager"/> class
-        /// </summary>
-        /// <param name="minSizeX">Min size X of <see cref="IGameField"/></param>
-        /// <param name="maxSizeX">Max size X of <see cref="IGameField"/></param>
-        /// <param name="minSizeY">Min size Y of <see cref="IGameField"/></param>
-        /// <param name="maxSizeY">Max size Y of <see cref="IGameField"/></param>
-        /// <param name="maxNumberOfPlayers">Max number of players for <see cref="IGame"/></param>
-        public InitializeManager(ushort minSizeX, ushort maxSizeX, ushort minSizeY, ushort maxSizeY, byte maxNumberOfPlayers)
+        public InitializeManager(IGameConfig gameConfig, IShipStorageUtility storageUtility, ILogger<InitializeManager> logger, GenericRepository<Game> gameRepository, GenericRepository<GameField> gameFieldRepository)
         {
-            _minSizeX = minSizeX;
-            _maxSizeX = maxSizeX;
-            _minSizeY = minSizeY;
-            _maxSizeY = maxSizeY;
-            _maxNumberOfPlayers = maxNumberOfPlayers;
+            _gameConfig = gameConfig;
+            _storageUtility = storageUtility;
+            _logger = logger;
+            _gameRepository = gameRepository;
+            _gameFieldRepository = gameFieldRepository;
         }
 
-        public IResponseGameField CreateGameField(ushort sizeX, ushort sizeY)
+        public async Task<IResponseGameField> CreateGameField(int gameId, ushort sizeX, ushort sizeY)
         {
-            if (sizeX < _minSizeX || sizeX > _maxSizeX || sizeY < _minSizeY || sizeY > _maxSizeY)
+            if (sizeX < _gameConfig.MinFieldSizeX || sizeX > _gameConfig.MaxFieldSizeX ||
+                sizeY < _gameConfig.MinFieldSizeY || sizeY > _gameConfig.MaxFieldSizeY)
             {
                 return new ResponseGameField(null, StateCode.InvalidFieldSize);
             }
 
-            //GameField field = new GameField(sizeX, sizeY, ++_entityCount);
-            GameField field = new GameField();
+            Game game = await _gameRepository.FindByIdAsync(gameId);
+
+            if (game == null)
+            {
+                _logger.LogWarning($"Invalid Id arguments in progress {nameof(CreateGameField)}", gameId);
+
+                return new ResponseGameField(null, StateCode.NullReference);
+            }
+
+            GameField field = new GameField(sizeX, sizeY) {GameId = gameId};
+
+            try
+            {
+                field = await _gameFieldRepository.CreateAsync(field);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, $"Error create data in database in progress {nameof(CreateGameField)}", field);
+
+                return new ResponseGameField(null, StateCode.InvalidOperation);
+            }
 
             return new ResponseGameField(field, StateCode.Success);
         }
 
-        public int CalculateStartPoints(bool[,] field)
+        public int CalculateStartPoints(ICollection<StartFieldCell> startFieldCells, ushort sizeX, ushort sizeY)
         {
             //Find maximum count ships with minimum size which we can place on the start field.
-            int sizeX = field.GetLength(0);
-            int sizeY = field.GetLength(1);
+            bool[,] field = new bool[sizeX, sizeY];
 
             int countShips = 0;
             bool[,] ships = new bool[sizeX, sizeY];
@@ -92,7 +81,8 @@ namespace SeaBattle.Lib.Managers
                 for (int j = 0; j < sizeY; j++)
                 {
                     //Check if the cell is for the placement ship and around we don't have other ships.
-                    if (field[i, j] == true && CheckFreeAreaAroundShip(ships, i, j))
+                    //if (field[i, j] == true && CheckFreeAreaAroundShip(ships, i, j))
+                    if ( && CheckFreeAreaAroundShip(ships, i, j))
                     {
                         //place and count ship
                         ships[i, j] = true;
