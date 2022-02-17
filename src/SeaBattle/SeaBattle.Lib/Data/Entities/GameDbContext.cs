@@ -154,6 +154,12 @@ namespace SeaBattle.Lib.Data.Entities
                 .HasForeignKey(s => s.GameId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<GamePlayer>()
+                .HasMany(p => p.StartFields)
+                .WithOne(f => f.GamePlayer)
+                .HasForeignKey(f => f.GamePlayerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             //add default values
             modelBuilder.Entity<GamePlayer>().Property(p => p.PlayerStateId).HasDefaultValue(1u);
 

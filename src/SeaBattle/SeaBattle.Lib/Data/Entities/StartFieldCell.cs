@@ -20,8 +20,7 @@ namespace SeaBattle.Lib.Entities
         public ushort Y { get; set; }
 
         [JsonIgnore]
-        [Required]
-        public int StartFieldId { get; set; }
+        public int? StartFieldId { get; set; }
 
         [JsonIgnore]
         public StartField StartField { get; set; }

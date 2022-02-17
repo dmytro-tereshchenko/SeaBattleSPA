@@ -25,8 +25,7 @@ namespace SeaBattle.Lib.Entities
         public int GameFieldId { get; set; }
 
         [JsonIgnore]
-        [Required]
-        public int GamePlayerId { get; set; }
+        public int? GamePlayerId { get; set; }
 
         [JsonIgnore]
         public Game Game { get; set; }
@@ -34,7 +33,6 @@ namespace SeaBattle.Lib.Entities
         [ForeignKey(nameof(GameFieldId))]
         public GameField GameField { get; set; }
 
-        [ForeignKey(nameof(GamePlayerId))]
         public GamePlayer GamePlayer { get; set; }
 
         public ICollection<StartFieldCell> StartFieldCells { get; set; }
