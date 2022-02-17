@@ -2,13 +2,13 @@
 {
     public class ShipStorageUtility : IShipStorageUtility
     {
-        private readonly int price;
+        private readonly int _price;
 
-        public ShipStorageUtility()
+        public ShipStorageUtility(int price)
         {
-            price = 1000;
+            this._price = price;
         }
 
-        public int CalculatePointCost(int size, int ShipTypeId) => size * price;
+        public int CalculatePointCost(int size, int ShipTypeId = 1) => size * _price;
     }
 }

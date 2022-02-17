@@ -13,6 +13,6 @@ namespace SeaBattle.Lib.Managers
         /// <param name="size">Ship's size</param>
         /// <param name="ShipTypeId">Id of <see cref="ShipType"/></param>
         /// <returns><see cref="int"/> Ship's cost</returns>
-        int CalculatePointCost(int size, int ShipTypeId);
+        int CalculatePointCost(int size, int ShipTypeId = 1);
     }
 }
