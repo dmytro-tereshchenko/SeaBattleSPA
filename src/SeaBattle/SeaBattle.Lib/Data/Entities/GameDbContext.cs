@@ -44,16 +44,6 @@ namespace SeaBattle.Lib.Data.Entities
             base.OnModelCreating(modelBuilder);
 
             //Add special foreign key
-            /*modelBuilder.Entity<GameShip>()
-                .HasMany(s => s.Weapons)
-                .WithMany(w => w.GameShips)
-                .UsingEntity(j => j.ToTable("GameShipWeapon"));
-
-            modelBuilder.Entity<GameShip>()
-                .HasMany(s => s.Repairs)
-                .WithMany(r => r.GameShips)
-                .UsingEntity(j => j.ToTable("GameShipRepair"));*/
-
             modelBuilder
                 .Entity<GameShip>()
                 .HasMany(c => c.Weapons)
