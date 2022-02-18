@@ -54,11 +54,5 @@ namespace SeaBattle.Lib.Entities
         /// </summary>
         /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="GamePlayer"/></value>
         ICollection<GamePlayer> GamePlayers { get; set; }
-
-        /// <summary>
-        /// Active games, which search game players.
-        /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="SearchGame"/></value>
-        ICollection<SearchGame> SearchGames { get; set; }
     }
 }

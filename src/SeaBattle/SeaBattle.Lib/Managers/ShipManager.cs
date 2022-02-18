@@ -2,7 +2,6 @@
 using System.Linq;
 using SeaBattle.Lib.Entities;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using SeaBattle.Lib.Infrastructure;
 using SeaBattle.Lib.Repositories;
 

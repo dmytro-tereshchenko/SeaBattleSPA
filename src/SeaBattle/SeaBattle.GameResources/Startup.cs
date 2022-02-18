@@ -92,7 +92,6 @@ namespace SeaBattle.GameResources
             services.AddScoped<GenericRepository<GameShip>>();
             services.AddScoped<GenericRepository<StartField>>();
             services.AddScoped<GenericRepository<StartFieldCell>>();
-            services.AddScoped<GenericRepository<SearchGame>>();
 
             services.AddScoped<IShipManager, ShipManager>();
             services.AddScoped<IInitializeManager, InitializeManager>();

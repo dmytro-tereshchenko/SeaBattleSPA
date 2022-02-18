@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using SeaBattle.Lib.Infrastructure;
 using SeaBattle.Lib.Repositories;
 using SeaBattle.Lib.Responses;
@@ -102,7 +101,8 @@ namespace SeaBattle.Lib.Managers
 
         public async Task<IResponseGamePlayer> AddPlayerToGame(int gameId, string playerName)
         {
-            var queryGame = await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId, s => s.GamePlayers);
+            var queryGame =
+                await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId, g => g.GamePlayers);
             Game game = queryGame.FirstOrDefault();
 
             if (game == null)
@@ -120,7 +120,7 @@ namespace SeaBattle.Lib.Managers
 
             if (game.GamePlayers.Count == 0)
             {
-                game.GameState = (GameState) 2; //SearchPlayers;
+                game.GameState = GameState.SearchPlayers;
             }
 
             var queryPlayer = await _gamePlayerRepository.GetAsync(p => p.Name == playerName);
@@ -135,7 +135,7 @@ namespace SeaBattle.Lib.Managers
 
             if (game.GamePlayers.Count == game.MaxNumberOfPlayers)
             {
-                game.GameState = (GameState) 3; //Init
+                game.GameState = GameState.Init;
             }
 
             game = await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.GamePlayers,

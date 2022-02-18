@@ -35,8 +35,6 @@ namespace SeaBattle.Lib.Entities
 
         public ICollection<GamePlayer> GamePlayers { get; set; }
 
-        public ICollection<SearchGame> SearchGames { get; set; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class
         /// </summary>
@@ -44,7 +42,6 @@ namespace SeaBattle.Lib.Entities
         {
             GamePlayers = new List<GamePlayer>();
             StartFields = new List<StartField>();
-            SearchGames = new List<SearchGame>();
         }
 
         /// <summary>
