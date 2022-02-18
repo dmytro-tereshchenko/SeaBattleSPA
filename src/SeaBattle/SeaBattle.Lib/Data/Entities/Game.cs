@@ -24,19 +24,16 @@ namespace SeaBattle.Lib.Entities
         [Required]
         public byte MaxNumberOfPlayers { get; set; }
 
-        public short GameStateId { get; set; }
-
         public int? WinnerId { get; set; }
 
         public GameField GameField { get; set; }
 
+        [Column(TypeName = "smallint")]
         public GameState GameState { get; set; }
 
         public ICollection<StartField> StartFields { get; set; }
 
         public ICollection<GamePlayer> GamePlayers { get; set; }
-
-        public ICollection<SearchGame> SearchGames { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class
@@ -45,7 +42,6 @@ namespace SeaBattle.Lib.Entities
         {
             GamePlayers = new List<GamePlayer>();
             StartFields = new List<StartField>();
-            SearchGames = new List<SearchGame>();
         }
 
         /// <summary>

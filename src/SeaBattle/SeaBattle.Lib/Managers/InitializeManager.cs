@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SeaBattle.Lib.Infrastructure;
+using SeaBattle.Lib.Repositories;
 using SeaBattle.Lib.Responses;
 
 namespace SeaBattle.Lib.Managers
@@ -12,77 +14,62 @@ namespace SeaBattle.Lib.Managers
     /// </summary>
     public class InitializeManager : IInitializeManager
     {
-        /// <summary>
-        /// Price (amount of points) for 1 cell of ship
-        /// </summary>
-        private const int PriceCoefficient = 1000;
+        private readonly IShipStorageUtility _storageUtility;
 
-        /// <summary>
-        /// Min size X of <see cref="IGameField"/>
-        /// </summary>
-        private ushort _minSizeX;
+        private readonly IGameConfig _gameConfig;
 
-        /// <summary>
-        /// Max size X of <see cref="IGameField"/>
-        /// </summary>
-        private ushort _maxSizeX;
+        private readonly GenericRepository<Game> _gameRepository;
 
-        /// <summary>
-        /// Min size Y of <see cref="IGameField"/>
-        /// </summary>
-        private ushort _minSizeY;
+        private readonly GenericRepository<GameField> _gameFieldRepository;
 
-        /// <summary>
-        /// Max size Y of <see cref="IGameField"/>
-        /// </summary>
-        private ushort _maxSizeY;
+        private readonly GenericRepository<GamePlayer> _gamePlayerRepository;
 
-        /// <summary>
-        /// Max number of players in <see cref="IGame"/>
-        /// </summary>
-        private byte _maxNumberOfPlayers;
+        private readonly GenericRepository<StartField> _startFieldRepository;
 
-        /// <summary>
-        /// Count of created entities.
-        /// </summary>
-        private int _entityCount;
+        private readonly GenericRepository<StartFieldCell> _startFieldCellRepository;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InitializeManager"/> class
-        /// </summary>
-        /// <param name="minSizeX">Min size X of <see cref="IGameField"/></param>
-        /// <param name="maxSizeX">Max size X of <see cref="IGameField"/></param>
-        /// <param name="minSizeY">Min size Y of <see cref="IGameField"/></param>
-        /// <param name="maxSizeY">Max size Y of <see cref="IGameField"/></param>
-        /// <param name="maxNumberOfPlayers">Max number of players for <see cref="IGame"/></param>
-        public InitializeManager(ushort minSizeX, ushort maxSizeX, ushort minSizeY, ushort maxSizeY, byte maxNumberOfPlayers)
+        public InitializeManager(IGameConfig gameConfig, IShipStorageUtility storageUtility,
+            GenericRepository<Game> gameRepository, GenericRepository<GameField> gameFieldRepository,
+            GenericRepository<GamePlayer> gamePlayerRepository, GenericRepository<StartField> startFieldRepository,
+            GenericRepository<StartFieldCell> startFieldCellRepository)
         {
-            _minSizeX = minSizeX;
-            _maxSizeX = maxSizeX;
-            _minSizeY = minSizeY;
-            _maxSizeY = maxSizeY;
-            _maxNumberOfPlayers = maxNumberOfPlayers;
+            _gameConfig = gameConfig;
+            _storageUtility = storageUtility;
+            _gameRepository = gameRepository;
+            _gameFieldRepository = gameFieldRepository;
+            _gamePlayerRepository = gamePlayerRepository;
+            _startFieldRepository = startFieldRepository;
+            _startFieldCellRepository = startFieldCellRepository;
         }
 
-        public IResponseGameField CreateGameField(ushort sizeX, ushort sizeY)
+        public async Task<IResponseGameField> CreateGameField(int gameId, ushort sizeX, ushort sizeY)
         {
-            if (sizeX < _minSizeX || sizeX > _maxSizeX || sizeY < _minSizeY || sizeY > _maxSizeY)
+            if (sizeX < _gameConfig.MinFieldSizeX || sizeX > _gameConfig.MaxFieldSizeX ||
+                sizeY < _gameConfig.MinFieldSizeY || sizeY > _gameConfig.MaxFieldSizeY)
             {
                 return new ResponseGameField(null, StateCode.InvalidFieldSize);
             }
 
-            //GameField field = new GameField(sizeX, sizeY, ++_entityCount);
-            GameField field = new GameField();
+            Game game = await _gameRepository.FindByIdAsync(gameId);
+
+            if (game == null)
+            {
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(CreateGameField)}");
+                ex.Data.Add("gameId", gameId);
+
+                throw ex;
+            }
+
+            GameField field = new GameField(sizeX, sizeY) {GameId = gameId};
+
+            field = await _gameFieldRepository.CreateAsync(field);
 
             return new ResponseGameField(field, StateCode.Success);
         }
 
-        public int CalculateStartPoints(bool[,] field)
+        public int CalculateStartPoints(ICollection<StartFieldCell> startFieldCells, ushort sizeX, ushort sizeY)
         {
             //Find maximum count ships with minimum size which we can place on the start field.
-            int sizeX = field.GetLength(0);
-            int sizeY = field.GetLength(1);
-
             int countShips = 0;
             bool[,] ships = new bool[sizeX, sizeY];
 
@@ -92,7 +79,8 @@ namespace SeaBattle.Lib.Managers
                 for (int j = 0; j < sizeY; j++)
                 {
                     //Check if the cell is for the placement ship and around we don't have other ships.
-                    if (field[i, j] == true && CheckFreeAreaAroundShip(ships, i, j))
+                    if (startFieldCells.FirstOrDefault(c => c.X == i + 1 && c.Y == j + 1) != null &&
+                        CheckFreeAreaAroundShip(ships, i, j))
                     {
                         //place and count ship
                         ships[i, j] = true;
@@ -102,7 +90,156 @@ namespace SeaBattle.Lib.Managers
             }
 
             //Return the total cost of ships.
-            return countShips * GetShipCost(1);
+            return countShips * _storageUtility.CalculatePointCost(1);
+        }
+
+        public LimitSize GetLimitSizeField() =>
+            new LimitSize(_gameConfig.MaxFieldSizeX, _gameConfig.MaxFieldSizeY, _gameConfig.MinFieldSizeX,
+                _gameConfig.MinFieldSizeY);
+
+        public byte GetMaxNumberOfPlayers() => _gameConfig.MaxNumberOfPlayers;
+
+        public async Task<IResponseGamePlayer> AddPlayerToGame(int gameId, string playerName)
+        {
+            var queryGame =
+                await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId, g => g.GamePlayers);
+            Game game = queryGame.FirstOrDefault();
+
+            if (game == null)
+            {
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(AddPlayerToGame)}");
+                ex.Data.Add("gameId", gameId);
+
+                throw ex;
+            }
+
+            if (game.CurrentCountPlayers == game.MaxNumberOfPlayers)
+            {
+                return new ResponseGamePlayer(null, StateCode.ExceededMaxNumberOfPlayers);
+            }
+
+            if (game.GamePlayers.Count == 0)
+            {
+                game.GameState = GameState.SearchPlayers;
+            }
+
+            var queryPlayer = await _gamePlayerRepository.GetAsync(p => p.Name == playerName);
+            GamePlayer gamePlayer = queryPlayer.FirstOrDefault();
+
+            if (gamePlayer == null)
+            {
+                gamePlayer = await _gamePlayerRepository.CreateAsync(new GamePlayer(playerName));
+            }
+
+            game.GamePlayers.Add(gamePlayer);
+
+            if (game.GamePlayers.Count == game.MaxNumberOfPlayers)
+            {
+                game.GameState = GameState.Init;
+            }
+
+            game = await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.GamePlayers,
+                _gamePlayerRepository.GetAll(), "GamePlayers");
+
+            return new ResponseGamePlayer(gamePlayer, StateCode.Success);
+        }
+
+        public async Task<IResponseStartField> GetStartField(int gameId, string gamePlayerName)
+        {
+            var queryGame =
+                await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId, g => g.StartFields, g => g.GameField);
+            Game game = queryGame.FirstOrDefault();
+
+            var queryPlayer = await _gamePlayerRepository.GetWithIncludeAsync(g => g.Name == gamePlayerName);
+            GamePlayer gamePlayer = queryPlayer.FirstOrDefault();
+
+            if (game == null || gamePlayer == null)
+            {
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(GetStartField)}");
+                ex.Data.Add("gameId", gameId);
+                ex.Data.Add("gamePlayerName", gamePlayerName);
+
+                throw ex;
+            }
+
+            //Variable for result
+            StartField startField = null;
+
+            //in the case haven't created startFields - create them
+            if (game.StartFields == null || game.StartFields.Count == 0)
+            {
+                game.StartFields = new List<StartField>(game.MaxNumberOfPlayers);
+                ICollection<ICollection<StartFieldCell>> fieldsOfLabels;
+
+                fieldsOfLabels =
+                    GenerateStartFields(game.GameField.SizeX, game.GameField.SizeY, game.MaxNumberOfPlayers);
+
+                //calculate start points for minimum size fields
+                int startPoints = fieldsOfLabels
+                    .Select(f => CalculateStartPoints(f, game.GameField.SizeX, game.GameField.SizeY)).Min();
+
+                foreach (var labelField in fieldsOfLabels)
+                {
+                    game.StartFields.Add(
+                        new StartField(game.GameField, labelField, null, startPoints, new List<GameShip>(), game.Id)
+                        {
+                            StartFieldCells = labelField
+                        });
+                }
+
+                //get first of start fields for the current player
+                startField = game.StartFields.FirstOrDefault();
+            }
+            //in the case bd have start field for current player and game return it
+            else if ((startField = game.StartFields.FirstOrDefault(f => f.GamePlayerId == gamePlayer.Id)) != null)
+            {
+                return new ResponseStartField(startField, StateCode.Success);
+            }
+            //otherwise get first of free start fields.
+            else
+            {
+                startField = game.StartFields.FirstOrDefault(f => f.GamePlayer == null);
+            }
+
+            //add current player to start field
+            if (startField != null)
+            {
+                startField.GamePlayer = gamePlayer;
+
+                //change status player
+                startField.GamePlayer.PlayerState = (PlayerState) 2; //InitializeField
+
+                await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.StartFields,
+                    _startFieldRepository.GetAll(), "StartFields");
+
+                foreach (var field in game.StartFields)
+                {
+                    await _startFieldRepository.UpdateAsync(f => f.Id == field.Id, field.StartFieldCells,
+                        _startFieldCellRepository.GetAll(), "StartFieldCells");
+                }
+
+                return new ResponseStartField(startField, StateCode.Success);
+            }
+
+            //not free position for player in the current game
+            return new ResponseStartField(null, StateCode.InvalidPlayer);
+        }
+
+        public async Task<IGame> CreateGame(byte numberOfPlayers)
+        {
+            if (numberOfPlayers < 1 || numberOfPlayers > _gameConfig.MaxNumberOfPlayers)
+            {
+                Exception ex = new ArgumentOutOfRangeException(
+                    $"{nameof(numberOfPlayers)} is out of range [0;{_gameConfig.MaxNumberOfPlayers}] in progress {nameof(CreateGame)}");
+
+                throw ex;
+            }
+
+            Game game = new Game(numberOfPlayers);
+
+            game = await _gameRepository.CreateAsync(game);
+
+            return game;
         }
 
         /// <summary>
@@ -112,15 +249,20 @@ namespace SeaBattle.Lib.Managers
         /// <param name="x">Coordinate X where placed ship which we relatively check free area.</param>
         /// <param name="y">Coordinate Y where placed ship which we relatively check free area.</param>
         /// <returns>false - there is ship around target cell, otherwise true - around area is free.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="x"/>, <paramref name="y"/> is out of range game field.</exception>
-        private bool CheckFreeAreaAroundShip(bool[,] field, int x, int y)
+        protected bool CheckFreeAreaAroundShip(bool[,] field, int x, int y)
         {
             int sizeX = field.GetLength(0);
             int sizeY = field.GetLength(1);
 
             if (x < 0 || x >= sizeX || y < 0 || y > sizeY)
             {
-                throw new ArgumentOutOfRangeException();
+                Exception ex =
+                    new Exception($"Invalid coordinates of cell in progress {nameof(CheckFreeAreaAroundShip)}");
+                ex.Data.Add("field", field);
+                ex.Data.Add("x", x);
+                ex.Data.Add("y", y);
+
+                throw ex;
             }
 
             int offsetX = -1;
@@ -155,35 +297,48 @@ namespace SeaBattle.Lib.Managers
             return true;
         }
 
-        public ICollection<bool[,]> GenerateStartFields(IGameField gameField, byte numberOfPlayers)
+        /// <summary>
+        /// Method for generating a collection of fields with labels for possible placing ships on start field for teams.
+        /// </summary>
+        /// <param name="sizeX">Size X of field of the game</param>
+        /// <param name="sizeY">Size Y of field of the game</param>
+        /// <param name="numberOfPlayers">Amount of players</param>
+        /// <returns>Collection of fields where collection of <see cref="StartFieldCell"/>with coordinates possible to place boat</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="numberOfPlayers"/> out of range</exception>
+        protected ICollection<ICollection<StartFieldCell>> GenerateStartFields(ushort sizeX, ushort sizeY,
+            byte numberOfPlayers)
         {
-            if (numberOfPlayers > _maxNumberOfPlayers || numberOfPlayers <= 0)
+            if (numberOfPlayers > _gameConfig.MaxNumberOfPlayers || numberOfPlayers <= 0)
             {
-                throw new ArgumentOutOfRangeException("Wrong value of the number of players");
+                Exception ex =
+                    new Exception($"Invalid value of the number of players in progress {nameof(GenerateStartFields)}");
+                ex.Data.Add("numberOfPlayers", numberOfPlayers);
+
+                throw ex;
             }
 
             //List for result of method
-            ICollection<bool[,]> fields = new List<bool[,]>(numberOfPlayers);
+            ICollection<ICollection<StartFieldCell>> fields = new List<ICollection<StartFieldCell>>(numberOfPlayers);
 
             //Amount of rows and columns for the position of teams.
-            int colTeam = (int)Math.Ceiling(Math.Sqrt((double)numberOfPlayers));
-            int rowTeam = (int)Math.Ceiling((double)numberOfPlayers / colTeam);
+            ushort colTeam = (ushort) Math.Ceiling(Math.Sqrt((double) numberOfPlayers));
+            ushort rowTeam = (ushort) Math.Ceiling((double) numberOfPlayers / colTeam);
 
             //Coordinates of begin and end every row and column of quadrant for every team. 
-            (int begin, int end)[] borderQuadrantsX = new (int, int)[rowTeam];
-            (int begin, int end)[] borderQuadrantsY = new (int, int)[colTeam];
+            (ushort begin, ushort end)[] borderQuadrantsX = new (ushort, ushort)[rowTeam];
+            (ushort begin, ushort end)[] borderQuadrantsY = new (ushort, ushort)[colTeam];
 
             //Calculation begins and ends of quadrants.
-            for (int i = 0; i < rowTeam; i++)
+            for (ushort i = 0; i < rowTeam; i++)
             {
-                borderQuadrantsX[i].begin = i == 0 ? 0 : i * gameField.SizeX / rowTeam + 1;
-                borderQuadrantsX[i].end = i + 1 == rowTeam ? gameField.SizeX - 1 : (i + 1) * gameField.SizeX / rowTeam - 1;
+                borderQuadrantsX[i].begin = (ushort) (i == 0 ? 0 : i * sizeX / rowTeam + 1);
+                borderQuadrantsX[i].end = (ushort) (i + 1 == rowTeam ? sizeX - 1 : (i + 1) * sizeX / rowTeam - 1);
             }
 
             for (int i = 0; i < colTeam; i++)
             {
-                borderQuadrantsY[i].begin = i == 0 ? 0 : i * gameField.SizeY / colTeam + 1;
-                borderQuadrantsY[i].end = i + 1 == colTeam ? gameField.SizeY - 1 : (i + 1) * gameField.SizeY / colTeam - 1;
+                borderQuadrantsY[i].begin = (ushort) (i == 0 ? 0 : i * sizeY / colTeam + 1);
+                borderQuadrantsY[i].end = (ushort) (i + 1 == colTeam ? sizeY - 1 : (i + 1) * sizeY / colTeam - 1);
             }
 
             //Coordinates of quadrant for the team.
@@ -196,14 +351,14 @@ namespace SeaBattle.Lib.Managers
                 quadrantX = fields.Count / colTeam;
                 quadrantY = fields.Count - quadrantX * colTeam;
 
-                bool[,] startField = new bool[gameField.SizeX, gameField.SizeY];
+                ICollection<StartFieldCell> startField = new List<StartFieldCell>();
 
                 //Set true for chosen part of the field (quadrant).
-                for (int i = borderQuadrantsX[quadrantX].begin; i <= borderQuadrantsX[quadrantX].end; i++)
+                for (ushort i = borderQuadrantsX[quadrantX].begin; i <= borderQuadrantsX[quadrantX].end; i++)
                 {
-                    for (int j = borderQuadrantsY[quadrantY].begin; j <= borderQuadrantsY[quadrantY].end; j++)
+                    for (ushort j = borderQuadrantsY[quadrantY].begin; j <= borderQuadrantsY[quadrantY].end; j++)
                     {
-                        startField[i, j] = true;
+                        startField.Add(new StartFieldCell() {X = (ushort) (i + 1), Y = (ushort) (j + 1)});
                     }
                 }
 
@@ -212,113 +367,5 @@ namespace SeaBattle.Lib.Managers
 
             return fields;
         }
-
-        public LimitSize GetLimitSizeField() =>
-            new LimitSize(_maxSizeX, _maxSizeY, _minSizeX, _minSizeY);
-
-        public byte GetMaxNumberOfPlayers() => _maxNumberOfPlayers;
-
-        public IResponseGamePlayer AddPlayerToGame(IGame game, string playerName)
-        {
-            /*if (game.GamePlayers.Count == 0)
-            {
-                game.State = GameState.SearchPlayers;
-            }*/
-
-            if (game.CurrentCountPlayers == game.MaxNumberOfPlayers)
-            {
-                return new ResponseGamePlayer(null, StateCode.ExceededMaxNumberOfPlayers);
-            }
-
-            //IGamePlayer player = new GamePlayer(++_entityCount, playerName);
-            GamePlayer player = new GamePlayer();
-
-            /*game.GamePlayers.Add(player);
-
-            if (game.GamePlayers.Count == game.MaxNumberOfPlayers)
-            {
-                game.State = GameState.Init;
-            }*/
-
-            return new ResponseGamePlayer(player as IGamePlayer, StateCode.Success);
-        }
-
-        public IResponseStartField GetStartField(Game game, GamePlayer gamePlayer)
-        {
-            //Variable for result
-            IStartField startField;
-
-            //in the case haven't created startFields - create them
-            if (game.StartFields == null)
-            {
-                game.StartFields = new List<StartField>(game.MaxNumberOfPlayers);
-                ICollection<StartFieldCell> fieldsOfLabels;
-                /*try
-                {
-                    fieldsOfLabels = GenerateStartFields(game.GameField, game.MaxNumberOfPlayers);
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    return new ResponseStartField(null, StateCode.ExceededMaxNumberOfPlayers);
-                }
-
-                //calculate start points for minimum size fields
-                int startPoints = fieldsOfLabels.Select(CalculateStartPoints).Min();
-
-                foreach (var labelField in fieldsOfLabels)
-                {
-                    game.StartFields.Add(
-                        new StartField(++_entityCount, game.GameField, labelField, null, startPoints, new List<GameShip>(), game.Id)
-                        {
-                            FieldLabels = labelField
-                        });
-                }*/
-
-                //get first of start fields for the current player
-                startField = game.StartFields.FirstOrDefault();
-            }
-            //in the case bd have start field for current player and game return it
-            else if ((startField = game.StartFields.FirstOrDefault(f => f.GamePlayer == gamePlayer)) != null)
-            {
-                return new ResponseStartField(startField, StateCode.Success);
-            }
-            //otherwise get first of free start fields.
-            else
-            {
-                startField = game.StartFields.FirstOrDefault(f => f.GamePlayer == null);
-            }
-
-            //add current player to start field
-            if (startField != null)
-            {
-                startField.GamePlayer = gamePlayer;
-
-                //change status player
-                startField.GamePlayer.PlayerStateId = 2;
-
-                return new ResponseStartField(startField, StateCode.Success);
-            }
-
-            return new ResponseStartField(null, StateCode.InvalidPlayer);
-        }
-
-        public IGame CreateGame(byte numberOfPlayers)
-        {
-            if (numberOfPlayers < 1 || numberOfPlayers > _maxNumberOfPlayers)
-            {
-                throw new ArgumentOutOfRangeException(
-                    $"{nameof(numberOfPlayers)} is out of range [0;{_maxNumberOfPlayers}]");
-            }
-
-            //return new Game(numberOfPlayers) { Id = ++_entityCount };
-            return new Game() as IGame;
-        }
-
-        /// <summary>
-        /// Calculation ship cost by his size.
-        /// </summary>
-        /// <param name="size">Size (length) of ship.</param>
-        /// <returns>Amount of points of cost ship.</returns>
-        protected int GetShipCost(byte size) => size * PriceCoefficient;
     }
 }

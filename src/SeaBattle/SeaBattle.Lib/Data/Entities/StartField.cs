@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -21,20 +20,15 @@ namespace SeaBattle.Lib.Entities
         public int GameId { get; set; }
 
         [Required]
-        [JsonIgnore]
         public int GameFieldId { get; set; }
 
-        [JsonIgnore]
-        [Required]
-        public int GamePlayerId { get; set; }
+        public int? GamePlayerId { get; set; }
 
-        [JsonIgnore]
         public Game Game { get; set; }
 
         [ForeignKey(nameof(GameFieldId))]
         public GameField GameField { get; set; }
 
-        [ForeignKey(nameof(GamePlayerId))]
         public GamePlayer GamePlayer { get; set; }
 
         public ICollection<StartFieldCell> StartFieldCells { get; set; }

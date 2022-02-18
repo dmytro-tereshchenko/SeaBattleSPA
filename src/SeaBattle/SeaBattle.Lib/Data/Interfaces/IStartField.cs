@@ -23,7 +23,7 @@ namespace SeaBattle.Lib.Entities
         /// Foreign key Id <see cref="GamePlayer"/>
         /// </summary>
         /// <value><see cref="int"/></value>
-        int GamePlayerId { get; set; }
+        int? GamePlayerId { get; set; }
 
         /// <summary>
         /// Collection of labels for game field when the player can put his own ships on start field

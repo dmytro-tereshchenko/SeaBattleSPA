@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SeaBattle.Lib.Data.Entities;
 
 namespace SeaBattle.GameResources.Migrations
 {
     [DbContext(typeof(GameDbContext))]
-    partial class GameDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220217174443_AddNullToForeignKey")]
+    partial class AddNullToForeignKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,7 +90,7 @@ namespace SeaBattle.GameResources.Migrations
                     b.Property<int?>("CurrentGamePlayerMoveId")
                         .HasColumnType("int");
 
-                    b.Property<short>("GameState")
+                    b.Property<short>("GameStateId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("smallint")
                         .HasDefaultValue((short)1);
@@ -100,6 +102,8 @@ namespace SeaBattle.GameResources.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GameStateId");
 
                     b.ToTable("Games");
                 });
@@ -172,7 +176,7 @@ namespace SeaBattle.GameResources.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<short>("PlayerState")
+                    b.Property<short>("PlayerStateId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("smallint")
                         .HasDefaultValue((short)1);
@@ -180,6 +184,8 @@ namespace SeaBattle.GameResources.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Name");
+
+                    b.HasIndex("PlayerStateId");
 
                     b.ToTable("GamePlayers");
                 });
@@ -217,6 +223,87 @@ namespace SeaBattle.GameResources.Migrations
                     b.ToTable("GameShips");
                 });
 
+            modelBuilder.Entity("SeaBattle.Lib.Entities.GameState", b =>
+                {
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GameStates");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = (short)1,
+                            Name = "Created"
+                        },
+                        new
+                        {
+                            Id = (short)2,
+                            Name = "SearchPlayers"
+                        },
+                        new
+                        {
+                            Id = (short)3,
+                            Name = "Init"
+                        },
+                        new
+                        {
+                            Id = (short)4,
+                            Name = "Process"
+                        },
+                        new
+                        {
+                            Id = (short)5,
+                            Name = "Finished"
+                        });
+                });
+
+            modelBuilder.Entity("SeaBattle.Lib.Entities.PlayerState", b =>
+                {
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PlayerStates");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = (short)1,
+                            Name = "Created"
+                        },
+                        new
+                        {
+                            Id = (short)2,
+                            Name = "InitializeField"
+                        },
+                        new
+                        {
+                            Id = (short)3,
+                            Name = "Ready"
+                        },
+                        new
+                        {
+                            Id = (short)4,
+                            Name = "Process"
+                        });
+                });
+
             modelBuilder.Entity("SeaBattle.Lib.Entities.Repair", b =>
                 {
                     b.Property<int>("Id")
@@ -243,6 +330,23 @@ namespace SeaBattle.GameResources.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SeaBattle.Lib.Entities.SearchGame", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("SearchGames");
+                });
+
             modelBuilder.Entity("SeaBattle.Lib.Entities.Ship", b =>
                 {
                     b.Property<int>("Id")
@@ -256,7 +360,7 @@ namespace SeaBattle.GameResources.Migrations
                     b.Property<int>("MaxHp")
                         .HasColumnType("int");
 
-                    b.Property<short>("ShipType")
+                    b.Property<short>("ShipTypeId")
                         .HasColumnType("smallint");
 
                     b.Property<byte>("Size")
@@ -267,6 +371,8 @@ namespace SeaBattle.GameResources.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ShipTypeId");
+
                     b.ToTable("Ships");
 
                     b.HasData(
@@ -275,7 +381,7 @@ namespace SeaBattle.GameResources.Migrations
                             Id = 1,
                             Cost = 1000L,
                             MaxHp = 100,
-                            ShipType = (short)2,
+                            ShipTypeId = (short)3,
                             Size = (byte)1,
                             Speed = (byte)4
                         },
@@ -284,7 +390,7 @@ namespace SeaBattle.GameResources.Migrations
                             Id = 2,
                             Cost = 2000L,
                             MaxHp = 200,
-                            ShipType = (short)3,
+                            ShipTypeId = (short)2,
                             Size = (byte)2,
                             Speed = (byte)3
                         },
@@ -293,7 +399,7 @@ namespace SeaBattle.GameResources.Migrations
                             Id = 3,
                             Cost = 3000L,
                             MaxHp = 300,
-                            ShipType = (short)3,
+                            ShipTypeId = (short)2,
                             Size = (byte)3,
                             Speed = (byte)2
                         },
@@ -302,9 +408,42 @@ namespace SeaBattle.GameResources.Migrations
                             Id = 4,
                             Cost = 4000L,
                             MaxHp = 400,
-                            ShipType = (short)1,
+                            ShipTypeId = (short)1,
                             Size = (byte)4,
                             Speed = (byte)1
+                        });
+                });
+
+            modelBuilder.Entity("SeaBattle.Lib.Entities.ShipType", b =>
+                {
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShipTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = (short)1,
+                            Name = "Military"
+                        },
+                        new
+                        {
+                            Id = (short)2,
+                            Name = "Auxiliary"
+                        },
+                        new
+                        {
+                            Id = (short)3,
+                            Name = "Mixed"
                         });
                 });
 
@@ -445,6 +584,17 @@ namespace SeaBattle.GameResources.Migrations
                     b.Navigation("Weapon");
                 });
 
+            modelBuilder.Entity("SeaBattle.Lib.Entities.Game", b =>
+                {
+                    b.HasOne("SeaBattle.Lib.Entities.GameState", "GameState")
+                        .WithMany("Games")
+                        .HasForeignKey("GameStateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("GameState");
+                });
+
             modelBuilder.Entity("SeaBattle.Lib.Entities.GameField", b =>
                 {
                     b.HasOne("SeaBattle.Lib.Entities.Game", "Game")
@@ -475,6 +625,17 @@ namespace SeaBattle.GameResources.Migrations
                     b.Navigation("GameShip");
                 });
 
+            modelBuilder.Entity("SeaBattle.Lib.Entities.GamePlayer", b =>
+                {
+                    b.HasOne("SeaBattle.Lib.Entities.PlayerState", "PlayerState")
+                        .WithMany("GamePlayers")
+                        .HasForeignKey("PlayerStateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PlayerState");
+                });
+
             modelBuilder.Entity("SeaBattle.Lib.Entities.GameShip", b =>
                 {
                     b.HasOne("SeaBattle.Lib.Entities.GamePlayer", "GamePlayer")
@@ -499,6 +660,28 @@ namespace SeaBattle.GameResources.Migrations
                     b.Navigation("Ship");
 
                     b.Navigation("StartField");
+                });
+
+            modelBuilder.Entity("SeaBattle.Lib.Entities.SearchGame", b =>
+                {
+                    b.HasOne("SeaBattle.Lib.Entities.Game", "Game")
+                        .WithMany("SearchGames")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("SeaBattle.Lib.Entities.Ship", b =>
+                {
+                    b.HasOne("SeaBattle.Lib.Entities.ShipType", "ShipType")
+                        .WithMany("Ships")
+                        .HasForeignKey("ShipTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ShipType");
                 });
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.StartField", b =>
@@ -545,6 +728,8 @@ namespace SeaBattle.GameResources.Migrations
                 {
                     b.Navigation("GameField");
 
+                    b.Navigation("SearchGames");
+
                     b.Navigation("StartFields");
                 });
 
@@ -573,6 +758,16 @@ namespace SeaBattle.GameResources.Migrations
                     b.Navigation("StartFieldCells");
                 });
 
+            modelBuilder.Entity("SeaBattle.Lib.Entities.GameState", b =>
+                {
+                    b.Navigation("Games");
+                });
+
+            modelBuilder.Entity("SeaBattle.Lib.Entities.PlayerState", b =>
+                {
+                    b.Navigation("GamePlayers");
+                });
+
             modelBuilder.Entity("SeaBattle.Lib.Entities.Repair", b =>
                 {
                     b.Navigation("EquippedRepairs");
@@ -581,6 +776,11 @@ namespace SeaBattle.GameResources.Migrations
             modelBuilder.Entity("SeaBattle.Lib.Entities.Ship", b =>
                 {
                     b.Navigation("GameShips");
+                });
+
+            modelBuilder.Entity("SeaBattle.Lib.Entities.ShipType", b =>
+                {
+                    b.Navigation("Ships");
                 });
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.StartField", b =>

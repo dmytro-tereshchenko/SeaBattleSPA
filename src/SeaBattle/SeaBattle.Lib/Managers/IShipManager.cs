@@ -1,4 +1,8 @@
-﻿namespace SeaBattle.Lib.Managers
+﻿using System.Threading.Tasks;
+using SeaBattle.Lib.Entities;
+using SeaBattle.Lib.Infrastructure;
+
+namespace SeaBattle.Lib.Managers
 {
     /// <summary>
     /// Manager which response for creating and change ships.
@@ -6,83 +10,59 @@
     public interface IShipManager
     {
         /// <summary>
-        /// Buy ship and add to <see cref="IStartField"/>
+        /// Buy ship and add to <see cref="StartField"/>
         /// </summary>
-        /// <param name="players">Collection of players in the game</param>
-        /// <param name="gameShip">Game ship</param>
-        /// <param name="startField">Start field with initializing data and parameters for the player</param>
-        /// <returns><see cref="StateCode"/> result of operation</returns>
-        /*StateCode BuyShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField);
+        /// <param name="gameShipId">Game ship's Id</param>
+        /// <param name="startFieldId">Start field's Id with initializing data and parameters for the player</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous operation. The task result contains <see cref="StateCode"/></returns>
+        Task<StateCode> BuyShip(int gameShipId, int startFieldId);
 
         /// <summary>
-        /// Sell ship and remove from <see cref="IStartField"/>
+        /// Sell ship and remove from <see cref="StartField"/>
         /// </summary>
-        /// <param name="players">Collection of players in the game</param>
-        /// <param name="gameShip">Game ship</param>
-        /// <param name="startField">Start field with initializing data and parameters for the player</param>
-        /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode SellShip(ICollection<IGamePlayer> players, IGameShip gameShip, IStartField startField);
-
-        /// <summary>
-        /// Getting a collection of ships, which players can buy by points.
-        /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is (<see cref="IShip"/>, <see cref="int"/>) (ship, points cost)</value>
-        ICollection<(IShip, int)> GetShips();
-
-        /// <summary>
-        /// Getting a collection of repairs, which players can equip on the ship.
-        /// </summary>
-        /// <returns>Collection of <see cref="IRepair"/>, which players can equip on the ship</returns>
-        ICollection<IRepair> GetRepairs();
-
-        /// <summary>
-        /// Getting a collection of weapons, which players can equip on the ship.
-        /// </summary>
-        /// <returns>Collection of <see cref="IWeapon"/>, which players can equip on the ship</returns>
-        ICollection<IWeapon> GetWeapons();
+        /// <param name="gameShipId">Game ship's Id</param>
+        /// <param name="startFieldId">Start field's Id with initializing data and parameters for the player</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous operation. The task result contains <see cref="StateCode"/></returns>
+        Task<StateCode> SellShip(int gameShipId, int startFieldId);
 
         /// <summary>
         /// Creation and getting a new game ship.
         /// </summary>
-        /// <param name="gamePlayer">Player(user) in game</param>
-        /// <param name="ship">Type of <see cref="IShip"/>, which player wants to buy.</param>
-        /// <returns><see cref="IGameShip"/> Game ship.</returns>
-        IGameShip GetNewShip(IGamePlayer gamePlayer, IShip ship);
+        /// <param name="gamePlayerName">Name of Player(user) in game</param>
+        /// <param name="shipId">Id of Type of <see cref="Ship"/>, which player wants to buy.</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous operation. The task result contains <see cref="IGameShip"/> or <see cref="null"/> in case of error</returns>
+        Task<IGameShip> GetNewShip(string gamePlayerName, int shipId);
 
         /// <summary>
         /// Add weapon to game ship.
         /// </summary>
-        /// <param name="gamePlayer">Current player</param>
-        /// <param name="gameShip">Game ship which adds a weapon.</param>
-        /// <param name="weapon">A weapon (<see cref="IWeapon"/>) which adds.</param>
-        /// <returns><see cref="StateCode"/> is result of operation</returns>
-        StateCode AddWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon);
+        /// <param name="gameShipId">Game ship's Id which adds a weapon.</param>
+        /// <param name="weaponId">A weapon's Id (<see cref="Weapon"/>) which adds.</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous operation. The task result contains <see cref="StateCode"/></returns>
+        Task<StateCode> AddWeapon(int gameShipId, int weaponId);
 
         /// <summary>
         /// Add repair to game ship.
         /// </summary>
-        /// <param name="gamePlayer">Current player</param>
-        /// <param name="gameShip">Game ship which adds a repair.</param>
-        /// <param name="repair">A repair (<see cref="IRepair"/>) which adds.</param>
-        /// <returns><see cref="StateCode"/> is result of operation</returns>
-        StateCode AddRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair);
+        /// <param name="gameShipId">Game ship's Id which adds a repair.</param>
+        /// <param name="repairId">Id of repair (<see cref="Repair"/>) which adds.</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous operation. The task result contains <see cref="StateCode"/></returns>
+        Task<StateCode> AddRepair(int gameShipId, int repairId);
 
         /// <summary>
         /// Remove weapon from game ship.
         /// </summary>
-        /// <param name="gamePlayer">Current player</param>
-        /// <param name="gameShip">Game ship which removes a weapon.</param>
-        /// <param name="weapon">Weapon (<see cref="IWeapon"/>) which removes.</param>
-        /// <returns><see cref="StateCode"/> is result of operation</returns>
-        StateCode RemoveWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon);
+        /// <param name="gameShipId">Game ship's Id which removes a weapon.</param>
+        /// <param name="weaponId">Weapon's Id (<see cref="Weapon"/>) which removes.</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous operation. The task result contains <see cref="StateCode"/></returns>
+        Task<StateCode> RemoveWeapon(int gameShipId, int weaponId);
 
         /// <summary>
         /// Remove repair from game ship.
         /// </summary>
-        /// <param name="gamePlayer">Current player</param>
-        /// <param name="gameShip">Game ship which removes a repair.</param>
-        /// <param name="repair">Repair (<see cref="IRepair"/>) which removes.</param>
-        /// <returns><see cref="StateCode"/> is result of operation</returns>
-        StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair);*/
+        /// <param name="gameShipId">Game ship's Id which removes a repair.</param>
+        /// <param name="repairId">Id of Repair (<see cref="Repair"/>) which removes.</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous operation. The task result contains <see cref="StateCode"/></returns>
+        Task<StateCode> RemoveRepair(int gameShipId, int repairId);
     }
 }

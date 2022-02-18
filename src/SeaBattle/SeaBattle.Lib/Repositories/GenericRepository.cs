@@ -18,12 +18,12 @@ namespace SeaBattle.Lib.Repositories
         /// <summary>
         /// Data context for EF
         /// </summary>
-        private DbContext _context;
+        private readonly DbContext _context;
 
         /// <summary>
         /// Data from database for <see cref="TEntity"/>
         /// </summary>
-        private DbSet<TEntity> _dbSet;
+        private readonly DbSet<TEntity> _dbSet;
 
         /// <summary>
         /// Default constructor that initializes an empty object of collection. 
@@ -36,11 +36,20 @@ namespace SeaBattle.Lib.Repositories
 
         public virtual ICollection<TEntity> GetAll() => _dbSet.AsNoTracking().ToList();
 
-        public virtual TEntity FindById(uint id) => _dbSet.Find(id);
+        public virtual async Task<ICollection<TEntity>> GetAllAsync() => await _dbSet.AsNoTracking().ToListAsync();
+
+        public virtual TEntity FindById(int id) => _dbSet.Find(id);
+
+        public virtual async ValueTask<TEntity> FindByIdAsync(int id) => await _dbSet.FindAsync(id);
 
         public virtual IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> predicate)
         {
             return _dbSet.AsNoTracking().Where(predicate).ToList();
+        }
+
+        public virtual async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await _dbSet.AsNoTracking().Where(predicate).ToListAsync();
         }
 
         public virtual TEntity Create(TEntity item)
@@ -122,11 +131,23 @@ namespace SeaBattle.Lib.Repositories
             return Include(includeProperties).ToList();
         }
 
+        public virtual async Task<IEnumerable<TEntity>> GetWithIncludeAsync(params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            return await Include(includeProperties).ToListAsync();
+        }
+
         public virtual IEnumerable<TEntity> GetWithInclude(Expression<Func<TEntity, bool>> predicate,
             params Expression<Func<TEntity, object>>[] includeProperties)
         {
             var query = Include(includeProperties);
             return query.Where(predicate).ToList();
+        }
+
+        public virtual async Task<IEnumerable<TEntity>> GetWithIncludeAsync(Expression<Func<TEntity, bool>> predicate,
+            params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            var query = Include(includeProperties);
+            return await query.Where(predicate).ToListAsync();
         }
 
         /// <summary>
@@ -205,11 +226,11 @@ namespace SeaBattle.Lib.Repositories
             return previous;
 
             /*Example:
-            GameRepository<User> _gameRepository = new GameRepository<User>(new GameContext());
+            GenericRepository<User> _genericRepository = new GenericRepository<User>(new GameContext());
             User user = new User();
-            _gameRepository.Update(u => u.UserId == user.UserId,
+            _genericRepository.Update(u => u.UserId == user.UserId,
                 user.BusinessModels, // Many-to-many relationship to update
-                _gameRepository.Get(), // Full set
+                _genericRepository.GetAll(), // Full set
                 "BusinessModels"); // Property name*/
         }
     }

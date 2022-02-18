@@ -20,11 +20,25 @@ namespace SeaBattle.Lib.Repositories
         ICollection<TEntity> GetAll();
 
         /// <summary>
+        /// Async get all objects from repository.
+        /// </summary>
+        /// <param name="TEntity">Entity which implements <see cref="IEntity"/>.</param>
+        /// <returns>Returns collection of Entities (ICollection).</returns>
+        Task<ICollection<TEntity>> GetAllAsync();
+
+        /// <summary>
         /// Find and get object from the repository by id.
         /// </summary>
         /// <param name="id">Id of entities object.</param>
         /// <returns>Entities object or a default value if the sequence contains no elements.</returns>
-        TEntity FindById(uint id);
+        TEntity FindById(int id);
+
+        /// <summary>
+        /// Async find and get object from the repository by id.
+        /// </summary>
+        /// <param name="id">Id of entities object.</param>
+        /// <returns>Entities object or a default value if the sequence contains no elements.</returns>
+        ValueTask<TEntity> FindByIdAsync(int id);
 
         /// <summary>
         /// Get entities with predicate expression.
@@ -33,6 +47,14 @@ namespace SeaBattle.Lib.Repositories
         /// whose (<see cref="TEntity"/>, <see cref="bool"/>). Expression to filter <see cref="TEntity"/>.</param>
         /// <returns></returns>
         IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> predicate);
+
+        /// <summary>
+        /// Async get entities with predicate expression.
+        /// </summary>
+        /// <param name="predicate"><see cref="Expression{TDelegate}"/> whose generic type argument is <see cref="Func{TEntity, bool}"/>
+        /// whose (<see cref="TEntity"/>, <see cref="bool"/>). Expression to filter <see cref="TEntity"/>.</param>
+        /// <returns></returns>
+        Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate);
 
         /// <summary>
         /// Create and add object to the repository.
@@ -118,6 +140,15 @@ namespace SeaBattle.Lib.Repositories
         IEnumerable<TEntity> GetWithInclude(params Expression<Func<TEntity, object>>[] includeProperties);
 
         /// <summary>
+        /// Async get all <see cref="TEntity"/> with included relation entities.
+        /// </summary>
+        /// <param name="includeProperties"><see cref="Expression{TDelegate}"/>
+        /// whose generic type argument is <see cref="Func{TEntity, bool}"/> whose (<see cref="TEntity"/>, <see cref="object"/>).
+        /// Collection (params) whose we get with target <see cref="TEntity"/>.</param>
+        /// <returns><see cref="IEnumerable{T}"/> whose generic type argument is <see cref="TEntity"/> Collection of <see cref="TEntity"/>.</returns>
+        Task<IEnumerable<TEntity>> GetWithIncludeAsync(params Expression<Func<TEntity, object>>[] includeProperties);
+
+        /// <summary>
         /// Get <see cref="TEntity"/> with included relation entities end filtered by predicate.
         /// </summary>
         /// <param name="predicate"><see cref="Expression{TDelegate}"/> whose generic type argument is <see cref="Func{TEntity, bool}"/>
@@ -127,6 +158,18 @@ namespace SeaBattle.Lib.Repositories
         /// Collection (params) whose we get with target <see cref="TEntity"/>.</param>
         /// <returns><see cref="IEnumerable{T}"/> whose generic type argument is <see cref="TEntity"/> Collection of <see cref="TEntity"/>.</returns>
         IEnumerable<TEntity> GetWithInclude(Expression<Func<TEntity, bool>> predicate,
+            params Expression<Func<TEntity, object>>[] includeProperties);
+
+        /// <summary>
+        /// Async get <see cref="TEntity"/> with included relation entities end filtered by predicate.
+        /// </summary>
+        /// <param name="predicate"><see cref="Expression{TDelegate}"/> whose generic type argument is <see cref="Func{TEntity, bool}"/>
+        /// whose (<see cref="TEntity"/>, <see cref="bool"/>). Expression to filter target <see cref="TEntity"/>.</param>
+        /// <param name="includeProperties"><see cref="Expression{TDelegate}"/>
+        /// whose generic type argument is <see cref="Func{TEntity, bool}"/> whose (<see cref="TEntity"/>, <see cref="object"/>).
+        /// Collection (params) whose we get with target <see cref="TEntity"/>.</param>
+        /// <returns><see cref="IEnumerable{T}"/> whose generic type argument is <see cref="TEntity"/> Collection of <see cref="TEntity"/>.</returns>
+        Task<IEnumerable<TEntity>> GetWithIncludeAsync(Expression<Func<TEntity, bool>> predicate,
             params Expression<Func<TEntity, object>>[] includeProperties);
     }
 }

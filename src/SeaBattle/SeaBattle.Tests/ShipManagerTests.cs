@@ -12,7 +12,7 @@ namespace SeaBattle.Tests
 
         public ShipManagerTests()
         {
-            _manager = new ShipManager();
+            //_manager = new ShipManager();
         }
 
         /*[Fact]

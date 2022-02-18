@@ -244,7 +244,7 @@ namespace SeaBattle.UIConsole
         }
 
         public string GetShipStatus(IGameShip ship) =>
-            $"{Resources.Ship}: {ship.ShipType.Name}, {Resources.Size}: {ship.Size}, {Resources.Hp}: {ship.Hp} {Resources.Weapons}: {ship.Weapons.Count}, {Resources.Repairs}: {ship.Repairs.Count}";
+            $"{Resources.Ship}: {ship.ShipType.ToString()}, {Resources.Size}: {ship.Size}, {Resources.Hp}: {ship.Hp} {Resources.Weapons}: {ship.Weapons.Count}, {Resources.Repairs}: {ship.Repairs.Count}";
 
         public string GetPlayerStatus(IStartField startField) =>
             $"{Resources.Player}: {startField.GamePlayer.Name}, {Resources.Points}: {startField.Points}";

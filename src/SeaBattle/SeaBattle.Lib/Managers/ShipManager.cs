@@ -1,6 +1,9 @@
-﻿using SeaBattle.Lib.Entities;
-using System.Collections.Generic;
+﻿using System;
+using System.Linq;
+using SeaBattle.Lib.Entities;
+using System.Threading.Tasks;
 using SeaBattle.Lib.Infrastructure;
+using SeaBattle.Lib.Repositories;
 
 namespace SeaBattle.Lib.Managers
 {
@@ -9,13 +12,48 @@ namespace SeaBattle.Lib.Managers
     /// </summary>
     public class ShipManager : IShipManager
     {
-        public ShipManager() { }
+        private readonly IShipStorageUtility _storageUtility;
 
-        public StateCode BuyShip(ICollection<GamePlayer> players, GameShip gameShip, StartField startField)
+        private readonly GenericRepository<StartField> _startFieldRepository;
+
+        private readonly GenericRepository<GameShip> _gameShipRepository;
+
+        private readonly GenericRepository<Weapon> _weaponRepository;
+
+        private readonly GenericRepository<Repair> _repairRepository;
+
+        private readonly GenericRepository<GamePlayer> _gamePlayerRepository;
+
+        private readonly GenericRepository<Ship> _shipRepository;
+
+        public ShipManager(IShipStorageUtility storageUtility, GenericRepository<StartField> startFieldRepository,
+            GenericRepository<GameShip> gameShipRepository, GenericRepository<Weapon> weaponRepository,
+            GenericRepository<Repair> repairRepository, GenericRepository<GamePlayer> gamePlayerRepository,
+            GenericRepository<Ship> shipRepository)
         {
-            if (!players.Contains(startField.GamePlayer))
+            _startFieldRepository = startFieldRepository;
+            _gameShipRepository = gameShipRepository;
+            _weaponRepository = weaponRepository;
+            _repairRepository = repairRepository;
+            _gamePlayerRepository = gamePlayerRepository;
+            _shipRepository = shipRepository;
+            _storageUtility = storageUtility;
+        }
+
+        public async Task<StateCode> BuyShip(int gameShipId, int startFieldId)
+        {
+            GameShip gameShip = await _gameShipRepository.FindByIdAsync(gameShipId);
+
+            var query = await _startFieldRepository.GetWithIncludeAsync(f => f.Id == startFieldId, s => s.GameShips);
+            StartField startField = query.FirstOrDefault();
+
+            if (gameShip == null || startField == null)
             {
-                return StateCode.InvalidPlayer;
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(BuyShip)}");
+                ex.Data.Add("gameShipId", gameShipId);
+                ex.Data.Add("startFieldId", startFieldId);
+
+                throw ex;
             }
 
             if (gameShip.Points > startField.Points)
@@ -26,56 +64,103 @@ namespace SeaBattle.Lib.Managers
             startField.GameShips.Add(gameShip);
             startField.Points -= gameShip.Points;
 
+            await _startFieldRepository.UpdateAsync(s => s.Id == startField.Id, startField.GameShips,
+                _startFieldRepository.GetAll(), "GameShips");
 
             return StateCode.Success;
         }
 
-        public StateCode SellShip(ICollection<GamePlayer> players, GameShip gameShip, StartField startField)
+        public async Task<StateCode> SellShip(int gameShipId, int startFieldId)
         {
-            if (!players.Contains(startField.GamePlayer))
+            GameShip gameShip = await _gameShipRepository.FindByIdAsync(gameShipId);
+
+            var query = await _startFieldRepository.GetWithIncludeAsync(f => f.Id == startFieldId, s => s.GameShips);
+            StartField startField = query.FirstOrDefault();
+
+            if (gameShip == null || startField == null)
             {
-                return StateCode.InvalidPlayer;
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(SellShip)}");
+                ex.Data.Add("gameShipId", gameShipId);
+                ex.Data.Add("startFieldId", startFieldId);
+
+                throw ex;
             }
 
             startField.GameShips.Remove(gameShip);
             startField.Points += gameShip.Points;
 
+            await _gameShipRepository.DeleteAsync(gameShip);
+
+            await _startFieldRepository.UpdateAsync(s => s.Id == startField.Id, startField.GameShips,
+                _startFieldRepository.GetAll(), "GameShips");
+
             return StateCode.Success;
         }
 
-       /* public ICollection<(IShip, int)> GetShips() => Ships;
-
-        public ICollection<IRepair> GetRepairs() => Repairs;
-
-        public ICollection<IWeapon> GetWeapons() => Weapons;
-
-        public IGameShip GetNewShip(GamePlayer gamePlayer, Ship ship)
+        public async Task<IGameShip> GetNewShip(string gamePlayerName, int shipId)
         {
-            IGameShip gameShip = new GameShip(ship, gamePlayer, GetShipCost(ship.Size));
-            switch (ship.Type)
+            var query = await _gamePlayerRepository.GetAsync(p => p.Name == gamePlayerName);
+            GamePlayer gamePlayer = query.FirstOrDefault();
+
+            Ship ship = await _shipRepository.FindByIdAsync(shipId);
+
+            if (gamePlayer == null || ship == null)
+            {
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(GetNewShip)}");
+                ex.Data.Add("shipId", shipId);
+                ex.Data.Add("gamePlayerName", gamePlayerName);
+
+                throw ex;
+            }
+
+            GameShip gameShip = new GameShip(ship, gamePlayer,
+                _storageUtility.CalculatePointCost(ship.Size, ship.ShipType));
+
+            gameShip = await _gameShipRepository.CreateAsync(gameShip);
+
+            switch (ship.ShipType)
             {
                 case ShipType.Military:
                     for (int i = 0; i < ship.Size; i++)
                     {
-                        AddWeapon(gamePlayer, gameShip, Weapons.First());
+                        await AddWeapon(gameShip.Id, 1);
                     }
+
+                    break;
+                case ShipType.Mixed:
                     break;
                 case ShipType.Auxiliary:
                     for (int i = 0; i < ship.Size; i++)
                     {
-                        AddRepair(gamePlayer, gameShip, Repairs.First());
+                        await AddRepair(gameShip.Id, 1);
                     }
+
                     break;
+                default:
+                    Exception ex = new Exception($"Error add equipment to ship in progress {nameof(GetNewShip)}");
+                    ex.Data.Add("Data", ship);
+
+                    throw ex;
             }
 
             return gameShip;
         }
 
-        public StateCode AddWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon)
+        public async Task<StateCode> AddWeapon(int gameShipId, int weaponId)
         {
-            if (gameShip.GamePlayer != gamePlayer)
+            Weapon weapon = await _weaponRepository.FindByIdAsync(weaponId);
+
+            var query = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == gameShipId, s => s.Weapons,
+                s => s.Repairs, s => s.Ship);
+            GameShip gameShip = query.FirstOrDefault();
+
+            if (weapon == null || gameShip == null)
             {
-                return StateCode.InvalidPlayer;
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(AddWeapon)}");
+                ex.Data.Add("gameShip", gameShip);
+                ex.Data.Add("weaponId", weaponId);
+
+                throw ex;
             }
 
             if (gameShip.Weapons.Count + gameShip.Repairs.Count == gameShip.Size)
@@ -83,21 +168,34 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.LimitEquipment;
             }
 
-            if (gameShip.Ship.Type == ShipType.Auxiliary)
+            if ((int) gameShip.Ship.ShipType == 3)
             {
                 return StateCode.InvalidEquipment;
             }
 
             gameShip.Weapons.Add(weapon);
 
+            await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.Weapons,
+                _weaponRepository.GetAll(), "Weapons");
+
             return StateCode.Success;
         }
 
-        public StateCode AddRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair)
+        public async Task<StateCode> AddRepair(int gameShipId, int repairId)
         {
-            if (gameShip.GamePlayer != gamePlayer)
+            Repair repair = await _repairRepository.FindByIdAsync(repairId);
+
+            var query = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == gameShipId, s => s.Weapons,
+                s => s.Repairs, s => s.Ship);
+            GameShip gameShip = query.FirstOrDefault();
+
+            if (repair == null || gameShip == null)
             {
-                return StateCode.InvalidPlayer;
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(AddRepair)}");
+                ex.Data.Add("gameShipId", gameShipId);
+                ex.Data.Add("repairId", repairId);
+
+                throw ex;
             }
 
             if (gameShip.Weapons.Count + gameShip.Repairs.Count == gameShip.Size)
@@ -105,34 +203,72 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.LimitEquipment;
             }
 
-            if (gameShip.Ship.Type == ShipType.Military)
+            if ((int) gameShip.Ship.ShipType == 1)
             {
                 return StateCode.InvalidEquipment;
             }
 
             gameShip.Repairs.Add(repair);
 
+            await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.Repairs,
+                _repairRepository.GetAll(), "Repairs");
+
             return StateCode.Success;
-        }*/
-
-        public StateCode RemoveWeapon(IGamePlayer gamePlayer, IGameShip gameShip, IWeapon weapon)
-        {
-            if (gameShip.GamePlayer != gamePlayer)
-            {
-                return StateCode.InvalidPlayer;
-            }
-
-            return gameShip.Weapons.Remove(weapon as Weapon) ? StateCode.Success : StateCode.InvalidEquipment;
         }
 
-        public StateCode RemoveRepair(IGamePlayer gamePlayer, IGameShip gameShip, IRepair repair)
+        public async Task<StateCode> RemoveWeapon(int gameShipId, int weaponId)
         {
-            if (gameShip.GamePlayer != gamePlayer)
+            var query = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == gameShipId, s => s.Weapons,
+                s => s.EquippedWeapons);
+            GameShip gameShip = query.FirstOrDefault();
+
+            if (gameShip == null)
             {
-                return StateCode.InvalidPlayer;
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(RemoveWeapon)}");
+                ex.Data.Add("gameShipId", gameShipId);
+
+                throw ex;
             }
 
-            return gameShip.Repairs.Remove(repair as Repair) ? StateCode.Success : StateCode.InvalidEquipment;
+            EquippedWeapon eqWeapon = gameShip.EquippedWeapons.FirstOrDefault(w => w.WeaponId == weaponId);
+
+            if (eqWeapon == null || !gameShip.EquippedWeapons.Remove(eqWeapon))
+            {
+                return StateCode.InvalidEquipment;
+            }
+
+            await _gameShipRepository.UpdateAsync(s => s.Id == gameShipId, gameShip.EquippedWeapons,
+                gameShip.EquippedWeapons, "EquippedWeapons");
+
+            return StateCode.Success;
+        }
+
+        public async Task<StateCode> RemoveRepair(int gameShipId, int repairId)
+        {
+            var query = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == gameShipId, s => s.Repairs,
+                s => s.EquippedRepairs);
+            GameShip gameShip = query.FirstOrDefault();
+
+            if (gameShip == null)
+            {
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(RemoveRepair)}");
+                ex.Data.Add("gameShipId", gameShipId);
+
+                throw ex;
+            }
+
+            EquippedRepair eqRepair = gameShip.EquippedRepairs.FirstOrDefault(w => w.RepairId == repairId);
+
+            if (eqRepair == null || !gameShip.EquippedRepairs.Remove(eqRepair))
+            {
+                return StateCode.InvalidEquipment;
+            }
+
+
+            await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.EquippedRepairs,
+                gameShip.EquippedRepairs, "EquippedRepairs");
+
+            return StateCode.Success;
         }
     }
 }

@@ -26,13 +26,6 @@ namespace SeaBattle.Lib.Entities
         int? CurrentGamePlayerMoveId { get; set; }
 
         /// <summary>
-        /// Foreign key Id <see cref="GameState"/>
-        /// Current state of game
-        /// </summary>
-        /// <value><see cref="int"/></value>
-        short GameStateId { get; set; }
-
-        /// <summary>
         /// Winner of the game
         /// </summary>
         /// <value><see cref="string"/></value>
@@ -61,11 +54,5 @@ namespace SeaBattle.Lib.Entities
         /// </summary>
         /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="GamePlayer"/></value>
         ICollection<GamePlayer> GamePlayers { get; set; }
-
-        /// <summary>
-        /// Active games, which search game players.
-        /// </summary>
-        /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="SearchGame"/></value>
-        ICollection<SearchGame> SearchGames { get; set; }
     }
 }

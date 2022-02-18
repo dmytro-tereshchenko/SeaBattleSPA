@@ -6,7 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using SeaBattle.GameResources.Utilites;
 using SeaBattle.Lib.Data.Entities;
+using SeaBattle.Lib.Entities;
+using SeaBattle.Lib.Infrastructure;
+using SeaBattle.Lib.Managers;
+using SeaBattle.Lib.Repositories;
 
 namespace SeaBattle.GameResources
 {
@@ -58,6 +63,39 @@ namespace SeaBattle.GameResources
             services.AddDbContext<GameDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly)));
 
+            services.AddSingleton<IShipStorageUtility, ShipStorageUtility>(sp =>
+            {
+                int shipCostCoefficient = ushort.Parse(Configuration.GetValue<string>("GameConfig:ShipCostCoefficient"));
+                return new ShipStorageUtility(shipCostCoefficient);
+            });
+
+            services.AddSingleton<IGameConfig, GameConfig>(sp =>
+            {
+                ushort minFieldSizeX = ushort.Parse(Configuration.GetValue<string>("GameConfig:MinFieldSizeX"));
+                ushort maxFieldSizeX = ushort.Parse(Configuration.GetValue<string>("GameConfig:MaxFieldSizeX"));
+                ushort minFieldSizeY = ushort.Parse(Configuration.GetValue<string>("GameConfig:MinFieldSizeY"));
+                ushort maxFieldSizeY = ushort.Parse(Configuration.GetValue<string>("GameConfig:MaxFieldSizeY"));
+                byte maxNumberOfPlayers =
+                    byte.Parse(Configuration.GetValue<string>("GameConfig:MaxNumberOfPlayers"));
+                return new GameConfig(minFieldSizeX, maxFieldSizeX, minFieldSizeY, maxFieldSizeY, maxNumberOfPlayers);
+            });
+
+            services.AddScoped<DbContext, GameDbContext>();
+
+            services.AddScoped<GenericRepository<Weapon>>();
+            services.AddScoped<GenericRepository<Repair>>();
+            services.AddScoped<GenericRepository<Ship>>();
+            services.AddScoped<GenericRepository<Game>>();
+            services.AddScoped<GenericRepository<GameField>>();
+            services.AddScoped<GenericRepository<GameFieldCell>>();
+            services.AddScoped<GenericRepository<GamePlayer>>();
+            services.AddScoped<GenericRepository<GameShip>>();
+            services.AddScoped<GenericRepository<StartField>>();
+            services.AddScoped<GenericRepository<StartFieldCell>>();
+
+            services.AddScoped<IShipManager, ShipManager>();
+            services.AddScoped<IInitializeManager, InitializeManager>();
+
             services.AddControllers();
         }
 
@@ -68,6 +106,8 @@ namespace SeaBattle.GameResources
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseErrorLogger();
 
             app.UseHttpsRedirection();
 

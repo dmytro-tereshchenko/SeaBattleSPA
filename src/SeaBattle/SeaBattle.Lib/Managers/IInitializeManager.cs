@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;
 using SeaBattle.Lib.Responses;
@@ -14,26 +15,20 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Creating and getting game field.
         /// </summary>
+        /// <param name="gameId">Game's Id.</param>
         /// <param name="sizeX">Size X of created game field.</param>
         /// <param name="sizeY">Size Y of created game field.</param>
         /// <returns><see cref="IResponseGameField"/> where Value is <see cref="IGameField"/>, State is <see cref="StateCode"/></returns>
-        IResponseGameField CreateGameField(ushort sizeX, ushort sizeY);
+        Task<IResponseGameField> CreateGameField(int gameId, ushort sizeX, ushort sizeY);
 
         /// <summary>
         /// Method for calculation points which need to purchase ships.
         /// </summary>
-        /// <param name="field">Field with placement ships on start game - array with type bool, where true - can placed ship, false - wrong cell.</param>
+        /// <param name="startFieldCells">Collection of FieldCell with placement ships on start game.</param>
+        /// <param name="sizeX">Size X of game field</param>
+        /// <param name="sizeY">Size Y of game field</param>
         /// <returns>Amount of points</returns>
-        int CalculateStartPoints(bool[,] field);
-
-        /// <summary>
-        /// Method for generating a collection of fields with labels for possible placing ships on start field for teams.
-        /// </summary>
-        /// <param name="gameField">Field of the game</param>
-        /// <param name="numberOfPlayers">Amount of players</param>
-        /// <returns>Collection of fields with ships - arrays with type bool, where true - placed boat, false - empty</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="numberOfPlayers"/> out of range</exception>
-        ICollection<bool[,]> GenerateStartFields(IGameField gameField, byte numberOfPlayers);
+        int CalculateStartPoints(ICollection<StartFieldCell> startFieldCells, ushort sizeX, ushort sizeY);
 
         /// <summary>
         /// Getting border size of the game field.
@@ -50,18 +45,18 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Create and add player to the game
         /// </summary>
-        /// <param name="game">Current game</param>
+        /// <param name="gameId">Current game's Id</param>
         /// <param name="playerName">Player's name</param>
         /// <returns><see cref="IResponseGamePlayer"/></returns>
-        IResponseGamePlayer AddPlayerToGame(IGame game, string playerName);
+        Task<IResponseGamePlayer> AddPlayerToGame(int gameId, string playerName);
 
         /// <summary>
         /// Get start field by player and game. In case absence of starting fields, create them.
         /// </summary>
-        /// <param name="game">Current game</param>
-        /// <param name="gamePlayer">Current player</param>
+        /// <param name="gameId">Current game's Id</param>
+        /// <param name="gamePlayerName">Current player's name</param>
         /// <returns><see cref="IResponseStartField"/></returns>
-        IResponseStartField GetStartField(Game game, GamePlayer gamePlayer);
+        Task<IResponseStartField> GetStartField(int gameId, string gamePlayerName);
 
         /// <summary>
         /// Create <see cref="IGame"/> by <paramref name="numberOfPlayers"/>
@@ -69,6 +64,6 @@ namespace SeaBattle.Lib.Managers
         /// <param name="numberOfPlayers">Number of players in the game</param>
         /// <returns><see cref="IGame"/> Created game</returns>
         /// <exception cref="ArgumentOutOfRangeException">A number of teams are out of possible values.</exception>
-        IGame CreateGame(byte numberOfPlayers);
+        Task<IGame> CreateGame(byte numberOfPlayers);
     }
 }

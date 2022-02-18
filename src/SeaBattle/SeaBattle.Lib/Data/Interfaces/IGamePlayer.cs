@@ -8,12 +8,6 @@ namespace SeaBattle.Lib.Entities
     public interface IGamePlayer : IPlayer
     {
         /// <summary>
-        /// Foreign key Id <see cref="PlayerState"/>
-        /// </summary>
-        /// <value><see cref="int"/></value>
-        short PlayerStateId { get; set; }
-
-        /// <summary>
         /// Navigation property to collection <see cref="Game"/>
         /// </summary>
         /// <value><see cref="ICollection{T}"/> whose generic type argument is <see cref="Game"/>.</value>

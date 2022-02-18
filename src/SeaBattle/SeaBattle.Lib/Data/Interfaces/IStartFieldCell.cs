@@ -21,7 +21,7 @@
         /// Foreign key Id <see cref="StartField"/>
         /// </summary>
         /// <value><see cref="int"/></value>
-        int StartFieldId { get; set; }
+        int? StartFieldId { get; set; }
 
         /// <summary>
         /// Navigate property <see cref="StartField"/>

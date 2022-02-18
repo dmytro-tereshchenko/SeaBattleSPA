@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SeaBattle.Lib.Data.Entities;
 
 namespace SeaBattle.GameResources.Migrations
 {
     [DbContext(typeof(GameDbContext))]
-    partial class GameDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220218094357_RemoveStateTables")]
+    partial class RemoveStateTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,6 +243,23 @@ namespace SeaBattle.GameResources.Migrations
                             RepairPower = 40,
                             RepairRange = 10
                         });
+                });
+
+            modelBuilder.Entity("SeaBattle.Lib.Entities.SearchGame", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("SearchGames");
                 });
 
             modelBuilder.Entity("SeaBattle.Lib.Entities.Ship", b =>
@@ -501,6 +520,17 @@ namespace SeaBattle.GameResources.Migrations
                     b.Navigation("StartField");
                 });
 
+            modelBuilder.Entity("SeaBattle.Lib.Entities.SearchGame", b =>
+                {
+                    b.HasOne("SeaBattle.Lib.Entities.Game", "Game")
+                        .WithMany("SearchGames")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+                });
+
             modelBuilder.Entity("SeaBattle.Lib.Entities.StartField", b =>
                 {
                     b.HasOne("SeaBattle.Lib.Entities.GameField", "GameField")
@@ -544,6 +574,8 @@ namespace SeaBattle.GameResources.Migrations
             modelBuilder.Entity("SeaBattle.Lib.Entities.Game", b =>
                 {
                     b.Navigation("GameField");
+
+                    b.Navigation("SearchGames");
 
                     b.Navigation("StartFields");
                 });
