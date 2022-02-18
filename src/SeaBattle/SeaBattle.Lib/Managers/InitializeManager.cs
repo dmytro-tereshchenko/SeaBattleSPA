@@ -17,8 +17,6 @@ namespace SeaBattle.Lib.Managers
     {
         private readonly IShipStorageUtility _storageUtility;
 
-        private readonly ILogger<InitializeManager> _logger;
-
         private readonly IGameConfig _gameConfig;
 
         private readonly GenericRepository<Game> _gameRepository;
@@ -31,11 +29,13 @@ namespace SeaBattle.Lib.Managers
 
         private readonly GenericRepository<StartFieldCell> _startFieldCellRepository;
 
-        public InitializeManager(IGameConfig gameConfig, IShipStorageUtility storageUtility, ILogger<InitializeManager> logger, GenericRepository<Game> gameRepository, GenericRepository<GameField> gameFieldRepository, GenericRepository<GamePlayer> gamePlayerRepository, GenericRepository<StartField> startFieldRepository, GenericRepository<StartFieldCell> startFieldCellRepository)
+        public InitializeManager(IGameConfig gameConfig, IShipStorageUtility storageUtility,
+            GenericRepository<Game> gameRepository, GenericRepository<GameField> gameFieldRepository,
+            GenericRepository<GamePlayer> gamePlayerRepository, GenericRepository<StartField> startFieldRepository,
+            GenericRepository<StartFieldCell> startFieldCellRepository)
         {
             _gameConfig = gameConfig;
             _storageUtility = storageUtility;
-            _logger = logger;
             _gameRepository = gameRepository;
             _gameFieldRepository = gameFieldRepository;
             _gamePlayerRepository = gamePlayerRepository;
@@ -55,23 +55,15 @@ namespace SeaBattle.Lib.Managers
 
             if (game == null)
             {
-                _logger.LogWarning($"Invalid Id arguments in progress {nameof(CreateGameField)}", gameId);
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(CreateGameField)}");
+                ex.Data.Add("gameId", gameId);
 
-                return new ResponseGameField(null, StateCode.NullReference);
+                throw ex;
             }
 
             GameField field = new GameField(sizeX, sizeY) {GameId = gameId};
 
-            try
-            {
-                field = await _gameFieldRepository.CreateAsync(field);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, $"Error create data in database in progress {nameof(CreateGameField)}", field);
-
-                return new ResponseGameField(null, StateCode.InvalidOperation);
-            }
+            field = await _gameFieldRepository.CreateAsync(field);
 
             return new ResponseGameField(field, StateCode.Success);
         }
@@ -115,9 +107,10 @@ namespace SeaBattle.Lib.Managers
 
             if (game == null)
             {
-                _logger.LogWarning($"Invalid Id arguments in progress {nameof(AddPlayerToGame)}", gameId);
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(AddPlayerToGame)}");
+                ex.Data.Add("gameId", gameId);
 
-                return new ResponseGamePlayer(null, StateCode.NullReference);
+                throw ex;
             }
 
             if (game.CurrentCountPlayers == game.MaxNumberOfPlayers)
@@ -127,7 +120,7 @@ namespace SeaBattle.Lib.Managers
 
             if (game.GamePlayers.Count == 0)
             {
-                game.GameState = (GameState)2; //SearchPlayers;
+                game.GameState = (GameState) 2; //SearchPlayers;
             }
 
             var queryPlayer = await _gamePlayerRepository.GetAsync(p => p.Name == playerName);
@@ -135,36 +128,18 @@ namespace SeaBattle.Lib.Managers
 
             if (gamePlayer == null)
             {
-                try
-                {
-                    gamePlayer = await _gamePlayerRepository.CreateAsync(new GamePlayer(playerName));
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, $"Error create data in database in progress {nameof(AddPlayerToGame)}", playerName);
-
-                    return new ResponseGamePlayer(null, StateCode.InvalidOperation);
-                }
+                gamePlayer = await _gamePlayerRepository.CreateAsync(new GamePlayer(playerName));
             }
 
             game.GamePlayers.Add(gamePlayer);
 
             if (game.GamePlayers.Count == game.MaxNumberOfPlayers)
             {
-                game.GameState = (GameState)3; //Init
+                game.GameState = (GameState) 3; //Init
             }
 
-            try
-            {
-                game = await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.GamePlayers,
-                    _gamePlayerRepository.GetAll(), "GamePlayers");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, $"Error update data in database in progress {nameof(AddPlayerToGame)}", game, gamePlayer);
-
-                return new ResponseGamePlayer(null, StateCode.InvalidOperation);
-            }
+            game = await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.GamePlayers,
+                _gamePlayerRepository.GetAll(), "GamePlayers");
 
             return new ResponseGamePlayer(gamePlayer, StateCode.Success);
         }
@@ -180,27 +155,24 @@ namespace SeaBattle.Lib.Managers
 
             if (game == null || gamePlayer == null)
             {
-                _logger.LogWarning($"Invalid Id arguments in progress {nameof(GetStartField)}", gameId, gamePlayerName);
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(GetStartField)}");
+                ex.Data.Add("gameId", gameId);
+                ex.Data.Add("gamePlayerName", gamePlayerName);
 
-                return new ResponseStartField(null, StateCode.NullReference);
+                throw ex;
             }
 
             //Variable for result
             StartField startField = null;
 
             //in the case haven't created startFields - create them
-            if (game.StartFields == null || game.StartFields.Count==0)
+            if (game.StartFields == null || game.StartFields.Count == 0)
             {
                 game.StartFields = new List<StartField>(game.MaxNumberOfPlayers);
-                ICollection <ICollection<StartFieldCell>> fieldsOfLabels;
-                try
-                {
-                    fieldsOfLabels = GenerateStartFields(game.GameField.SizeX, game.GameField.SizeY, game.MaxNumberOfPlayers);
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    return new ResponseStartField(null, StateCode.ExceededMaxNumberOfPlayers);
-                }
+                ICollection<ICollection<StartFieldCell>> fieldsOfLabels;
+
+                fieldsOfLabels =
+                    GenerateStartFields(game.GameField.SizeX, game.GameField.SizeY, game.MaxNumberOfPlayers);
 
                 //calculate start points for minimum size fields
                 int startPoints = fieldsOfLabels
@@ -235,24 +207,15 @@ namespace SeaBattle.Lib.Managers
                 startField.GamePlayer = gamePlayer;
 
                 //change status player
-                startField.GamePlayer.PlayerState = (PlayerState)2; //InitializeField
+                startField.GamePlayer.PlayerState = (PlayerState) 2; //InitializeField
 
-                try
+                await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.StartFields,
+                    _startFieldRepository.GetAll(), "StartFields");
+
+                foreach (var field in game.StartFields)
                 {
-                    await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.StartFields,
-                        _startFieldRepository.GetAll(), "StartFields");
-
-                    foreach (var field in game.StartFields)
-                    {
-                        await _startFieldRepository.UpdateAsync(f => f.Id == field.Id, field.StartFieldCells,
-                            _startFieldCellRepository.GetAll(), "StartFieldCells");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, $"Error update data in database in progress {nameof(GetStartField)}", game);
-
-                    return new ResponseStartField(null, StateCode.InvalidOperation);
+                    await _startFieldRepository.UpdateAsync(f => f.Id == field.Id, field.StartFieldCells,
+                        _startFieldCellRepository.GetAll(), "StartFieldCells");
                 }
 
                 return new ResponseStartField(startField, StateCode.Success);
@@ -267,25 +230,14 @@ namespace SeaBattle.Lib.Managers
             if (numberOfPlayers < 1 || numberOfPlayers > _gameConfig.MaxNumberOfPlayers)
             {
                 Exception ex = new ArgumentOutOfRangeException(
-                    $"{nameof(numberOfPlayers)} is out of range [0;{_gameConfig.MaxNumberOfPlayers}]");
+                    $"{nameof(numberOfPlayers)} is out of range [0;{_gameConfig.MaxNumberOfPlayers}] in progress {nameof(CreateGame)}");
 
-                _logger.LogWarning(ex, $"Invalid number of players in progress {nameof(CreateGame)}", numberOfPlayers);
-
-                return null;
+                throw ex;
             }
 
             Game game = new Game(numberOfPlayers);
 
-            try
-            {
-                game = await _gameRepository.CreateAsync(game);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, $"Error create data in database in progress {nameof(CreateGame)}", game);
-
-                return null;
-            }
+            game = await _gameRepository.CreateAsync(game);
 
             return game;
         }
@@ -304,8 +256,13 @@ namespace SeaBattle.Lib.Managers
 
             if (x < 0 || x >= sizeX || y < 0 || y > sizeY)
             {
-                _logger.LogWarning($"Invalid coordinates of cell in progress {nameof(CheckFreeAreaAroundShip)}", field, x, y);
-                return false;
+                Exception ex =
+                    new Exception($"Invalid coordinates of cell in progress {nameof(CheckFreeAreaAroundShip)}");
+                ex.Data.Add("field", field);
+                ex.Data.Add("x", x);
+                ex.Data.Add("y", y);
+
+                throw ex;
             }
 
             int offsetX = -1;
@@ -348,20 +305,24 @@ namespace SeaBattle.Lib.Managers
         /// <param name="numberOfPlayers">Amount of players</param>
         /// <returns>Collection of fields where collection of <see cref="StartFieldCell"/>with coordinates possible to place boat</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="numberOfPlayers"/> out of range</exception>
-        protected ICollection<ICollection<StartFieldCell>> GenerateStartFields(ushort sizeX, ushort sizeY, byte numberOfPlayers)
+        protected ICollection<ICollection<StartFieldCell>> GenerateStartFields(ushort sizeX, ushort sizeY,
+            byte numberOfPlayers)
         {
             if (numberOfPlayers > _gameConfig.MaxNumberOfPlayers || numberOfPlayers <= 0)
             {
-                _logger.LogWarning($"Invalid value of the number of players in progress {nameof(GenerateStartFields)}", numberOfPlayers);
-                throw new ArgumentOutOfRangeException("Invalid value of the number of players");
+                Exception ex =
+                    new Exception($"Invalid value of the number of players in progress {nameof(GenerateStartFields)}");
+                ex.Data.Add("numberOfPlayers", numberOfPlayers);
+
+                throw ex;
             }
 
             //List for result of method
             ICollection<ICollection<StartFieldCell>> fields = new List<ICollection<StartFieldCell>>(numberOfPlayers);
 
             //Amount of rows and columns for the position of teams.
-            ushort colTeam = (ushort)Math.Ceiling(Math.Sqrt((double)numberOfPlayers));
-            ushort rowTeam = (ushort)Math.Ceiling((double)numberOfPlayers / colTeam);
+            ushort colTeam = (ushort) Math.Ceiling(Math.Sqrt((double) numberOfPlayers));
+            ushort rowTeam = (ushort) Math.Ceiling((double) numberOfPlayers / colTeam);
 
             //Coordinates of begin and end every row and column of quadrant for every team. 
             (ushort begin, ushort end)[] borderQuadrantsX = new (ushort, ushort)[rowTeam];
@@ -370,14 +331,14 @@ namespace SeaBattle.Lib.Managers
             //Calculation begins and ends of quadrants.
             for (ushort i = 0; i < rowTeam; i++)
             {
-                borderQuadrantsX[i].begin = (ushort)(i == 0 ? 0 : i * sizeX / rowTeam + 1);
-                borderQuadrantsX[i].end = (ushort)(i + 1 == rowTeam ? sizeX - 1 : (i + 1) * sizeX / rowTeam - 1);
+                borderQuadrantsX[i].begin = (ushort) (i == 0 ? 0 : i * sizeX / rowTeam + 1);
+                borderQuadrantsX[i].end = (ushort) (i + 1 == rowTeam ? sizeX - 1 : (i + 1) * sizeX / rowTeam - 1);
             }
 
             for (int i = 0; i < colTeam; i++)
             {
-                borderQuadrantsY[i].begin = (ushort)(i == 0 ? 0 : i * sizeY / colTeam + 1);
-                borderQuadrantsY[i].end = (ushort)(i + 1 == colTeam ? sizeY - 1 : (i + 1) * sizeY / colTeam - 1);
+                borderQuadrantsY[i].begin = (ushort) (i == 0 ? 0 : i * sizeY / colTeam + 1);
+                borderQuadrantsY[i].end = (ushort) (i + 1 == colTeam ? sizeY - 1 : (i + 1) * sizeY / colTeam - 1);
             }
 
             //Coordinates of quadrant for the team.
@@ -397,7 +358,7 @@ namespace SeaBattle.Lib.Managers
                 {
                     for (ushort j = borderQuadrantsY[quadrantY].begin; j <= borderQuadrantsY[quadrantY].end; j++)
                     {
-                        startField.Add(new StartFieldCell() { X = (ushort)(i + 1), Y = (ushort)(j + 1) });
+                        startField.Add(new StartFieldCell() {X = (ushort) (i + 1), Y = (ushort) (j + 1)});
                     }
                 }
 

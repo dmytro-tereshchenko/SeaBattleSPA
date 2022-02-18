@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using SeaBattle.GameResources.Utilites;
 using SeaBattle.Lib.Data.Entities;
 using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;
@@ -106,6 +107,8 @@ namespace SeaBattle.GameResources
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseErrorLogger();
 
             app.UseHttpsRedirection();
 

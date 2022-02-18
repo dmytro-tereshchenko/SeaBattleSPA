@@ -15,8 +15,6 @@ namespace SeaBattle.Lib.Managers
     {
         private readonly IShipStorageUtility _storageUtility;
 
-        private readonly ILogger<ShipManager> _logger;
-
         private readonly GenericRepository<StartField> _startFieldRepository;
 
         private readonly GenericRepository<GameShip> _gameShipRepository;
@@ -29,13 +27,15 @@ namespace SeaBattle.Lib.Managers
 
         private readonly GenericRepository<Ship> _shipRepository;
 
-        public ShipManager(IShipStorageUtility storageUtility, GenericRepository<StartField> startFieldRepository, GenericRepository<GameShip> gameShipRepository, GenericRepository<Weapon> weaponRepository, GenericRepository<Repair> repairRepository, ILogger<ShipManager> logger, GenericRepository<GamePlayer> gamePlayerRepository, GenericRepository<Ship> shipRepository)
+        public ShipManager(IShipStorageUtility storageUtility, GenericRepository<StartField> startFieldRepository,
+            GenericRepository<GameShip> gameShipRepository, GenericRepository<Weapon> weaponRepository,
+            GenericRepository<Repair> repairRepository, GenericRepository<GamePlayer> gamePlayerRepository,
+            GenericRepository<Ship> shipRepository)
         {
             _startFieldRepository = startFieldRepository;
             _gameShipRepository = gameShipRepository;
             _weaponRepository = weaponRepository;
             _repairRepository = repairRepository;
-            _logger = logger;
             _gamePlayerRepository = gamePlayerRepository;
             _shipRepository = shipRepository;
             _storageUtility = storageUtility;
@@ -50,10 +50,11 @@ namespace SeaBattle.Lib.Managers
 
             if (gameShip == null || startField == null)
             {
-                _logger.LogWarning($"Invalid Id arguments in progress {nameof(BuyShip)}", gameShipId,
-                    startFieldId);
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(BuyShip)}");
+                ex.Data.Add("gameShipId", gameShipId);
+                ex.Data.Add("startFieldId", startFieldId);
 
-                return StateCode.NullReference;
+                throw ex;
             }
 
             if (gameShip.Points > startField.Points)
@@ -64,17 +65,8 @@ namespace SeaBattle.Lib.Managers
             startField.GameShips.Add(gameShip);
             startField.Points -= gameShip.Points;
 
-            try
-            {
-                await _startFieldRepository.UpdateAsync(s => s.Id == startField.Id, startField.GameShips,
-                    _startFieldRepository.GetAll(), "GameShips");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, $"Error update data in database in progress {nameof(BuyShip)}", gameShip, startField);
-
-                return StateCode.InvalidOperation;
-            }
+            await _startFieldRepository.UpdateAsync(s => s.Id == startField.Id, startField.GameShips,
+                _startFieldRepository.GetAll(), "GameShips");
 
             return StateCode.Success;
         }
@@ -88,28 +80,20 @@ namespace SeaBattle.Lib.Managers
 
             if (gameShip == null || startField == null)
             {
-                _logger.LogWarning($"Invalid Id arguments in progress {nameof(SellShip)}", gameShipId,
-                    startFieldId);
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(SellShip)}");
+                ex.Data.Add("gameShipId", gameShipId);
+                ex.Data.Add("startFieldId", startFieldId);
 
-                return StateCode.NullReference;
+                throw ex;
             }
 
             startField.GameShips.Remove(gameShip);
             startField.Points += gameShip.Points;
 
-            try
-            {
-                await _gameShipRepository.DeleteAsync(gameShip);
+            await _gameShipRepository.DeleteAsync(gameShip);
 
-                await _startFieldRepository.UpdateAsync(s => s.Id == startField.Id, startField.GameShips,
-                    _startFieldRepository.GetAll(), "GameShips");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, $"Error update data in database in progress {nameof(SellShip)}", gameShip, startField);
-
-                return StateCode.InvalidOperation;
-            }
+            await _startFieldRepository.UpdateAsync(s => s.Id == startField.Id, startField.GameShips,
+                _startFieldRepository.GetAll(), "GameShips");
 
             return StateCode.Success;
         }
@@ -123,39 +107,30 @@ namespace SeaBattle.Lib.Managers
 
             if (gamePlayer == null || ship == null)
             {
-                _logger.LogWarning($"Invalid Id arguments in progress {nameof(GetNewShip)}", shipId,
-                    gamePlayerName);
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(GetNewShip)}");
+                ex.Data.Add("shipId", shipId);
+                ex.Data.Add("gamePlayerName", gamePlayerName);
 
-                return null;
+                throw ex;
             }
 
             GameShip gameShip = new GameShip(ship, gamePlayer,
                 _storageUtility.CalculatePointCost(ship.Size, ship.ShipType));
 
-            try
-            {
-                gameShip = await _gameShipRepository.CreateAsync(gameShip);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, $"Error create data in database in progress {nameof(GetNewShip)}", ship,
-                    gameShip);
+            gameShip = await _gameShipRepository.CreateAsync(gameShip);
 
-                return null;
-            }
-
-            switch ((int)ship.ShipType)
+            switch (ship.ShipType)
             {
-                case 1:
+                case ShipType.Military:
                     for (int i = 0; i < ship.Size; i++)
                     {
                         await AddWeapon(gameShip.Id, 1);
                     }
 
                     break;
-                case 3:
+                case ShipType.Mixed:
                     break;
-                case 2:
+                case ShipType.Auxiliary:
                     for (int i = 0; i < ship.Size; i++)
                     {
                         await AddRepair(gameShip.Id, 1);
@@ -163,12 +138,10 @@ namespace SeaBattle.Lib.Managers
 
                     break;
                 default:
-                    Exception ex = new Exception("Wrong shipTypeId (not implemented)");
+                    Exception ex = new Exception($"Error add equipment to ship in progress {nameof(GetNewShip)}");
                     ex.Data.Add("Data", ship);
 
-                    _logger.LogError(ex, $"Error add equipment to ship in progress {nameof(GetNewShip)}");
-
-                    break;
+                    throw ex;
             }
 
             return gameShip;
@@ -184,10 +157,11 @@ namespace SeaBattle.Lib.Managers
 
             if (weapon == null || gameShip == null)
             {
-                _logger.LogWarning($"Invalid Id arguments in progress {nameof(AddWeapon)}", gameShip,
-                    weaponId);
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(AddWeapon)}");
+                ex.Data.Add("gameShip", gameShip);
+                ex.Data.Add("weaponId", weaponId);
 
-                return StateCode.NullReference;
+                throw ex;
             }
 
             if (gameShip.Weapons.Count + gameShip.Repairs.Count == gameShip.Size)
@@ -195,24 +169,15 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.LimitEquipment;
             }
 
-            if ((int)gameShip.Ship.ShipType == 3)
+            if ((int) gameShip.Ship.ShipType == 3)
             {
                 return StateCode.InvalidEquipment;
             }
 
             gameShip.Weapons.Add(weapon);
 
-            try
-            {
-                await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.Weapons,
-                    _weaponRepository.GetAll(), "Weapons");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, $"Error update data in database in progress {nameof(AddWeapon)}", gameShip, weapon);
-
-                return StateCode.InvalidOperation;
-            }
+            await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.Weapons,
+                _weaponRepository.GetAll(), "Weapons");
 
             return StateCode.Success;
         }
@@ -227,10 +192,11 @@ namespace SeaBattle.Lib.Managers
 
             if (repair == null || gameShip == null)
             {
-                _logger.LogWarning($"Invalid Id arguments in progress {nameof(AddRepair)}", gameShipId,
-                    repairId);
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(AddRepair)}");
+                ex.Data.Add("gameShipId", gameShipId);
+                ex.Data.Add("repairId", repairId);
 
-                return StateCode.NullReference;
+                throw ex;
             }
 
             if (gameShip.Weapons.Count + gameShip.Repairs.Count == gameShip.Size)
@@ -238,24 +204,15 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.LimitEquipment;
             }
 
-            if ((int)gameShip.Ship.ShipType == 1)
+            if ((int) gameShip.Ship.ShipType == 1)
             {
                 return StateCode.InvalidEquipment;
             }
 
             gameShip.Repairs.Add(repair);
 
-            try
-            {
-                await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.Repairs,
-                    _repairRepository.GetAll(), "Repairs");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, $"Error update data in database in progress {nameof(AddRepair)}", gameShip, repair);
-
-                return StateCode.InvalidOperation;
-            }
+            await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.Repairs,
+                _repairRepository.GetAll(), "Repairs");
 
             return StateCode.Success;
         }
@@ -268,9 +225,10 @@ namespace SeaBattle.Lib.Managers
 
             if (gameShip == null)
             {
-                _logger.LogWarning($"Invalid Id arguments in progress {nameof(RemoveWeapon)}", gameShipId);
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(RemoveWeapon)}");
+                ex.Data.Add("gameShipId", gameShipId);
 
-                return StateCode.NullReference;
+                throw ex;
             }
 
             EquippedWeapon eqWeapon = gameShip.EquippedWeapons.FirstOrDefault(w => w.WeaponId == weaponId);
@@ -280,17 +238,8 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidEquipment;
             }
 
-            try
-            {
-                await _gameShipRepository.UpdateAsync(s => s.Id == gameShipId, gameShip.EquippedWeapons,
-                    gameShip.EquippedWeapons, "EquippedWeapons");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, $"Error remove data from database in progress {nameof(RemoveWeapon)}", gameShip, weaponId);
-
-                return StateCode.InvalidOperation;
-            }
+            await _gameShipRepository.UpdateAsync(s => s.Id == gameShipId, gameShip.EquippedWeapons,
+                gameShip.EquippedWeapons, "EquippedWeapons");
 
             return StateCode.Success;
         }
@@ -303,9 +252,10 @@ namespace SeaBattle.Lib.Managers
 
             if (gameShip == null)
             {
-                _logger.LogWarning($"Invalid Id arguments in progress {nameof(RemoveRepair)}", gameShipId);
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(RemoveRepair)}");
+                ex.Data.Add("gameShipId", gameShipId);
 
-                return StateCode.NullReference;
+                throw ex;
             }
 
             EquippedRepair eqRepair = gameShip.EquippedRepairs.FirstOrDefault(w => w.RepairId == repairId);
@@ -315,17 +265,9 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidEquipment;
             }
 
-            try
-            {
-                await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.EquippedRepairs,
-                    gameShip.EquippedRepairs, "EquippedRepairs");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, $"Error remove data from database in progress {nameof(RemoveRepair)}", gameShip, repairId);
 
-                return StateCode.InvalidOperation;
-            }
+            await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.EquippedRepairs,
+                gameShip.EquippedRepairs, "EquippedRepairs");
 
             return StateCode.Success;
         }
