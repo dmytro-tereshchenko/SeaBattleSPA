@@ -8,12 +8,6 @@ namespace SeaBattle.Lib.Entities
     public interface IShip: ICommonShip, IEntity
     {
         /// <summary>
-        /// Foreign key Id <see cref="ShipType"/>
-        /// </summary>
-        /// <value><see cref="int"/></value>
-        short ShipTypeId { get; set; }
-
-        /// <summary>
         /// Ship's cost
         /// </summary>
         /// <value><see cref="uint"/></value>

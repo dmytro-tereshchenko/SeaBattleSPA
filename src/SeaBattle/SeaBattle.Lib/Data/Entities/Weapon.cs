@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -20,10 +19,8 @@ namespace SeaBattle.Lib.Entities
         [Required]
         public ushort AttackRange { get; set; }
 
-        [JsonIgnore]
         public ICollection<GameShip> GameShips { get; set; }
 
-        [JsonIgnore]
         public ICollection<EquippedWeapon> EquippedWeapons { get; set; }
 
         /// <summary>

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -14,10 +13,6 @@ namespace SeaBattle.Lib.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [JsonIgnore]
-        [Required]
-        public short ShipTypeId { get; set; }
-
         [Required]
         public byte Size { get; set; }
 
@@ -27,13 +22,12 @@ namespace SeaBattle.Lib.Entities
         [Required]
         public byte Speed { get; set; }
 
-        [ForeignKey(nameof(ShipTypeId))]
+        [Column(TypeName = "smallint")]
         public ShipType ShipType { get; set; }
 
         [Required]
         public uint Cost { get; set; }
 
-        [JsonIgnore]
         public ICollection<GameShip> GameShips { get; set; }
 
         /// <summary>
@@ -65,7 +59,6 @@ namespace SeaBattle.Lib.Entities
         public Ship(ShipType type, byte size, ushort maxHp, byte speed) : this()
         {
             ShipType = type;
-            ShipTypeId = type.Id;
             Size = size;
             MaxHp = maxHp;
             Speed = speed;

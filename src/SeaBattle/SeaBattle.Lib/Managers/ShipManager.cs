@@ -129,7 +129,8 @@ namespace SeaBattle.Lib.Managers
                 return null;
             }
 
-            GameShip gameShip = new GameShip(ship, gamePlayer, _storageUtility.CalculatePointCost(ship.Size,ship.ShipTypeId));
+            GameShip gameShip = new GameShip(ship, gamePlayer,
+                _storageUtility.CalculatePointCost(ship.Size, ship.ShipType));
 
             try
             {
@@ -143,7 +144,7 @@ namespace SeaBattle.Lib.Managers
                 return null;
             }
 
-            switch (ship.ShipTypeId)
+            switch ((int)ship.ShipType)
             {
                 case 1:
                     for (int i = 0; i < ship.Size; i++)
@@ -194,7 +195,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.LimitEquipment;
             }
 
-            if (gameShip.Ship.ShipTypeId == 3)
+            if ((int)gameShip.Ship.ShipType == 3)
             {
                 return StateCode.InvalidEquipment;
             }
@@ -237,7 +238,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.LimitEquipment;
             }
 
-            if (gameShip.Ship.ShipTypeId == 1)
+            if ((int)gameShip.Ship.ShipType == 1)
             {
                 return StateCode.InvalidEquipment;
             }

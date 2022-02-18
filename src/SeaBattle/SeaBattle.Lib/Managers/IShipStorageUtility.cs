@@ -11,8 +11,8 @@ namespace SeaBattle.Lib.Managers
         /// Generate ship's cost.
         /// </summary>
         /// <param name="size">Ship's size</param>
-        /// <param name="ShipTypeId">Id of <see cref="ShipType"/></param>
+        /// <param name="ShipType"><see cref="ShipType"/></param>
         /// <returns><see cref="int"/> Ship's cost</returns>
-        int CalculatePointCost(int size, int ShipTypeId = 1);
+        int CalculatePointCost(int size, ShipType ShipType = ShipType.Military);
     }
 }

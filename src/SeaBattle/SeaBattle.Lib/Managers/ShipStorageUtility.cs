@@ -1,4 +1,6 @@
-﻿namespace SeaBattle.Lib.Managers
+﻿using SeaBattle.Lib.Entities;
+
+namespace SeaBattle.Lib.Managers
 {
     public class ShipStorageUtility : IShipStorageUtility
     {
@@ -9,6 +11,6 @@
             this._price = price;
         }
 
-        public int CalculatePointCost(int size, int ShipTypeId = 1) => size * _price;
+        public int CalculatePointCost(int size, ShipType ShipType = ShipType.Military) => size * _price;
     }
 }

@@ -89,9 +89,6 @@ namespace SeaBattle.GameResources
             services.AddScoped<GenericRepository<GameFieldCell>>();
             services.AddScoped<GenericRepository<GamePlayer>>();
             services.AddScoped<GenericRepository<GameShip>>();
-            services.AddScoped<GenericRepository<GameState>>();
-            services.AddScoped<GenericRepository<PlayerState>>();
-            services.AddScoped<GenericRepository<ShipType>>();
             services.AddScoped<GenericRepository<StartField>>();
             services.AddScoped<GenericRepository<StartFieldCell>>();
             services.AddScoped<GenericRepository<SearchGame>>();

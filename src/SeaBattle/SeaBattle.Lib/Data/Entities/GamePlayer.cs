@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -12,20 +11,14 @@ namespace SeaBattle.Lib.Entities
     [Index("Name")]
     public class GamePlayer : Player, IGamePlayer
     {
-        [JsonIgnore]
-        public short PlayerStateId { get; set; }
-
-        [ForeignKey(nameof(PlayerStateId))]
         [Required]
+        [Column(TypeName= "smallint")]
         public PlayerState PlayerState { get; set; }
 
-        [JsonIgnore]
         public ICollection<GameShip> GameShips { get; set; }
 
-        [JsonIgnore]
         public ICollection<Game> Games { get; set; }
 
-        [JsonIgnore]
         public ICollection<StartField> StartFields { get; set; }
 
         /// <summary>

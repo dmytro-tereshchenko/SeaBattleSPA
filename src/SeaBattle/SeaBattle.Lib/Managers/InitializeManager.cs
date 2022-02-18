@@ -127,7 +127,7 @@ namespace SeaBattle.Lib.Managers
 
             if (game.GamePlayers.Count == 0)
             {
-                game.GameStateId = 2; //SearchPlayers;
+                game.GameState = (GameState)2; //SearchPlayers;
             }
 
             var queryPlayer = await _gamePlayerRepository.GetAsync(p => p.Name == playerName);
@@ -151,7 +151,7 @@ namespace SeaBattle.Lib.Managers
 
             if (game.GamePlayers.Count == game.MaxNumberOfPlayers)
             {
-                game.GameStateId = 3; //Init
+                game.GameState = (GameState)3; //Init
             }
 
             try
@@ -235,7 +235,7 @@ namespace SeaBattle.Lib.Managers
                 startField.GamePlayer = gamePlayer;
 
                 //change status player
-                startField.GamePlayer.PlayerStateId = 2; //InitializeField
+                startField.GamePlayer.PlayerState = (PlayerState)2; //InitializeField
 
                 try
                 {

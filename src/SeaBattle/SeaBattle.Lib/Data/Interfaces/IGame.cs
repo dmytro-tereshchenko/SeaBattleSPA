@@ -26,13 +26,6 @@ namespace SeaBattle.Lib.Entities
         int? CurrentGamePlayerMoveId { get; set; }
 
         /// <summary>
-        /// Foreign key Id <see cref="GameState"/>
-        /// Current state of game
-        /// </summary>
-        /// <value><see cref="int"/></value>
-        short GameStateId { get; set; }
-
-        /// <summary>
         /// Winner of the game
         /// </summary>
         /// <value><see cref="string"/></value>

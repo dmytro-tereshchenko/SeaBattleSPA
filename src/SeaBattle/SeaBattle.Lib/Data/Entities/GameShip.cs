@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using Newtonsoft.Json;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -23,35 +22,30 @@ namespace SeaBattle.Lib.Entities
         public int Points { get; set; }
 
         [NotMapped]
-        [JsonIgnore]
         public ushort AttackRange
         {
             get => Weapons?.FirstOrDefault()?.AttackRange ?? 0;
         }
 
         [NotMapped]
-        [JsonIgnore]
         public ushort RepairRange
         {
             get => Repairs?.FirstOrDefault()?.RepairRange ?? 0;
         }
 
         [NotMapped]
-        [JsonIgnore]
         public ushort Damage
         {
             get => Convert.ToUInt16(Weapons?.Sum(w => w.Damage) ?? 0);
         }
 
         [NotMapped]
-        [JsonIgnore]
         public ushort RepairPower
         {
             get => Convert.ToUInt16(Repairs?.Sum(r => r.RepairPower) ?? 0);
         }
 
         [NotMapped]
-        [JsonIgnore]
         public ShipType ShipType
         {
             get => Ship.ShipType;
@@ -59,7 +53,6 @@ namespace SeaBattle.Lib.Entities
         }
 
         [NotMapped]
-        [JsonIgnore]
         public byte Size
         {
             get => Ship.Size;
@@ -67,7 +60,6 @@ namespace SeaBattle.Lib.Entities
         }
 
         [NotMapped]
-        [JsonIgnore]
         public ushort MaxHp
         {
             get => Ship.MaxHp;
@@ -75,43 +67,34 @@ namespace SeaBattle.Lib.Entities
         }
 
         [NotMapped]
-        [JsonIgnore]
         public byte Speed
         {
             get => Ship.Speed;
             set => Ship.Speed = value;
         }
 
-        [JsonIgnore]
         public int ShipId { get; set; }
 
-        [JsonIgnore]
         public int GamePlayerId { get; set; }
 
-        [JsonIgnore]
         public int? StartFieldId { get; set; }
 
         public Ship Ship { get; set; }
 
         public GamePlayer GamePlayer { get; set; }
 
-        [JsonIgnore]
         public StartField StartField { get; set; }
 
         public ICollection<Weapon> Weapons { get; set; }
 
         public ICollection<Repair> Repairs { get; set; }
 
-        [JsonIgnore]
         public ICollection<GameFieldCell> GameFieldCells { get; set; }
 
-        [JsonIgnore]
         public ICollection<StartFieldCell> StartFieldCells { get; set; }
 
-        [JsonIgnore]
         public ICollection<EquippedWeapon> EquippedWeapons { get; set; }
 
-        [JsonIgnore]
         public ICollection<EquippedRepair> EquippedRepairs { get; set; }
 
         /// <summary>

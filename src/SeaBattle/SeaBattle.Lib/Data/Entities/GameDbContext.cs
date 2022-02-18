@@ -21,12 +21,6 @@ namespace SeaBattle.Lib.Data.Entities
 
         public DbSet<GameShip> GameShips { get; set; }
 
-        public DbSet<GameState> GameStates { get; set; }
-
-        public DbSet<PlayerState> PlayerStates { get; set; }
-
-        public DbSet<ShipType> ShipTypes { get; set; }
-
         public DbSet<StartField> StartFields { get; set; }
 
         public DbSet<StartFieldCell> StartFieldCells { get; set; }
@@ -142,12 +136,6 @@ namespace SeaBattle.Lib.Data.Entities
                 .HasForeignKey<GameField>(f => f.GameId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<GameState>()
-                .HasMany(s => s.Games)
-                .WithOne(g => g.GameState)
-                .HasForeignKey(g => g.GameStateId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<Game>()
                 .HasMany(g => g.SearchGames)
                 .WithOne(s => s.Game)
@@ -160,41 +148,13 @@ namespace SeaBattle.Lib.Data.Entities
                 .HasForeignKey(f => f.GamePlayerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //add default values
-            modelBuilder.Entity<GamePlayer>().Property(p => p.PlayerStateId).HasDefaultValue(1u);
+            modelBuilder.Entity<GamePlayer>().Property(p => p.PlayerState).HasDefaultValue(PlayerState.Created);
 
-            modelBuilder.Entity<Game>().Property(p => p.GameStateId).HasDefaultValue(1u);
+            modelBuilder.Entity<Game>().Property(p => p.GameState).HasDefaultValue(GameState.Created);
 
             modelBuilder.Entity<GameFieldCell>().Property(p => p.Stern).HasDefaultValue(false);
 
             //initialize data
-            modelBuilder.Entity<ShipType>().HasData(
-                new ShipType[]
-                {
-                    new ShipType {Id = 1, Name = "Military"},
-                    new ShipType {Id = 2, Name = "Auxiliary"},
-                    new ShipType {Id = 3, Name = "Mixed"}
-                });
-
-            modelBuilder.Entity<PlayerState>().HasData(
-                new PlayerState[]
-                {
-                    new PlayerState {Id = 1, Name = "Created"}, //created (initial)
-                    new PlayerState {Id = 2, Name = "InitializeField"}, //generate start team of ship, initialize field
-                    new PlayerState {Id = 3, Name = "Ready"}, //wait for another player
-                    new PlayerState {Id = 4, Name = "Process"} //in process of game
-                });
-
-            modelBuilder.Entity<GameState>().HasData(
-                new GameState[]
-                {
-                    new GameState {Id = 1, Name = "Created"}, //Game was created
-                    new GameState {Id = 2, Name = "SearchPlayers"}, //Waiting for searching and connecting players, after connect amount of maxPlayers next state Init
-                    new GameState {Id = 3, Name = "Init"}, //Initializing game
-                    new GameState {Id = 4, Name = "Process"}, //Game in process
-                    new GameState {Id = 5, Name = "Finished"} //Game was finished
-                });
-
             modelBuilder.Entity<Weapon>().HasData(new Weapon() { Id = 1, AttackRange = 10, Damage = 50 });
 
             modelBuilder.Entity<Repair>().HasData(new Repair() { Id = 1, RepairRange = 10, RepairPower = 40 });
@@ -202,10 +162,10 @@ namespace SeaBattle.Lib.Data.Entities
             modelBuilder.Entity<Ship>().HasData(
                 new Ship[]
                 {
-                    new Ship {Id = 1, Size = 1, MaxHp = 100, Speed = 4, ShipTypeId = 3, Cost = 1000},
-                    new Ship {Id = 2, Size = 2, MaxHp = 200, Speed = 3, ShipTypeId = 2, Cost = 2000},
-                    new Ship {Id = 3, Size = 3, MaxHp = 300, Speed = 2, ShipTypeId = 2, Cost = 3000},
-                    new Ship {Id = 4, Size = 4, MaxHp = 400, Speed = 1, ShipTypeId = 1, Cost = 4000}
+                    new Ship {Id = 1, Size = 1, MaxHp = 100, Speed = 4, ShipType = ShipType.Auxiliary, Cost = 1000},
+                    new Ship {Id = 2, Size = 2, MaxHp = 200, Speed = 3, ShipType = ShipType.Mixed, Cost = 2000},
+                    new Ship {Id = 3, Size = 3, MaxHp = 300, Speed = 2, ShipType = ShipType.Mixed, Cost = 3000},
+                    new Ship {Id = 4, Size = 4, MaxHp = 400, Speed = 1, ShipType = ShipType.Military, Cost = 4000}
                 });
         }
     }
