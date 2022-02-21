@@ -73,6 +73,7 @@ namespace SeaBattle.AuthorizationService
                     SlidingRefreshTokenLifetime = 36000,
                     AlwaysSendClientClaims = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
+                    //AccessTokenType = AccessTokenType.Reference,
 
                     RedirectUris =           { "https://localhost:44391/assets/signin-callback.html" },
                     PostLogoutRedirectUris = { "https://localhost:44391/index.html" },

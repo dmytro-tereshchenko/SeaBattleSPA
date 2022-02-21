@@ -31,6 +31,7 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css",
               "src/styles.scss"
@@ -72,6 +73,12 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "sslKey": "./server.key",
+            "sslCert": "./server.crt",
+            "port": 44391,
+            "host": "localhost"
+          },
           "configurations": {
             "production": {
               "browserTarget": "SeaBattle.UI_SPA:build:production"
@@ -101,6 +108,7 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss",
               "src/styles.css"
             ],

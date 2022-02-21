@@ -1,8 +1,10 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div>
-  <button (click)='onLogin()'>Login</button>
-  <button (click)='onCallAPI()'>Call API</button>
-  <button (click)='onRenewToken()'>Renew Token</button>
-  <button (click)='onLogout()'>Logout</button>
+  <div *ngIf="currentUser">
+    <div class="d-inline-block m-2">{{currentUser.profile.name}}</div>
+    <button (click)='onLogout()' class="btn btn-primary p-1 m-1">Logout</button>
+  </div>
+  <div class="d-inline-block text-dark" *ngIf="!currentUser">
+    <button (click)='onLogin()' class="btn btn-primary p-1 m-1">Login</button>
+  </div>
 </div>
-<pre>{{currentUserJson}}</pre>

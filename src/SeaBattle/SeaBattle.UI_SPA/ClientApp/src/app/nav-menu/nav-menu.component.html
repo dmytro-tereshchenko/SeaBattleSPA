@@ -3,7 +3,7 @@
     class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light text-white bg-primary border-bottom box-shadow mb-3"
   >
     <div class="container">
-      <a class="navbar-brand" [routerLink]="['/']">Sea Battle</a>
+      <a class="navbar-brand" [routerLink]="['']">Sea Battle</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -16,7 +16,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div
-        class="navbar-collapse collapse d-sm-inline-flex justify-content-end"
+        class="navbar-collapse collapse d-sm-inline-flex justify-content-begin"
         [ngClass]="{ show: isExpanded }"
       >
         <ul class="navbar-nav flex-grow">
@@ -25,14 +25,16 @@
             [routerLinkActive]="['link-active']"
             [routerLinkActiveOptions]="{ exact: true }"
           >
-            <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
+            <a class="nav-link text-dark" [routerLink]="['']">Start menu</a>
           </li>
           <li class="nav-item" [routerLinkActive]="['link-active']">
             <a class="nav-link text-dark" [routerLink]="['/user-status']"
               >User status</a
             >
           </li>
+          <!-- <app-user-status></app-user-status> -->
         </ul>
+        <app-user-status style="margin-left:auto !important;"></app-user-status>
       </div>
     </div>
   </nav>

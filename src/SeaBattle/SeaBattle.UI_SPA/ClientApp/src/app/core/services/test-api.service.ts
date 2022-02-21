@@ -1,10 +1,14 @@
-import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { Observable, from } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { environment } from '../../../../src/environments/environment';
 
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
+//import { Weather } from 'src/Weather';
+
 import { AuthService, User } from './auth.service';
+//import { resourceLimits } from 'worker_threads';
 
 @Injectable({
   providedIn: 'root'
@@ -28,10 +32,33 @@ export class TestApiService {
     });
   }
 
+  // public CallResourceApi(user: User):Observable<Weather[]>{
+  //   return this._CallResourceApi(user.access_token)
+  // }
+
+  public GetData(path: string):Observable<Observable<any>>{
+    return this.authService.getUserObservable().pipe(
+      map(user => {return this._CallResourceApi(user?user.access_token:"", path);})
+      );
+  }
+
+  // public CallResourceApi3():Observable<Weather[]>{
+  //   return this.authService.getUser2().subscribe(user => {return this._CallResourceApi(user?user.access_token:"");});
+  // }
+
+  private _CallResourceApi(token: string, path: string):Observable<any>{
+    const headers = new HttpHeaders({
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    });
+
+    return this.httpClient.get<any>(`${environment.apiRoot}${path}`, { headers });
+  }
+
   _callApi(token: string):any {
     const headers = new HttpHeaders({
       Accept: 'application/json',
-      Authorization: 'Bearer ' + token
+      Authorization: 'Bearer ' + token,
     });
 
     return this.httpClient.get(`${environment.apiRoot}weatherforecast`, { headers })

@@ -30,21 +30,6 @@ export class UserStatusComponent implements OnInit {
     });
   }
 
-  public onCallAPI() {
-    this.apiService.callApi().then(result => {
-      console.log('API Result: ' + JSON.stringify(result));
-    }, err => console.log(err));
-  }
-
-  public onRenewToken() {
-    this.authService.renewToken()
-      .then(user => {
-        this.currentUser = user;
-        console.log('Silent Renew Success');
-      })
-      .catch(err => console.log(err));
-  }
-
   public onLogout() {
     this.authService.logout().catch(err => console.log(err));
   }
