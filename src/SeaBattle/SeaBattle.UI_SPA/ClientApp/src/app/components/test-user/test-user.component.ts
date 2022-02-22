@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService, User } from '../core/services/auth.service';
-import { TestApiService } from '../core/services/test-api.service';
+import { AuthService, User } from '../../core/services/auth.service';
+import { DataApiService } from '../../core/services/data-api.service';
 
-import { Weather } from '../../weather';
+import { Weather } from '../../data/weather';
 
 @Component({
   selector: 'app-test-user',
@@ -11,7 +11,7 @@ import { Weather } from '../../weather';
 })
 export class TestUserComponent implements OnInit {
 
-  constructor(public authService: AuthService, public apiService: TestApiService) {
+  constructor(public authService: AuthService, public apiService: DataApiService) {
     this.currentUser=null;}
 
     ngOnInit(): void {
@@ -31,21 +31,9 @@ export class TestUserComponent implements OnInit {
       });
     }
 
-    public onCallAPI() {
-      this.apiService.callApi().then(result => {
-        console.log(this.currentUser);
-        console.log('API Result: ' + JSON.stringify(result));
-      }, err => console.log(err));
-    }
-
-    // public onCallAPI2() {
-    //   let Weather:Weather[];
-    //   this.apiService.CallResourceApi(this.currentUser as User).subscribe(result => {Weather=result;console.log(Weather);});
-    // }
-
     public onCallAPI3() {
       let Weather:Weather[];
-      this.apiService.GetData("weatherforecast").subscribe(user => user.subscribe(result=> {Weather=result;console.log(Weather);}));
+      this.apiService.GetData("weatherforecast/get").subscribe(result=> {Weather=result;console.log(Weather);});
     }
 
     public onRenewToken() {
@@ -61,4 +49,17 @@ export class TestUserComponent implements OnInit {
       this.authService.logout().catch(err => console.log(err));
     }
 
+    //Previous version of call api. Need for testing end reusing in future feature.
+
+    // public onCallAPI() {
+    //   this.apiService.callApi().then(result => {
+    //     console.log(this.currentUser);
+    //     console.log('API Result: ' + JSON.stringify(result));
+    //   }, err => console.log(err));
+    // }
+
+    // public onCallAPI2() {
+    //   let Weather:Weather[];
+    //   this.apiService.CallResourceApi(this.currentUser as User).subscribe(result => {Weather=result;console.log(Weather);});
+    // }
 }

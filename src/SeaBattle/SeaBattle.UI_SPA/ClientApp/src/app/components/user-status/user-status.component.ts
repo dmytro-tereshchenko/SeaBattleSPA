@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService, User } from '../core/services/auth.service';
-import { TestApiService } from '../core/services/test-api.service';
+import { AuthService, User } from '../../core/services/auth.service';
+import { DataApiService } from '../../core/services/data-api.service';
 
 @Component({
   selector: 'app-user-status',
@@ -9,7 +9,7 @@ import { TestApiService } from '../core/services/test-api.service';
 })
 export class UserStatusComponent implements OnInit {
 
-  constructor(public authService: AuthService, public apiService: TestApiService) {
+  constructor(public authService: AuthService, public apiService: DataApiService) {
     this.currentUser=null;
   }
 

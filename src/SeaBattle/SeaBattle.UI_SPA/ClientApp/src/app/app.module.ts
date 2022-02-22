@@ -3,13 +3,16 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatButtonModule } from '@angular/material/button';
 
 import { AppComponent } from './app.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { UserStatusComponent } from './user-status/user-status.component';
+import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
+import { UserStatusComponent } from './components/user-status/user-status.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TestUserComponent } from './test-user/test-user.component';
-import { StartMenuComponent } from './start-menu/start-menu.component';
+import { TestUserComponent } from './components/test-user/test-user.component';
+import { StartMenuComponent } from './components/start-menu/start-menu.component';
+import { CreateGameComponent } from './components/create-game/create-game.component';
 
 @NgModule({
   declarations: [
@@ -17,17 +20,21 @@ import { StartMenuComponent } from './start-menu/start-menu.component';
     NavMenuComponent,
     UserStatusComponent,
     TestUserComponent,
-    StartMenuComponent
+    StartMenuComponent,
+    CreateGameComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot([
-      { path: '', component: StartMenuComponent, pathMatch: 'full' },
+      { path: '', component: StartMenuComponent },
       { path: 'user-status', component: TestUserComponent },
+      { path: 'create-game', component: CreateGameComponent },
     ]),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatSliderModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
