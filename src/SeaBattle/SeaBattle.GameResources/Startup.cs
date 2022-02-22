@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -96,6 +97,8 @@ namespace SeaBattle.GameResources
             services.AddScoped<IShipManager, ShipManager>();
             services.AddScoped<IInitializeManager, InitializeManager>();
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             services.AddControllers();
         }
 
@@ -121,6 +124,9 @@ namespace SeaBattle.GameResources
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers().RequireAuthorization("ApiScope");
+
+                endpoints.MapControllerRoute(name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
