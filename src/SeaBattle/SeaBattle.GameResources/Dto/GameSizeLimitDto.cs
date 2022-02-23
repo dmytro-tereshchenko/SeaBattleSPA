@@ -1,6 +1,6 @@
 ﻿namespace SeaBattle.GameResources.Dto
 {
-    public class GameSizeLimit
+    public class GameSizeLimitDto
     {
         public byte MaxPlayerSize { get; set; }
 
