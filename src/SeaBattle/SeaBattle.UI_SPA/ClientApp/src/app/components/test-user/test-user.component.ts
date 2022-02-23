@@ -33,7 +33,7 @@ export class TestUserComponent implements OnInit {
 
     public onCallAPI3() {
       let Weather:Weather[];
-      this.apiService.GetData("weatherforecast/get").subscribe(result=> {Weather=result;console.log(Weather);});
+      this.apiService.GetData<Weather[]>("weatherforecast/get").subscribe(result=> {Weather=result;console.log(Weather);});
     }
 
     public onRenewToken() {

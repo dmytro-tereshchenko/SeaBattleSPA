@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, catchError } from 'rxjs';
 import { DataApiService } from '../core/services/data-api.service';
+import { ErrorLogService } from '../services/error-log.service';
 import { GameSizeLimit } from '../data/game-size-limit';
 
 @Injectable({
@@ -8,11 +9,13 @@ import { GameSizeLimit } from '../data/game-size-limit';
 })
 export class InitializeGameService {
 
-  constructor(private dataApi: DataApiService) { }
+  constructor(private dataApi: DataApiService, private errorLog: ErrorLogService) { }
 
   gameSizeUrl: string = 'game/GetLimits';
 
   public GetGameSize(): Observable<GameSizeLimit> {
-    return this.dataApi.GetData(this.gameSizeUrl) as Observable<GameSizeLimit>;
+    return this.dataApi.GetData<GameSizeLimit>(this.gameSizeUrl)
+    .pipe(
+      catchError(this.errorLog.handleError<GameSizeLimit>('GetGameSize')));
   }
 }

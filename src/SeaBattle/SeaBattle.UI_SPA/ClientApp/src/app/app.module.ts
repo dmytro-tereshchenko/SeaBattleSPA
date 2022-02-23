@@ -13,6 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TestUserComponent } from './components/test-user/test-user.component';
 import { StartMenuComponent } from './components/start-menu/start-menu.component';
 import { CreateGameComponent } from './components/create-game/create-game.component';
+import { JoinGameComponent } from './components/join-game/join-game.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { CreateGameComponent } from './components/create-game/create-game.compon
     UserStatusComponent,
     TestUserComponent,
     StartMenuComponent,
-    CreateGameComponent
+    CreateGameComponent,
+    JoinGameComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -31,6 +33,7 @@ import { CreateGameComponent } from './components/create-game/create-game.compon
       { path: '', component: StartMenuComponent },
       { path: 'user-status', component: TestUserComponent },
       { path: 'create-game', component: CreateGameComponent },
+      { path: 'join-game', component: JoinGameComponent },
     ]),
     BrowserAnimationsModule,
     MatSliderModule,

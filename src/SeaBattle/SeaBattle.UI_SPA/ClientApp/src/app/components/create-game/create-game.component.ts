@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { GameSizeLimit } from '../../data/game-size-limit';
 import { InitializeGameService } from '../../services/initialize-game.service';
+import { DataGameService } from '../../services/data-game.service';
+import { DataGameFieldService } from '../../services/data-game-field.service';
+import { Game } from '../../data/game';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create-game',
@@ -10,7 +14,10 @@ import { InitializeGameService } from '../../services/initialize-game.service';
 })
 export class CreateGameComponent implements OnInit {
 
-  constructor(private location: Location, private apiService: InitializeGameService) {
+  constructor(private location: Location,
+    private apiService: InitializeGameService,
+    private gameService: DataGameService,
+    private gameFieldService: DataGameFieldService) {
     this.players = 2;
     this.gameSize = {
       maxPlayerSize: 4,
@@ -23,9 +30,9 @@ export class CreateGameComponent implements OnInit {
     this.sizeY = this.gameSize.fieldMinSizeY;
   }
 
-  players: Number;
-  sizeX: Number;
-  sizeY: Number;
+  players: number;
+  sizeX: number;
+  sizeY: number;
   gameSize: GameSizeLimit;
 
   ngOnInit(): void {
@@ -41,7 +48,7 @@ export class CreateGameComponent implements OnInit {
   }
 
   createGame(): void {
-    console.log(this.players);
+    this.gameService.createGame(this.players).pipe(mergeMap(game => this.gameFieldService.createGameField(this.sizeX, this.sizeY))).subscribe(gamefield => console.log(gamefield));
   }
 
 }

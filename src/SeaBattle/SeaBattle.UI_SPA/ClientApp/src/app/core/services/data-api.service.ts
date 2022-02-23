@@ -15,19 +15,34 @@ export class DataApiService {
   constructor(private httpClient: HttpClient, private authService: AuthService) {
   }
 
-  public GetData(path: string): Observable<any> {
+  public GetData<T>(path: string): Observable<T> {
     return this.authService.getUserObservable().pipe(
-      mergeMap(user => { return this._CallResourceApi(user ? user.access_token : "", path); })
+      mergeMap(user => { return this._GetResourceApi<T>(user ? user.access_token : "", path); })
     );
   }
 
-  private _CallResourceApi(token: string, path: string): Observable<any> {
+  private _GetResourceApi<T>(token: string, path: string): Observable<T> {
     const headers = new HttpHeaders({
       Accept: 'application/json',
       Authorization: 'Bearer ' + token,
     });
 
-    return this.httpClient.get<any>(`${environment.apiRoot}${path}`, { headers });
+    return this.httpClient.get<T>(`${environment.apiRoot}${path}`, { headers });
+  }
+
+  public PostData<T>(path: string, data: any): Observable<any> {
+    return this.authService.getUserObservable().pipe(
+      mergeMap(user => { return this._PostResourceApi(user ? user.access_token : "", path, data); })
+    );
+  }
+
+  private _PostResourceApi<T>(token: string, path: string, data: any): Observable<T> {
+    const headers = new HttpHeaders({
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    });
+
+    return this.httpClient.post<any>(`${environment.apiRoot}${path}`, data, { headers });
   }
 
   //Previous version of call api. Need for testing end reusing in future feature.
