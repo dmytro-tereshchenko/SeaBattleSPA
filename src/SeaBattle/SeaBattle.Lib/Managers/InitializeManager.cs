@@ -126,7 +126,7 @@ namespace SeaBattle.Lib.Managers
             var queryPlayer = await _gamePlayerRepository.GetAsync(p => p.Name == playerName);
             GamePlayer gamePlayer = queryPlayer.FirstOrDefault();
 
-            if (gamePlayer == null)
+            if (gamePlayer is null)
             {
                 gamePlayer = await _gamePlayerRepository.CreateAsync(new GamePlayer(playerName));
             }
@@ -138,8 +138,10 @@ namespace SeaBattle.Lib.Managers
                 game.GameState = GameState.Init;
             }
 
-            game = await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.GamePlayers,
-                _gamePlayerRepository.GetAll(), "GamePlayers");
+            /*game = await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.GamePlayers,
+                _gamePlayerRepository.GetAll(), "GamePlayers");*/
+
+            game = await _gameRepository.UpdateAsync(game);
 
             return new ResponseGamePlayer(gamePlayer, StateCode.Success);
         }
