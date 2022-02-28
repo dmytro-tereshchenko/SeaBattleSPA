@@ -29,10 +29,15 @@ export class DataGameFieldService {
     }
     else {
       //update game
-      return this.gameService.getGame().pipe(mergeMap(game => this.dataApi.GetData<GameFieldDto>(`this.get?id=${game.id}`)
+      return this.gameService.getGame().pipe(mergeMap(game => this.dataApi.GetData<GameFieldDto>(`${this.get}?id=${game.id}`)
         .pipe(tap(gameField => { this.SetGameField(gameField); return this.gameField; }),
           catchError(this.errorLog.handleError<any>('getGameField')))));
     }
+  }
+
+  public getGameFieldById(id: number): Observable<GameField> {
+      return this.dataApi.GetData<GameFieldDto>(`${this.get}?id=${id}`)
+        .pipe(catchError(this.errorLog.handleError<any>('getGameFieldById')));
   }
 
   public getGameFieldFromServer(): Observable<Game> {

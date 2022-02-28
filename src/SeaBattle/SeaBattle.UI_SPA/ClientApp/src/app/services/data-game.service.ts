@@ -18,6 +18,7 @@ export class DataGameService {
 
   get: string = 'game/Get';
   create: string = 'game/Create';
+  addPlayer: string = 'game/JoinPlayer';
 
   public getGame(): Observable<Game> {
     if (this.game !== null) {
@@ -38,6 +39,11 @@ export class DataGameService {
   public createGame(numberPlayers: Number): Observable<Game> {
     return this.dataApi.PostData(this.create, { players: numberPlayers }).pipe(tap(game => { this.game = game; return game; }),
       catchError(this.errorLog.handleError<Game>('createGame')));
+  }
+
+  public joinPlayer(gameId: Number): Observable<Game> {
+    return this.dataApi.PutData(this.addPlayer, { gameId: gameId }).pipe(tap(game => { this.game = game; return game; }),
+      catchError(this.errorLog.handleError<Game>('joinPlayer')));
   }
 
 }

@@ -51,25 +51,5 @@ namespace SeaBattle.GameResources.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
         }
-
-        /*[HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<GameDto>> Get([FromServices] GenericRepository<Game> rep, [FromServices] IMapper mapper)
-        {
-            string name = HttpContext.User.FindFirst("name")?.Value;
-
-            var query = await rep.GetWithIncludeAsync(g => g.GamePlayers);
-            Game game = query.FirstOrDefault(g => g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) != null);
-
-            if (game == null)
-            {
-                return NotFound();
-            }
-
-            GameDto dto = mapper.Map<Game, GameDto>(game);
-
-            return dto;
-        }*/
     }
 }

@@ -5,12 +5,12 @@ namespace SeaBattle.Lib.Responses
     /// <summary>
     /// Response with <see cref="IGamePlayer"/>
     /// </summary>
-    public interface IResponseGamePlayer : IResponse
+    public interface IResponseGame : IResponse
     {
         /// <summary>
         /// Game player which used in game.
         /// </summary>
-        /// <value><see cref="IGamePlayer"/></value>
-        IGamePlayer Value { get; }
+        /// <value><see cref="IGame"/></value>
+        IGame Value { get; }
     }
 }

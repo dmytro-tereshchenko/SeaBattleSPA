@@ -48,7 +48,7 @@ export class CreateGameComponent implements OnInit {
   }
 
   createGame(): void {
-    this.gameService.createGame(this.players).pipe(mergeMap(game => this.gameFieldService.createGameField(this.sizeX, this.sizeY))).subscribe(gamefield => console.log(gamefield));
+    this.gameService.createGame(this.players).pipe(mergeMap(game => this.gameFieldService.createGameField(this.sizeX, this.sizeY))).subscribe();
   }
 
 }

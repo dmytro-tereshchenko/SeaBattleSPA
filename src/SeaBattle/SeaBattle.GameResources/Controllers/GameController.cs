@@ -47,27 +47,36 @@ namespace SeaBattle.GameResources.Controllers
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<GameDto>> Create([FromServices] IInitializeManager initializeService, [FromServices] IMapper mapper, [FromBody]GameCreateDto players)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<GameDto>> Create([FromServices] IInitializeManager initializeService,
+            [FromServices] IMapper mapper,
+            [FromBody] GameCreateDto players)
         {
             IGame game = await initializeService.CreateGame(players.players);
 
             string name = HttpContext.User.FindFirst("name")?.Value;
 
-            await initializeService.AddPlayerToGame(game.Id, name);
+            var response = await initializeService.AddPlayerToGame(game.Id, name);
 
-            GameDto dto = mapper.Map<IGame, GameDto>(game);
+            if (response.State == StateCode.Success)
+            {
+                GameDto dto = mapper.Map<IGame, GameDto>(response.Value);
 
-            return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
+                return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
+            }
+
+            return BadRequest(response);
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<GameDto>> Get([FromServices] GenericRepository<Game> rep, [FromServices] IMapper mapper)
+        public async Task<ActionResult<GameDto>> Get([FromServices] GenericRepository<Game> rep,
+            [FromServices] IMapper mapper)
         {
             string name = HttpContext.User.FindFirst("name")?.Value;
 
-            var query = await rep.GetWithIncludeAsync(g=>g.GamePlayers);
+            var query = await rep.GetWithIncludeAsync(g => g.GamePlayers);
             Game game = query.FirstOrDefault(g => g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) != null);
 
             if (game == null)
@@ -78,6 +87,49 @@ namespace SeaBattle.GameResources.Controllers
             GameDto dto = mapper.Map<Game, GameDto>(game);
 
             return dto;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<GameSearchDto[]>> GetSearch([FromServices] GenericRepository<Game> rep,
+            [FromServices] IMapper mapper)
+        {
+            string name = HttpContext.User.FindFirst("name")?.Value;
+
+            var query = await rep.GetWithIncludeAsync(g => g.GamePlayers, g => g.GameField);
+
+            Game[] games = query.Where(g => g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) is null && g.GameState == GameState.SearchPlayers).ToArray();
+
+            if (games == null)
+            {
+                return NotFound();
+            }
+
+            GameSearchDto[] dto = mapper.Map<Game[], GameSearchDto[]>(games);
+
+            return dto;
+        }
+
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<GameDto>> JoinPlayer([FromServices] IInitializeManager initializeService,
+            [FromServices] IMapper mapper,
+            [FromBody] JoinPlayersDto player)
+        {
+            string name = HttpContext.User.FindFirst("name")?.Value;
+
+            var response = await initializeService.AddPlayerToGame(player.gameId, name);
+
+            if (response.State == StateCode.Success)
+            {
+                GameDto dto = mapper.Map<IGame, GameDto>(response.Value);
+
+                return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
+            }
+
+            return BadRequest(response);
         }
     }
 }

@@ -5,6 +5,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
@@ -13,7 +17,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TestUserComponent } from './components/test-user/test-user.component';
 import { StartMenuComponent } from './components/start-menu/start-menu.component';
 import { CreateGameComponent } from './components/create-game/create-game.component';
-import { JoinGameComponent } from './components/join-game/join-game.component';
+import { SearchGameTableComponent } from './components/search-game-table/search-game-table.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +27,7 @@ import { JoinGameComponent } from './components/join-game/join-game.component';
     TestUserComponent,
     StartMenuComponent,
     CreateGameComponent,
-    JoinGameComponent
+    SearchGameTableComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -33,11 +37,15 @@ import { JoinGameComponent } from './components/join-game/join-game.component';
       { path: '', component: StartMenuComponent },
       { path: 'user-status', component: TestUserComponent },
       { path: 'create-game', component: CreateGameComponent },
-      { path: 'join-game', component: JoinGameComponent },
+      { path: 'join-game', component: SearchGameTableComponent },
     ]),
     BrowserAnimationsModule,
     MatSliderModule,
-    MatButtonModule
+    MatButtonModule,
+    MatInputModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule
   ],
   providers: [],
   bootstrap: [AppComponent]

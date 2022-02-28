@@ -42,7 +42,22 @@ export class DataApiService {
       Authorization: 'Bearer ' + token,
     });
 
-    return this.httpClient.post<any>(`${environment.apiRoot}${path}`, data, { headers });
+    return this.httpClient.post<T>(`${environment.apiRoot}${path}`, data, { headers });
+  }
+
+  public PutData<T>(path: string, data: any): Observable<any> {
+    return this.authService.getUserObservable().pipe(
+      mergeMap(user => { return this._PutResourceApi(user ? user.access_token : "", path, data); })
+    );
+  }
+
+  private _PutResourceApi<T>(token: string, path: string, data: any): Observable<T> {
+    const headers = new HttpHeaders({
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    });
+
+    return this.httpClient.put<T>(`${environment.apiRoot}${path}`, data, { headers });
   }
 
   //Previous version of call api. Need for testing end reusing in future feature.

@@ -99,7 +99,7 @@ namespace SeaBattle.Lib.Managers
 
         public byte GetMaxNumberOfPlayers() => _gameConfig.MaxNumberOfPlayers;
 
-        public async Task<IResponseGamePlayer> AddPlayerToGame(int gameId, string playerName)
+        public async Task<IResponseGame> AddPlayerToGame(int gameId, string playerName)
         {
             var queryGame =
                 await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId, g => g.GamePlayers);
@@ -115,7 +115,7 @@ namespace SeaBattle.Lib.Managers
 
             if (game.CurrentCountPlayers == game.MaxNumberOfPlayers)
             {
-                return new ResponseGamePlayer(null, StateCode.ExceededMaxNumberOfPlayers);
+                return new ResponseGame(null, StateCode.ExceededMaxNumberOfPlayers);
             }
 
             if (game.GamePlayers.Count == 0)
@@ -143,7 +143,7 @@ namespace SeaBattle.Lib.Managers
 
             game = await _gameRepository.UpdateAsync(game);
 
-            return new ResponseGamePlayer(gamePlayer, StateCode.Success);
+            return new ResponseGame(game, StateCode.Success);
         }
 
         public async Task<IResponseStartField> GetStartField(int gameId, string gamePlayerName)

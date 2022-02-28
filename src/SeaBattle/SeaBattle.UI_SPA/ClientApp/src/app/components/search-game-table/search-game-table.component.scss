@@ -1,0 +1,44 @@
+.root {
+    margin: 10%;
+    font-size: larger;
+}
+
+div.root>div:last-of-type {
+    padding: 1em;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+table {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.4);
+    color: black;
+}
+
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+    color: black;
+}
+
+td,
+th {
+    width: 25%;
+    color: black;
+}
+
+.mat-row:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.mat-row:active {
+    background-color: rgba(255, 255, 255, 1.0);
+}
+
+.mat-paginator {
+    background-color: rgba(0, 0, 0, 0.6);
+}
