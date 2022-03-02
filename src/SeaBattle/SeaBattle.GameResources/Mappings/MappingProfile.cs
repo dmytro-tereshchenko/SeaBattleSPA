@@ -24,6 +24,7 @@ namespace SeaBattle.GameResources.Mappings
 
             CreateMap<Game, GameSearchDto>()
                     .ForMember(dest => dest.GameFieldSize, opt => opt.MapFrom(c => $"{c.GameField.SizeX}x{c.GameField.SizeY}"))
+                    .ForMember(dest => dest.GameState, opt => opt.MapFrom(c => (byte)c.GameState))
                     .ForMember(dest => dest.Players, opt => opt.MapFrom(c => string.Join(", ", c.GamePlayers.Select(p => p.Name).ToArray())));
 
             CreateMap<GamePlayer, PlayerDto>()

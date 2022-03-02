@@ -77,7 +77,7 @@ namespace SeaBattle.GameResources.Controllers
             string name = HttpContext.User.FindFirst("name")?.Value;
 
             var query = await rep.GetWithIncludeAsync(g => g.GamePlayers);
-            Game game = query.FirstOrDefault(g => g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) != null);
+            Game game = query.FirstOrDefault(g => g.GameState != GameState.Finished && g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) != null);
 
             if (game == null)
             {
@@ -99,7 +99,13 @@ namespace SeaBattle.GameResources.Controllers
 
             var query = await rep.GetWithIncludeAsync(g => g.GamePlayers, g => g.GameField);
 
-            Game[] games = query.Where(g => g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) is null && g.GameState == GameState.SearchPlayers).ToArray();
+            //take the current game for wait another player
+            Game[] games = query.Where(g => g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) is not null && g.GameState == GameState.SearchPlayers).ToArray();
+
+            if (games is null || games.Length == 0)
+            {
+                games = query.Where(g => g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) is null && g.GameState == GameState.SearchPlayers).ToArray();
+            }
 
             if (games == null)
             {

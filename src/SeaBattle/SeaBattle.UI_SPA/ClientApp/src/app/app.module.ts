@@ -18,6 +18,7 @@ import { TestUserComponent } from './components/test-user/test-user.component';
 import { StartMenuComponent } from './components/start-menu/start-menu.component';
 import { CreateGameComponent } from './components/create-game/create-game.component';
 import { SearchGameTableComponent } from './components/search-game-table/search-game-table.component';
+import { GamePrepComponent } from './components/game-prep/game-prep.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { SearchGameTableComponent } from './components/search-game-table/search-
     TestUserComponent,
     StartMenuComponent,
     CreateGameComponent,
-    SearchGameTableComponent
+    SearchGameTableComponent,
+    GamePrepComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -38,6 +40,7 @@ import { SearchGameTableComponent } from './components/search-game-table/search-
       { path: 'user-status', component: TestUserComponent },
       { path: 'create-game', component: CreateGameComponent },
       { path: 'join-game', component: SearchGameTableComponent },
+      { path: 'game-prep', component: GamePrepComponent },
     ]),
     BrowserAnimationsModule,
     MatSliderModule,

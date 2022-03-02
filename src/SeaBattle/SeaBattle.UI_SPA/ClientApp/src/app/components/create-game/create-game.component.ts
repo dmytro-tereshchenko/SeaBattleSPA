@@ -6,6 +6,7 @@ import { DataGameService } from '../../services/data-game.service';
 import { DataGameFieldService } from '../../services/data-game-field.service';
 import { Game } from '../../data/game';
 import { mergeMap } from 'rxjs/operators';
+import { Router } from "@angular/router"
 
 @Component({
   selector: 'app-create-game',
@@ -17,7 +18,8 @@ export class CreateGameComponent implements OnInit {
   constructor(private location: Location,
     private apiService: InitializeGameService,
     private gameService: DataGameService,
-    private gameFieldService: DataGameFieldService) {
+    private gameFieldService: DataGameFieldService,
+    private router: Router) {
     this.players = 2;
     this.gameSize = {
       maxPlayerSize: 4,
@@ -48,7 +50,9 @@ export class CreateGameComponent implements OnInit {
   }
 
   createGame(): void {
-    this.gameService.createGame(this.players).pipe(mergeMap(game => this.gameFieldService.createGameField(this.sizeX, this.sizeY))).subscribe();
+    this.gameService.createGame(this.players)
+      .pipe(mergeMap(game => this.gameFieldService.createGameField(this.sizeX, this.sizeY)))
+      .subscribe(g => this.router.navigate(['/game-prep']));
   }
 
 }
