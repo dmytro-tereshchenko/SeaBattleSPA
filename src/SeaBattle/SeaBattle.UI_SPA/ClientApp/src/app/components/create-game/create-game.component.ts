@@ -38,6 +38,19 @@ export class CreateGameComponent implements OnInit {
   gameSize: GameSizeLimit;
 
   ngOnInit(): void {
+    this.gameService.getGame()
+      .subscribe(g => {
+        switch (g.gameState) {
+          case 2: {
+            this.router.navigate(['/join-game']);
+            break;
+          }
+          case 3: {
+            this.router.navigate(['/game-prep']);
+            break;
+          }
+        }
+      });
     this.apiService.GetGameSize().subscribe(result => {
       this.gameSize = result;
       this.sizeX = result.fieldMinSizeX;
@@ -52,7 +65,7 @@ export class CreateGameComponent implements OnInit {
   createGame(): void {
     this.gameService.createGame(this.players)
       .pipe(mergeMap(game => this.gameFieldService.createGameField(this.sizeX, this.sizeY)))
-      .subscribe(g => this.router.navigate(['/game-prep']));
+      .subscribe(g => this.router.navigate(['/join-game']));
   }
 
 }

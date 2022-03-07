@@ -34,7 +34,7 @@ namespace SeaBattle.GameResources.Controllers
         {
             IGame game = await rep.FindByIdAsync(id);
 
-            if (game == null)
+            if (game is null)
             {
                 return NotFound();
             }
@@ -77,9 +77,9 @@ namespace SeaBattle.GameResources.Controllers
             string name = HttpContext.User.FindFirst("name")?.Value;
 
             var query = await rep.GetWithIncludeAsync(g => g.GamePlayers);
-            Game game = query.FirstOrDefault(g => g.GameState != GameState.Finished && g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) != null);
+            Game game = query.FirstOrDefault(g => g.GameState != GameState.Finished && g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) is not null);
 
-            if (game == null)
+            if (game is null)
             {
                 return NotFound();
             }
@@ -100,14 +100,15 @@ namespace SeaBattle.GameResources.Controllers
             var query = await rep.GetWithIncludeAsync(g => g.GamePlayers, g => g.GameField);
 
             //take the current game for wait another player
-            Game[] games = query.Where(g => g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) is not null && g.GameState == GameState.SearchPlayers).ToArray();
+            Game[] games = query.Where(g => g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) is not null && (g.GameState == GameState.SearchPlayers || g.GameState == GameState.Init)).ToArray();
 
+            //otherwise take array of games to join
             if (games is null || games.Length == 0)
             {
                 games = query.Where(g => g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) is null && g.GameState == GameState.SearchPlayers).ToArray();
             }
 
-            if (games == null)
+            if (games is null)
             {
                 return NotFound();
             }

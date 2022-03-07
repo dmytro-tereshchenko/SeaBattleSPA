@@ -1,9 +1,9 @@
 <div class="root">
     <div class="center">
-        <h1>Join game</h1>
+        <h1>{{ waitPlayers ? 'Wait another players' : 'Join game' }}</h1>
     </div>
     <div>
-        <mat-form-field appearance="standard">
+        <mat-form-field [hidden]="waitPlayers" appearance="standard">
             <mat-label>Filter</mat-label>
             <input matInput (keyup)="applyFilter($event)" placeholder="Filter template" #input>
         </mat-form-field>
@@ -36,7 +36,7 @@
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row (click)="joinGame(row)" *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-row (click)="joinGame(row)" [ngClass]="{'select': !waitPlayers}" *matRowDef="let row; columns: displayedColumns;"></tr>
 
                 <!-- Row shown when there is no matching data. -->
                 <tr class="mat-row" *matNoDataRow>
@@ -44,7 +44,7 @@
                 </tr>
             </table>
 
-            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons aria-label="Select page of games"></mat-paginator>
+            <mat-paginator [hidden]="waitPlayers" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons aria-label="Select page of games"></mat-paginator>
         </div>
     </div>
 </div>
