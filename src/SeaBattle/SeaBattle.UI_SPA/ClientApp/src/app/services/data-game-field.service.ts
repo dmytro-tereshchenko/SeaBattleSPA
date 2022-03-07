@@ -5,7 +5,7 @@ import { Game } from '../data/game';
 import { GameFieldDto } from '../data/game-field-dto';
 import { GameField } from '../data/game-field';
 import { GameFieldCell } from '../data/game-field-cell';
-import { Observable, of, tap, catchError } from 'rxjs';
+import { Observable, of, map, catchError } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { DataGameService } from './data-game.service';
 
@@ -30,30 +30,30 @@ export class DataGameFieldService {
     else {
       //update game
       return this.gameService.getGame().pipe(mergeMap(game => this.dataApi.GetData<GameFieldDto>(`${this.get}?id=${game.id}`)
-        .pipe(tap(gameField => { this.SetGameField(gameField); return this.gameField; }),
+        .pipe(map(gameField => this.SetGameField(gameField)),
           catchError(this.errorLog.handleError<any>('getGameField')))));
     }
   }
 
   public getGameFieldById(id: number): Observable<GameField> {
-      return this.dataApi.GetData<GameFieldDto>(`${this.get}?id=${id}`)
-        .pipe(catchError(this.errorLog.handleError<any>('getGameFieldById')));
+    return this.dataApi.GetData<GameFieldDto>(`${this.get}?id=${id}`)
+      .pipe(catchError(this.errorLog.handleError<any>('getGameFieldById')));
   }
 
-  public getGameFieldFromServer(): Observable<Game> {
+  public getGameFieldFromServer(): Observable<GameField> {
     return this.gameService.getGame().pipe(mergeMap(game => this.dataApi.GetData<GameFieldDto>(`${this.get}?id=${game.id}`)
-      .pipe(tap(gameField => { this.SetGameField(gameField); return this.gameField; }),
+      .pipe(map(gameField => this.SetGameField(gameField)),
         catchError(this.errorLog.handleError<any>('getGameFieldFromServer')))));
   }
 
   public createGameField(sizeX: number, sizeY: number): Observable<GameField> {
     return this.gameService.getGame().pipe(mergeMap(game => this.dataApi.PostData(this.create, { GameId: game.id, SizeX: sizeX, SizeY: sizeY })
-      .pipe(tap(gameField => { this.SetGameField(gameField); return this.gameField; }),
+      .pipe(map(gameField => this.SetGameField(gameField)),
         catchError(this.errorLog.handleError<GameField>('createGameField')))));
   }
 
-  private SetGameField(field: GameFieldDto) {
-    let cells: GameFieldCell[][];
+  private SetGameField(field: GameFieldDto):GameField {
+    var cells: GameFieldCell[][];
 
     cells = [];
 
@@ -81,5 +81,7 @@ export class DataGameFieldService {
       gameId: field.gameId,
       gameFieldCells: cells
     }
+
+    return this.gameField;
   }
 }
