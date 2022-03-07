@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { DataGameFieldService } from '../../services/data-game-field.service';
+import { Observable } from 'rxjs';
+import { GameField } from '../../data/game-field';
+import { GameFieldCell } from '../../data/game-field-cell';
 
 @Component({
   selector: 'app-game-prep',
@@ -7,9 +11,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GamePrepComponent implements OnInit {
 
-  constructor() { }
+  gameField: GameField;
+
+  constructor(private fieldService: DataGameFieldService) { }
 
   ngOnInit(): void {
+    this.fieldService.getGameField().subscribe(f => this.gameField = f);
+  }
+
+  onNotifyGameField(cell: GameFieldCell) {
+    console.log(cell);
   }
 
 }

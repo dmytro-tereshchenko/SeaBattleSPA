@@ -19,6 +19,7 @@ import { StartMenuComponent } from './components/start-menu/start-menu.component
 import { CreateGameComponent } from './components/create-game/create-game.component';
 import { SearchGameTableComponent } from './components/search-game-table/search-game-table.component';
 import { GamePrepComponent } from './components/game-prep/game-prep.component';
+import { GameFieldComponent } from './components/game-field/game-field.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { GamePrepComponent } from './components/game-prep/game-prep.component';
     StartMenuComponent,
     CreateGameComponent,
     SearchGameTableComponent,
-    GamePrepComponent
+    GamePrepComponent,
+    GameFieldComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

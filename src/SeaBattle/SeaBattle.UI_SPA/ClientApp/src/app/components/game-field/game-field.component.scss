@@ -1,0 +1,14 @@
+.fieldRoot {
+    overflow: auto;
+    height: 70vh;
+}
+
+.cell {
+    flex: 1 0 30px;
+    border: 1px solid rgb(20, 7, 54);
+    height: 30px;
+}
+
+.select:hover {
+    cursor: pointer;
+}

@@ -1,7 +1,7 @@
 export interface GameFieldCell {
-  id: number|null
+  id: number | null
   x: number
   y: number
   stern: boolean
-  gameShipId : number|null
+  gameShipId: number | null
 }
