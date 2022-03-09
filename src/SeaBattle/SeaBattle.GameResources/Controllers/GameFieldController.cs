@@ -23,7 +23,7 @@ namespace SeaBattle.GameResources.Controllers
 
             IGameField gameField = query.FirstOrDefault();
 
-            if (gameField == null)
+            if (gameField is null)
             {
                 return NotFound();
             }
@@ -36,6 +36,7 @@ namespace SeaBattle.GameResources.Controllers
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<GameFieldDto>> Create([FromServices] IInitializeManager initializeService, [FromServices] IMapper mapper, [FromBody] GameFieldCreateDto createData)
         {
             var response = await initializeService.CreateGameField(createData.GameId, createData.SizeX, createData.SizeY);
@@ -49,7 +50,7 @@ namespace SeaBattle.GameResources.Controllers
 
             GameFieldDto dto = mapper.Map<IGameField, GameFieldDto>(gameField);
 
-            return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
+            return CreatedAtAction(nameof(GetById), new { id = dto.GameId }, dto);
         }
     }
 }
