@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DataApiService } from '../core/services/data-api.service';
 import { ErrorLogService } from '../services/error-log.service';
-import { Game } from '../data/game';
 import { GameFieldDto } from '../data/game-field-dto';
 import { GameField } from '../data/game-field';
 import { GameFieldCell } from '../data/game-field-cell';
@@ -28,7 +27,7 @@ export class DataGameFieldService {
       return of(this.gameField);
     }
     else {
-      //update game
+      //update game field
       return this.gameService.getGame().pipe(mergeMap(game => this.dataApi.GetData<GameFieldDto>(`${this.get}?id=${game.id}`)
         .pipe(map(gameField => this.SetGameField(gameField)),
           catchError(this.errorLog.handleError<any>('getGameField')))));
