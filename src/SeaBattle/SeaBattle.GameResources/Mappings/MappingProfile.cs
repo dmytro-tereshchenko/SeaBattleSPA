@@ -34,6 +34,14 @@ namespace SeaBattle.GameResources.Mappings
 
             CreateMap<GameFieldCell, GameFieldCellDto>()
                 .ForMember(dest => dest.PlayerId, opt => opt.MapFrom(c => c.GameShip.GamePlayerId));
+
+            CreateMap<StartField, StartFieldDto>()
+                .ForMember(dest => dest.GameShipsId, opt => opt.MapFrom(c => c.GameShips));
+
+            CreateMap<StartFieldCell, StartFieldCellDto>();
+
+            CreateMap<GameShip, int>()
+                .ConvertUsing(source => source.Id);
         }
     }
 }
