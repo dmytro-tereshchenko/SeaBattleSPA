@@ -4,4 +4,5 @@ export interface GameFieldCell {
   y: number
   stern: boolean
   gameShipId: number | null
+  playerId: number | null
 }

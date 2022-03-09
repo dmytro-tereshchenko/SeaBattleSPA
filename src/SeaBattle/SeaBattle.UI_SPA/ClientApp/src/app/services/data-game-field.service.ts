@@ -65,7 +65,8 @@ export class DataGameFieldService {
           x: i,
           y: j,
           stern: false,
-          gameShipId: null
+          gameShipId: null,
+          playerId: null
         }
       }
     }

@@ -11,5 +11,7 @@
         public bool Stern { get; set; }
 
         public int GameShipId { get; set; }
+
+        public int PlayerId { get; set; }
     }
 }

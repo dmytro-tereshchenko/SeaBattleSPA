@@ -32,7 +32,8 @@ namespace SeaBattle.GameResources.Mappings
 
             CreateMap<GameField, GameFieldDto>();
 
-            CreateMap<GameFieldCell, GameFieldCellDto>();
+            CreateMap<GameFieldCell, GameFieldCellDto>()
+                .ForMember(dest => dest.PlayerId, opt => opt.MapFrom(c => c.GameShip.GamePlayerId));
         }
     }
 }

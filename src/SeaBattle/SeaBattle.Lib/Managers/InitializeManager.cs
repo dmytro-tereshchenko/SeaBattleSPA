@@ -105,7 +105,7 @@ namespace SeaBattle.Lib.Managers
                 await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId, g => g.GamePlayers);
             Game game = queryGame.FirstOrDefault();
 
-            if (game == null)
+            if (game is null)
             {
                 Exception ex = new Exception($"Invalid Id arguments in progress {nameof(AddPlayerToGame)}");
                 ex.Data.Add("gameId", gameId);
@@ -149,13 +149,16 @@ namespace SeaBattle.Lib.Managers
         public async Task<IResponseStartField> GetStartField(int gameId, string gamePlayerName)
         {
             var queryGame =
-                await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId, g => g.StartFields, g => g.GameField);
+                await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId,
+                g => g.StartFields,
+                gameId => gameId.GamePlayers,
+                g => g.GameField);
             Game game = queryGame.FirstOrDefault();
 
             var queryPlayer = await _gamePlayerRepository.GetWithIncludeAsync(g => g.Name == gamePlayerName);
             GamePlayer gamePlayer = queryPlayer.FirstOrDefault();
 
-            if (game == null || gamePlayer == null)
+            if (game is null || gamePlayer is null)
             {
                 Exception ex = new Exception($"Invalid Id arguments in progress {nameof(GetStartField)}");
                 ex.Data.Add("gameId", gameId);
@@ -168,7 +171,7 @@ namespace SeaBattle.Lib.Managers
             StartField startField = null;
 
             //in the case haven't created startFields - create them
-            if (game.StartFields == null || game.StartFields.Count == 0)
+            if (game.StartFields is null || game.StartFields.Count == 0)
             {
                 game.StartFields = new List<StartField>(game.MaxNumberOfPlayers);
                 ICollection<ICollection<StartFieldCell>> fieldsOfLabels;
@@ -193,32 +196,32 @@ namespace SeaBattle.Lib.Managers
                 startField = game.StartFields.FirstOrDefault();
             }
             //in the case bd have start field for current player and game return it
-            else if ((startField = game.StartFields.FirstOrDefault(f => f.GamePlayerId == gamePlayer.Id)) != null)
+            else if ((startField = game.StartFields.FirstOrDefault(f => f.GamePlayerId == gamePlayer.Id)) is not null)
             {
                 return new ResponseStartField(startField, StateCode.Success);
             }
             //otherwise get first of free start fields.
             else
             {
-                startField = game.StartFields.FirstOrDefault(f => f.GamePlayer == null);
+                startField = game.StartFields.FirstOrDefault(f => f.GamePlayer is null);
             }
 
             //add current player to start field
-            if (startField != null)
+            if (startField is not null)
             {
                 startField.GamePlayer = gamePlayer;
 
                 //change status player
-                startField.GamePlayer.PlayerState = (PlayerState) 2; //InitializeField
+                startField.GamePlayer.PlayerState = PlayerState.InitializeField;
 
                 await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.StartFields,
                     _startFieldRepository.GetAll(), "StartFields");
 
-                foreach (var field in game.StartFields)
+                /*foreach (var field in game.StartFields)
                 {
                     await _startFieldRepository.UpdateAsync(f => f.Id == field.Id, field.StartFieldCells,
                         _startFieldCellRepository.GetAll(), "StartFieldCells");
-                }
+                }*/
 
                 return new ResponseStartField(startField, StateCode.Success);
             }
@@ -242,6 +245,55 @@ namespace SeaBattle.Lib.Managers
             game = await _gameRepository.CreateAsync(game);
 
             return game;
+        }
+
+        public async Task<StateCode> ReadyPlayer(int gameId, string gamePlayerName)
+        {
+            var queryGame =
+                await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId, g => g.GamePlayers);
+            Game game = queryGame.FirstOrDefault();
+
+            var queryPlayer = await _gamePlayerRepository.GetWithIncludeAsync(g => g.Name == gamePlayerName);
+            GamePlayer player = queryPlayer.FirstOrDefault();
+
+            if (game is null || player is null)
+            {
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(ReadyPlayer)}");
+                ex.Data.Add("gameId", gameId);
+                ex.Data.Add("gamePlayerName", gamePlayerName);
+
+                throw ex;
+            }
+
+            if (game.GameState == GameState.Finished)
+            {
+                return StateCode.GameFinished;
+            }
+
+            if (!game.GamePlayers.Contains(player))
+            {
+                return StateCode.InvalidPlayer;
+            }
+
+            player.PlayerState = PlayerState.Ready;
+
+            if (game.GamePlayers.All(p => p.PlayerState == PlayerState.Ready))
+            {
+                foreach (var gamePlayer in game.GamePlayers)
+                {
+                    gamePlayer.PlayerState = PlayerState.Process;
+                }
+
+                game.GameState = GameState.Process;
+
+                //first player who get startField - first moves
+                game.CurrentGamePlayerMoveId = game.StartFields.First().GamePlayerId;
+            }
+
+            await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.GamePlayers,
+                        _gamePlayerRepository.GetAll(), "GamePlayers");
+
+            return StateCode.Success;
         }
 
         /// <summary>
