@@ -138,9 +138,6 @@ namespace SeaBattle.Lib.Managers
                 game.GameState = GameState.Init;
             }
 
-            /*game = await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.GamePlayers,
-                _gamePlayerRepository.GetAll(), "GamePlayers");*/
-
             game = await _gameRepository.UpdateAsync(game);
 
             return new ResponseGame(game, StateCode.Success);
@@ -151,7 +148,7 @@ namespace SeaBattle.Lib.Managers
             var queryGame =
                 await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId,
                 g => g.StartFields,
-                gameId => gameId.GamePlayers,
+                g => g.GamePlayers,
                 g => g.GameField);
             Game game = queryGame.FirstOrDefault();
 
@@ -198,7 +195,11 @@ namespace SeaBattle.Lib.Managers
             //in the case bd have start field for current player and game return it
             else if ((startField = game.StartFields.FirstOrDefault(f => f.GamePlayerId == gamePlayer.Id)) is not null)
             {
-                return new ResponseStartField(startField, StateCode.Success);
+                var queryStartField = await _startFieldRepository.GetWithIncludeAsync(f => f.Id == startField.Id,
+                f => f.StartFieldCells,
+                f => f.GameShips);
+
+                return new ResponseStartField(queryStartField.FirstOrDefault(), StateCode.Success);
             }
             //otherwise get first of free start fields.
             else
@@ -214,14 +215,7 @@ namespace SeaBattle.Lib.Managers
                 //change status player
                 startField.GamePlayer.PlayerState = PlayerState.InitializeField;
 
-                await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.StartFields,
-                    _startFieldRepository.GetAll(), "StartFields");
-
-                /*foreach (var field in game.StartFields)
-                {
-                    await _startFieldRepository.UpdateAsync(f => f.Id == field.Id, field.StartFieldCells,
-                        _startFieldCellRepository.GetAll(), "StartFieldCells");
-                }*/
+                await _gameRepository.UpdateAsync(game);
 
                 return new ResponseStartField(startField, StateCode.Success);
             }
