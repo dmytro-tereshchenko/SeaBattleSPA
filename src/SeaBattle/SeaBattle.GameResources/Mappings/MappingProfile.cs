@@ -42,6 +42,14 @@ namespace SeaBattle.GameResources.Mappings
 
             CreateMap<GameShip, int>()
                 .ConvertUsing(source => source.Id);
+
+            CreateMap<Ship, ShipDto>();
+
+            CreateMap<GameShip, GameShipDto>();
+
+            CreateMap<Weapon, WeaponDto>();
+
+            CreateMap<Repair, RepairDto>();
         }
     }
 }

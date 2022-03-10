@@ -86,6 +86,15 @@ namespace SeaBattle.Lib.Managers
                 throw ex;
             }
 
+            if (!startField.GameShips.Contains(gameShip))
+            {
+                Exception ex = new Exception($"StartField doesn't contain GameShip in progress {nameof(SellShip)}");
+                ex.Data.Add("gameShipId", gameShipId);
+                ex.Data.Add("startFieldId", startFieldId);
+
+                throw ex;
+            }
+
             startField.GameShips.Remove(gameShip);
             startField.Points += gameShip.Points;
 
