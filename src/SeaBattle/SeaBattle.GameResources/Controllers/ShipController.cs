@@ -48,6 +48,28 @@ namespace SeaBattle.GameResources.Controllers
             return dto.ToArray();
         }
 
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ICollection<WeaponDto>>> GetWeapons([FromServices] GenericRepository<Weapon> rep, [FromServices] IMapper mapper)
+        {
+            ICollection<Weapon> weapons = await rep.GetAllAsync();
+
+            ICollection<WeaponDto> dto = mapper.Map<ICollection<Weapon>, ICollection<WeaponDto>>(weapons);
+
+            return dto.ToArray();
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ICollection<RepairDto>>> GetRepairs([FromServices] GenericRepository<Repair> rep, [FromServices] IMapper mapper)
+        {
+            ICollection<Repair> repairs = await rep.GetAllAsync();
+
+            ICollection<RepairDto> dto = mapper.Map<ICollection<Repair>, ICollection<RepairDto>>(repairs);
+
+            return dto.ToArray();
+        }
+
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
