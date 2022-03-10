@@ -8,12 +8,15 @@ import { Observable, of, map, catchError } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { DataGameService } from './data-game.service';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class DataGameFieldService {
 
-  constructor(private dataApi: DataApiService, private errorLog: ErrorLogService, private gameService: DataGameService) {
+  constructor(private dataApi: DataApiService,
+    private errorLog: ErrorLogService,
+    private gameService: DataGameService) {
     this.gameField = null;
   }
 
@@ -28,9 +31,7 @@ export class DataGameFieldService {
     }
     else {
       //update game field
-      return this.gameService.getGame().pipe(mergeMap(game => this.dataApi.GetData<GameFieldDto>(`${this.get}?id=${game.id}`)
-        .pipe(map(gameField => this.SetGameField(gameField)),
-          catchError(this.errorLog.handleError<any>('getGameField')))));
+      return this.getGameFieldFromServer();
     }
   }
 
@@ -42,7 +43,7 @@ export class DataGameFieldService {
   public getGameFieldFromServer(): Observable<GameField> {
     return this.gameService.getGame().pipe(mergeMap(game => this.dataApi.GetData<GameFieldDto>(`${this.get}?id=${game.id}`)
       .pipe(map(gameField => this.SetGameField(gameField)),
-        catchError(this.errorLog.handleError<any>('getGameFieldFromServer')))));
+        catchError(this.errorLog.handleError<GameField>('getGameFieldFromServer')))));
   }
 
   public createGameField(sizeX: number, sizeY: number): Observable<GameField> {
@@ -51,7 +52,7 @@ export class DataGameFieldService {
         catchError(this.errorLog.handleError<GameField>('createGameField')))));
   }
 
-  private SetGameField(field: GameFieldDto):GameField {
+  private SetGameField(field: GameFieldDto): GameField {
     var cells: GameFieldCell[][];
 
     cells = [];

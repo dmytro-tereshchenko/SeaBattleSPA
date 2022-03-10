@@ -26,21 +26,19 @@ export class DataStartFieldService {
     }
     else {
       //update start field
-      return this.gameService.getGame().pipe(mergeMap(game => this.dataApi.GetData<StartField>(`${this.get}?id=${game.id}`)
-        .pipe(map(startField => this.startField=startField),
-          catchError(this.errorLog.handleError<any>('getStartField')))));
+      return this.getStartFieldFromServer();
     }
   }
 
   public getStartFieldById(id: number): Observable<StartField> {
     return this.dataApi.GetData<StartField>(`${this.get}?id=${id}`)
-      .pipe(catchError(this.errorLog.handleError<any>('getStartFieldById')));
+      .pipe(catchError(this.errorLog.handleError<StartField>('getStartFieldById')));
   }
 
   public getStartFieldFromServer(): Observable<StartField> {
     return this.gameService.getGame().pipe(mergeMap(game => this.dataApi.GetData<StartField>(`${this.get}?id=${game.id}`)
       .pipe(map(startField => this.startField=startField),
-        catchError(this.errorLog.handleError<any>('getStartFieldFromServer')))));
+        catchError(this.errorLog.handleError<StartField>('getStartFieldFromServer')))));
 
   }
 }
