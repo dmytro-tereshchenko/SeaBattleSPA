@@ -12,12 +12,13 @@ import { AuthService, User } from './auth.service';
 })
 export class DataApiService {
 
-  constructor(private httpClient: HttpClient, private authService: AuthService) {
+  constructor(private httpClient: HttpClient,
+    private authService: AuthService) {
   }
 
   public GetData<T>(path: string): Observable<T> {
     return this.authService.getUserObservable().pipe(
-      mergeMap(user => { return this._GetResourceApi<T>(user ? user.access_token : "", path); })
+      mergeMap(user => this._GetResourceApi<T>(user ? user.access_token : "", path))
     );
   }
 
@@ -32,7 +33,7 @@ export class DataApiService {
 
   public PostData<T>(path: string, data: any): Observable<any> {
     return this.authService.getUserObservable().pipe(
-      mergeMap(user => { return this._PostResourceApi(user ? user.access_token : "", path, data); })
+      mergeMap(user => this._PostResourceApi(user ? user.access_token : "", path, data))
     );
   }
 
@@ -47,7 +48,7 @@ export class DataApiService {
 
   public PutData<T>(path: string, data: any): Observable<any> {
     return this.authService.getUserObservable().pipe(
-      mergeMap(user => { return this._PutResourceApi(user ? user.access_token : "", path, data); })
+      mergeMap(user => this._PutResourceApi(user ? user.access_token : "", path, data))
     );
   }
 
@@ -60,37 +61,18 @@ export class DataApiService {
     return this.httpClient.put<T>(`${environment.apiRoot}${path}`, data, { headers });
   }
 
-  //Previous version of call api. Need for testing end reusing in future feature.
+  public DeleteData<T>(path: string): Observable<any> {
+    return this.authService.getUserObservable().pipe(
+      mergeMap(user => this._DeleteResourceApi(user ? user.access_token : "", path))
+    );
+  }
 
-  // public callApi(): Promise<any> {
-  //   return this.authService.getUser().then((user: User | null) => {
-  //     if (user && user.access_token) {
-  //       return this._callApi(user.access_token);
-  //     } else if (user) {
-  //       return this.authService.renewToken().then((user: User) => {
-  //         return this._callApi(user.access_token);
-  //       });
-  //     } else {
-  //       throw new Error('user is not logged in');
-  //     }
-  //   });
-  // }
+  private _DeleteResourceApi<T>(token: string, path: string): Observable<T> {
+    const headers = new HttpHeaders({
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + token,
+    });
 
-  // _callApi(token: string): any {
-  //   const headers = new HttpHeaders({
-  //     Accept: 'application/json',
-  //     Authorization: 'Bearer ' + token,
-  //   });
-
-  //   return this.httpClient.get(`${environment.apiRoot}weatherforecast`, { headers })
-  //     .toPromise()
-  //     .catch((result: HttpErrorResponse) => {
-  //       if (result.status === 401) {
-  //         return this.authService.renewToken().then(user => {
-  //           return this._callApi(user.access_token);
-  //         });
-  //       }
-  //       throw result;
-  //     });
-  // }
+    return this.httpClient.delete<T>(`${environment.apiRoot}${path}`, { headers });
+  }
 }
