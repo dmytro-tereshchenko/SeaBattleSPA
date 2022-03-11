@@ -1,4 +1,4 @@
-<div class="fieldRoot" *ngIf="field">
+<div class="fieldRoot" *ngIf="field" [style.height]="height">
     <div *ngFor="let row of field.gameFieldCells" class="d-flex flex-row">
         <div *ngFor="let cell of row" class="cell" (click)="selected(cell) ? notify.emit(cell) : '' " [ngClass]="{'select': selected(cell)}" [style.background-color]="getShipColor(cell)">
         </div>

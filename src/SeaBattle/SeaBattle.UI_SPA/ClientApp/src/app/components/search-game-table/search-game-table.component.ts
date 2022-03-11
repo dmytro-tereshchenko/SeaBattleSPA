@@ -51,6 +51,9 @@ export class SearchGameTableComponent implements AfterViewInit {
           if (g[0].players.split(", ").includes(u?.profile.name ?? "")) {
             this.waitPlayers = true;
           }
+          else {
+            this.waitPlayers = false;
+          }
         })
       }
 

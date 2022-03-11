@@ -13,6 +13,7 @@ export class GameFieldComponent implements OnInit {
 
   @Input() field: GameField;
   @Input() labels: boolean[][];
+  @Input() height: string;
   @Output() notify = new EventEmitter<GameFieldCell>();
 
   color: string;
@@ -61,7 +62,7 @@ export class GameFieldComponent implements OnInit {
   }
 
   labelled(cell: GameFieldCell): boolean {
-    if (cell === undefined) {
+    if (cell === undefined || this.labels === undefined) {
       return false;
     }
 
