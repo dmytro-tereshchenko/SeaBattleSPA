@@ -9,6 +9,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
@@ -20,6 +21,7 @@ import { CreateGameComponent } from './components/create-game/create-game.compon
 import { SearchGameTableComponent } from './components/search-game-table/search-game-table.component';
 import { GamePrepComponent } from './components/game-prep/game-prep.component';
 import { GameFieldComponent } from './components/game-field/game-field.component';
+import { BuyShipComponent } from './components/buy-ship/buy-ship.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { GameFieldComponent } from './components/game-field/game-field.component
     CreateGameComponent,
     SearchGameTableComponent,
     GamePrepComponent,
-    GameFieldComponent
+    GameFieldComponent,
+    BuyShipComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -50,7 +53,8 @@ import { GameFieldComponent } from './components/game-field/game-field.component
     MatInputModule,
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    MatTabsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

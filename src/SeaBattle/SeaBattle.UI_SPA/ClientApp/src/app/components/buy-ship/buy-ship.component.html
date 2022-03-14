@@ -1,0 +1,51 @@
+<div class="text-center h1">Buy new ships</div>
+<div>
+    <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort>
+
+            <!-- Ship type Column -->
+            <ng-container matColumnDef="shipType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Ship type </th>
+                <td mat-cell *matCellDef="let row"> {{row.shipType === 1 ? "Military" : row.shipType === 2 ? "Auxiliary" : "Mixed"}}</td>
+            </ng-container>
+
+            <!-- Size Column -->
+            <ng-container matColumnDef="size">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Size </th>
+                <td mat-cell *matCellDef="let row"> {{row.size}}</td>
+            </ng-container>
+
+            <!-- Max hp Column -->
+            <ng-container matColumnDef="maxHp">
+                <th mat-header-cell *matHeaderCellDef> Max hp </th>
+                <td mat-cell *matCellDef="let row">{{row.maxHp}}</td>
+            </ng-container>
+
+            <!-- Speed Column -->
+            <ng-container matColumnDef="speed">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Speed </th>
+                <td mat-cell *matCellDef="let row">{{row.speed}}</td>
+            </ng-container>
+
+            <!-- Cost Column -->
+            <ng-container matColumnDef="cost">
+                <th mat-header-cell *matHeaderCellDef> Price </th>
+                <td mat-cell *matCellDef="let row">{{row.cost}}</td>
+            </ng-container>
+
+            <!-- Equiped repairs Column -->
+            <ng-container matColumnDef="buttons">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+                <td mat-cell *matCellDef="let row">
+                    <button (click)="buyShip(row)" class="btn-sm btn btn-outline-primary m-1">Buy</button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons aria-label="Select page of ships"></mat-paginator>
+    </div>
+</div>
