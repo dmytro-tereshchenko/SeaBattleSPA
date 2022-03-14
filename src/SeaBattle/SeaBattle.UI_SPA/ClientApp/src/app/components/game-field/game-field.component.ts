@@ -14,17 +14,22 @@ export class GameFieldComponent implements OnInit {
   @Input() field: GameField;
   @Input() labels: boolean[][];
   @Input() height: string;
-  @Output() notify = new EventEmitter<GameFieldCell>();
+  @Input() selectedShipId: number;
+  @Output() notifyClick = new EventEmitter<GameFieldCell>();
+  @Output() notifyDblClick = new EventEmitter<GameFieldCell>();
 
   color: string;
   private colorShips: string[] = ["green", "yellow", "brown", "gray"];
   private playersId: number[];
+  private gameState: number;
+  private isSingleClick: Boolean = true;
 
   constructor(private userService: AuthService,
     private gameService: DataGameService) { }
 
   ngOnInit(): void {
     this.userService.getUser().then(user => this.gameService.getGame().subscribe(game => {
+      this.gameState = game.gameState;
       this.playersId = [];
       var player = game.players.find(p => p.name === (user?.profile.name ?? ''));
 
@@ -53,7 +58,7 @@ export class GameFieldComponent implements OnInit {
     if (cell === undefined) {
       return false;
     }
-    else if (cell.gameShipId && this.playersId.includes(cell.playerId ?? -1)) {
+    else if ((cell.gameShipId && this.playersId.includes(cell.playerId ?? -1)) || this.selectedShipId && (this.labelled(cell) || this.gameState === 4)) {
       return true;
     }
     else {
@@ -69,4 +74,16 @@ export class GameFieldComponent implements OnInit {
     return this.labels[cell.x][cell.y]
   }
 
+  callForClick(cell: GameFieldCell) {
+    this.isSingleClick = true;
+    setTimeout(() => {
+      if (this.isSingleClick) {
+        this.notifyClick.emit(cell);
+      }
+    }, 250);
+  }
+  callForDblClick(cell: GameFieldCell) {
+    this.isSingleClick = false;
+    this.notifyDblClick.emit(cell);
+  }
 }

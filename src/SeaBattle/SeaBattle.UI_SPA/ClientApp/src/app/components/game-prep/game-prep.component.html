@@ -1,6 +1,6 @@
 <mat-tab-group mat-align-tabs="center">
     <mat-tab label="Game field">
-        <app-game-field [field]="gameField" [labels]="labels" [height]="gameFieldHeight" (notify)="onNotifyGameField($event)"></app-game-field>
+        <app-game-field [field]="gameField" [labels]="labels" [height]="gameFieldHeight" [selectedShipId]="selectedShipId" (notifyDblClick)="onNotifyGameFieldDblClick($event)" (notifyClick)="onNotifyGameFieldClick($event)"></app-game-field>
     </mat-tab>
     <mat-tab label="Ship's shop">
         <app-buy-ship (notify)="onNotifyShopShip()"></app-buy-ship>
@@ -12,10 +12,6 @@
         <label for="points">Points</label>
         <input id="points" readonly [value]="startField.points" *ngIf="startField">
     </div>
-
-    <button class="btn btn-primary m-2">Buy ship</button>
-    <button class="btn btn-primary m-2">Edit ship</button>
-    <button class="btn btn-primary m-2">Sell ship</button>
 </div>
 <div class="text-center h1">Ships in reserve</div>
 <div>
@@ -36,7 +32,7 @@
 
             <!-- Max hp Column -->
             <ng-container matColumnDef="maxHp">
-                <th mat-header-cell *matHeaderCellDef> Max hp </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Max hp </th>
                 <td mat-cell *matCellDef="let row">{{row.maxHp}}</td>
             </ng-container>
 
@@ -48,7 +44,7 @@
 
             <!-- Equiped weapons Column -->
             <ng-container matColumnDef="weapons">
-                <th mat-header-cell *matHeaderCellDef> Equiped weapons </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Equiped weapons </th>
                 <td mat-cell *matCellDef="let row">{{row.weapons.length}}</td>
             </ng-container>
 
@@ -56,6 +52,15 @@
             <ng-container matColumnDef="repairs">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Equiped repairs </th>
                 <td mat-cell *matCellDef="let row">{{row.repairs.length}}</td>
+            </ng-container>
+
+            <!-- Buttons Column -->
+            <ng-container matColumnDef="buttons">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let row">
+                    <button (click)="editShip(row)" class="btn-sm btn btn-outline-success m-1">Edit</button>
+                    <button (click)="sellShip(row)" class="btn-sm btn btn-outline-danger m-1">Sell</button>
+                </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

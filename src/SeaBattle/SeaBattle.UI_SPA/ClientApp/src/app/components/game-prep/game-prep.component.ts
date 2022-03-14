@@ -27,7 +27,7 @@ export class GamePrepComponent implements OnInit {
   selectedShipId: number;
   gameFieldHeight: string;
 
-  displayedColumns: string[] = ['shipType', 'size', 'maxHp', 'speed', 'weapons', 'repairs'];
+  displayedColumns: string[] = ['shipType', 'size', 'maxHp', 'speed', 'weapons', 'repairs', 'buttons'];
   dataSource: MatTableDataSource<GameShip>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -60,8 +60,14 @@ export class GamePrepComponent implements OnInit {
     });
   }
 
-  onNotifyGameField(cell: GameFieldCell) {
-    console.log(cell);
+  onNotifyGameFieldClick(cell: GameFieldCell) {
+    console.log("click");
+    //console.log(cell);
+  }
+
+  onNotifyGameFieldDblClick(cell: GameFieldCell) {
+    console.log("dblclick");
+    //console.log(cell);
   }
 
   onNotifyShopShip() {
@@ -72,9 +78,21 @@ export class GamePrepComponent implements OnInit {
     this.selectedShipId = shipId;
   }
 
+  editShip(row: GameShip) {
+    console.log(`edit id=${row.id}`);
+  }
+
+  sellShip(row: GameShip) {
+    this.shipService.sellShip(row.id).subscribe(state => {
+      if (state === 10) {
+        this.startFieldService.getStartFieldFromServer().subscribe(field => this.updateListShips(field));
+      }
+    });
+  }
+
   private updateListShips(field: StartField) {
     const ships$: Observable<GameShip>[] = [];
-    
+
     this.startField = field;
 
     field.gameShipsId.forEach(shipId => {

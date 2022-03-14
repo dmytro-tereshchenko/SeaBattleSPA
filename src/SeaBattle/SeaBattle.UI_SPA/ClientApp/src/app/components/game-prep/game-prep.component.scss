@@ -20,31 +20,32 @@ input {
 }
 
 .mat-header-cell {
-    background-color: rgba(118, 250, 173, 0.6);
+    background-color: rgba(33, 114, 67, 0.4);
 }
 
 table {
     width: 100%;
+    background-color: rgba(111, 228, 159, 0.3);
 }
 
 td,
 th {
-    width: 15%;
+    width: 14%;
     color: black;
     font-size: large;
 }
 
 .select:hover {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(111, 228, 159, 0.8);
     cursor: pointer;
 }
 
 .select:active {
-    background-color: rgba(255, 255, 255, 1.0);
+    background-color: rgba(111, 228, 159, 1.0);
 }
 
 .selected {
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(111, 228, 159, 0.9);
 }
 
 .mat-paginator {
