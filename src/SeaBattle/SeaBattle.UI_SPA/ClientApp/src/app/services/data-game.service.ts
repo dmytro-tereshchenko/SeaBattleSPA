@@ -14,13 +14,13 @@ export class DataGameService {
     this.game = null;
   }
 
-  game: Game | null;
+  private game: Game | null;
 
-  get: string = 'game/Get';
-  create: string = 'game/Create';
-  addPlayer: string = 'game/JoinPlayer';
+  private get: string = 'game/Get';
+  private create: string = 'game/Create';
+  private addPlayer: string = 'game/JoinPlayer';
 
-  public getGame(): Observable<Game> {
+  getGame(): Observable<Game> {
     if (this.game !== null) {
       return of(this.game);
     }
@@ -30,17 +30,17 @@ export class DataGameService {
     }
   }
 
-  public getGameFromServer(): Observable<Game> {
+  getGameFromServer(): Observable<Game> {
     return this.dataApi.GetData<Game>(this.get).pipe(map(game => this.game = game),
       catchError(this.errorLog.handleError<Game>('getGameFromServer')));
   }
 
-  public createGame(numberPlayers: Number): Observable<Game> {
+  createGame(numberPlayers: Number): Observable<Game> {
     return this.dataApi.PostData(this.create, { players: numberPlayers }).pipe(map(game => this.game = game),
       catchError(this.errorLog.handleError<Game>('createGame')));
   }
 
-  public joinPlayer(gameId: Number): Observable<Game> {
+  joinPlayer(gameId: Number): Observable<Game> {
     return this.dataApi.PutData(this.addPlayer, { gameId: gameId }).pipe(map(game => this.game = game),
       catchError(this.errorLog.handleError<Game>('joinPlayer')));
   }

@@ -16,11 +16,11 @@ export class DataStartFieldService {
     this.startField = null;
   }
 
-  startField: StartField | null;
+  private startField: StartField | null;
 
-  get: string = 'StartField/Get';
+  private get: string = 'StartField/Get';
 
-  public getStartField(): Observable<StartField> {
+  getStartField(): Observable<StartField> {
     if (this.startField !== null) {
       return of(this.startField);
     }
@@ -30,15 +30,14 @@ export class DataStartFieldService {
     }
   }
 
-  public getStartFieldById(id: number): Observable<StartField> {
+  getStartFieldById(id: number): Observable<StartField> {
     return this.dataApi.GetData<StartField>(`${this.get}?id=${id}`)
       .pipe(catchError(this.errorLog.handleError<StartField>('getStartFieldById')));
   }
 
-  public getStartFieldFromServer(): Observable<StartField> {
+  getStartFieldFromServer(): Observable<StartField> {
     return this.gameService.getGame().pipe(mergeMap(game => this.dataApi.GetData<StartField>(`${this.get}?id=${game.id}`)
-      .pipe(map(startField => this.startField=startField),
+      .pipe(map(startField => this.startField = startField),
         catchError(this.errorLog.handleError<StartField>('getStartFieldFromServer')))));
-
   }
 }

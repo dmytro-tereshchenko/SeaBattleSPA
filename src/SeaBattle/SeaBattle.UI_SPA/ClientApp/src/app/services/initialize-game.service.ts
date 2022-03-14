@@ -16,37 +16,37 @@ export class InitializeGameService {
 
   constructor(private dataApi: DataApiService, private errorLog: ErrorLogService) { }
 
-  gameSizeUrl: string = 'game/GetLimits';
-  gameSearch: string = 'game/GetSearch';
-  shoppingShips: string = 'ship/GetShoppingList';
-  weapons: string = 'ship/GetWeapons';
-  repairs: string = 'ship/GetRepairs';
+  private gameSizeUrl: string = 'game/GetLimits';
+  private gameSearch: string = 'game/GetSearch';
+  private shoppingShips: string = 'ship/GetShoppingList';
+  private weapons: string = 'ship/GetWeapons';
+  private repairs: string = 'ship/GetRepairs';
 
-  public GetGameSize(): Observable<GameSizeLimit> {
+  GetGameSize(): Observable<GameSizeLimit> {
     return this.dataApi.GetData<GameSizeLimit>(this.gameSizeUrl)
       .pipe(
         catchError(this.errorLog.handleError<GameSizeLimit>('GetGameSize')));
   }
 
-  public GetSearch(): Observable<GameSearch[]> {
+  GetSearch(): Observable<GameSearch[]> {
     return this.dataApi.GetData<GameSearch[]>(this.gameSearch)
       .pipe(
         catchError(this.errorLog.handleError<GameSearch[]>('GetSearch')));
   }
 
-  public GetShips(): Observable<Ship[]> {
+  GetShips(): Observable<Ship[]> {
     return this.dataApi.GetData<Ship[]>(this.shoppingShips)
       .pipe(
         catchError(this.errorLog.handleError<Ship[]>('GetShips')));
   }
 
-  public GetWeapons(): Observable<Weapon[]> {
+  GetWeapons(): Observable<Weapon[]> {
     return this.dataApi.GetData<Weapon[]>(this.weapons)
       .pipe(
         catchError(this.errorLog.handleError<Weapon[]>('GetWeapons')));
   }
 
-  public GetRepairs(): Observable<Repair[]> {
+  GetRepairs(): Observable<Repair[]> {
     return this.dataApi.GetData<Repair[]>(this.repairs)
       .pipe(
         catchError(this.errorLog.handleError<Repair[]>('GetRepairs')));

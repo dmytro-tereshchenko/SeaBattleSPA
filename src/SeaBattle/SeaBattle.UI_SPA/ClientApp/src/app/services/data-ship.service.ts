@@ -18,17 +18,17 @@ export class DataShipService {
   }
 
   //dictionary: key - shipId, value - ship
-  ships: Map<number, GameShip>;
+  private ships: Map<number, GameShip>;
 
-  getEndPoint: string = 'ship/GetById';
-  buyEndPoint: string = 'ship/BuyShip';
-  sellEndPoint: string = 'ship/SellShip';
-  addWeaponEndPoint: string = 'ship/AddWeapon';
-  addRepairEndPoint: string = 'ship/AddRepair';
-  removeWeaponEndPoint: string = 'ship/RemoveWeapon';
-  removeRepairEndPoint: string = 'ship/RemoveRepair';
+  private getEndPoint: string = 'ship/GetById';
+  private buyEndPoint: string = 'ship/BuyShip';
+  private sellEndPoint: string = 'ship/SellShip';
+  private addWeaponEndPoint: string = 'ship/AddWeapon';
+  private addRepairEndPoint: string = 'ship/AddRepair';
+  private removeWeaponEndPoint: string = 'ship/RemoveWeapon';
+  private removeRepairEndPoint: string = 'ship/RemoveRepair';
 
-  public getShip(id: number): Observable<GameShip> {
+  getShip(id: number): Observable<GameShip> {
     if (this.ships.has(id)) {
       return of(this.ships.get(id)!);
     }
@@ -38,7 +38,7 @@ export class DataShipService {
     }
   }
 
-  public getShipFromServer(id: number): Observable<GameShip> {
+  getShipFromServer(id: number): Observable<GameShip> {
     return this.dataApi.GetData<GameShip>(`${this.getEndPoint}?id=${id}`)
       .pipe(map(ship => {
         this.ships.set(ship.id, ship);
@@ -47,37 +47,37 @@ export class DataShipService {
         catchError(this.errorLog.handleError<GameShip>('getShipFromServer')));
   }
 
-  public buyShip(shipId: number): Observable<number> {
+  buyShip(shipId: number): Observable<number> {
     return this.startFieldService.getStartField().pipe(mergeMap(field => this.dataApi.PostData(this.buyEndPoint, { ShipId: shipId, StartFieldId: field.id })
       .pipe(map(state => state),
         catchError(this.errorLog.handleError<number>('buyShip')))));
   }
 
-  public sellShip(shipId: number): Observable<number> {
+  sellShip(shipId: number): Observable<number> {
     return this.startFieldService.getStartField().pipe(mergeMap(field => this.dataApi.DeleteData(`${this.sellEndPoint}?ShipId=${shipId}&StartFieldId=${field.id}`)
       .pipe(map(state => state),
         catchError(this.errorLog.handleError<number>('sellShip')))));
   }
 
-  public addWeapon(shipId: number, equipmentId: number): Observable<number> {
+  addWeapon(shipId: number, equipmentId: number): Observable<number> {
     return this.dataApi.PutData(this.addWeaponEndPoint, { ShipId: shipId, EquipmentId: equipmentId })
       .pipe(map(state => state),
         catchError(this.errorLog.handleError<number>('addWeapon')));
   }
 
-  public addRepair(shipId: number, equipmentId: number): Observable<number> {
+  addRepair(shipId: number, equipmentId: number): Observable<number> {
     return this.dataApi.PutData(this.addRepairEndPoint, { ShipId: shipId, EquipmentId: equipmentId })
       .pipe(map(state => state),
         catchError(this.errorLog.handleError<number>('addRepair')));
   }
 
-  public removeWeapon(shipId: number, equipmentId: number): Observable<number> {
+  removeWeapon(shipId: number, equipmentId: number): Observable<number> {
     return this.dataApi.PutData(this.removeWeaponEndPoint, { ShipId: shipId, EquipmentId: equipmentId })
       .pipe(map(state => state),
         catchError(this.errorLog.handleError<number>('removeWeapon')));
   }
 
-  public removeRepair(shipId: number, equipmentId: number): Observable<number> {
+  removeRepair(shipId: number, equipmentId: number): Observable<number> {
     return this.dataApi.PutData(this.removeRepairEndPoint, { ShipId: shipId, EquipmentId: equipmentId })
       .pipe(map(state => state),
         catchError(this.errorLog.handleError<number>('removeRepair')));
