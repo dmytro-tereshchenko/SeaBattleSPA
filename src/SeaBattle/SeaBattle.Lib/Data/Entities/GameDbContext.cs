@@ -50,7 +50,7 @@ namespace SeaBattle.Lib.Data.Entities
                         .HasOne(pt => pt.GameShip)
                         .WithMany(p => p.EquippedWeapons)
                         .HasForeignKey(pt => pt.GameShipId)
-                        .OnDelete(DeleteBehavior.Restrict),
+                        .OnDelete(DeleteBehavior.Cascade),
                     j =>
                     {
                         j.Property(pt => pt.Id).ValueGeneratedOnAdd();
@@ -73,7 +73,7 @@ namespace SeaBattle.Lib.Data.Entities
                         .HasOne(pt => pt.GameShip)
                         .WithMany(p => p.EquippedRepairs)
                         .HasForeignKey(pt => pt.GameShipId)
-                        .OnDelete(DeleteBehavior.Restrict),
+                        .OnDelete(DeleteBehavior.Cascade),
                     j =>
                     {
                         j.Property(pt => pt.Id).ValueGeneratedOnAdd();

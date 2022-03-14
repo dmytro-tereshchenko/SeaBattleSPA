@@ -85,7 +85,6 @@ namespace SeaBattle.GameResources.Controllers
         }
 
         [HttpDelete]
-        [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<StateCode>> SellShip([FromServices] IShipManager shipService, [FromServices] IMapper mapper, [FromBody] ShopShipDto data)
         {

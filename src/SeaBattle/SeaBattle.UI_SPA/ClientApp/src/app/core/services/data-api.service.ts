@@ -61,18 +61,18 @@ export class DataApiService {
     return this.httpClient.put<T>(`${environment.apiRoot}${path}`, data, { headers });
   }
 
-  public DeleteData<T>(path: string): Observable<any> {
+  public DeleteData<T>(path: string, data: any): Observable<any> {
     return this.authService.getUserObservable().pipe(
-      mergeMap(user => this._DeleteResourceApi(user ? user.access_token : "", path))
+      mergeMap(user => this._DeleteResourceApi(user ? user.access_token : "", path, data))
     );
   }
 
-  private _DeleteResourceApi<T>(token: string, path: string): Observable<T> {
+  private _DeleteResourceApi<T>(token: string, path: string, body: any): Observable<T> {
     const headers = new HttpHeaders({
       Accept: 'application/json',
       Authorization: 'Bearer ' + token,
     });
 
-    return this.httpClient.delete<T>(`${environment.apiRoot}${path}`, { headers });
+    return this.httpClient.delete<T>(`${environment.apiRoot}${path}`, { headers, body });
   }
 }

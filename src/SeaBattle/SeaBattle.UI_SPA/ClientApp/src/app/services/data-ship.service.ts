@@ -54,7 +54,7 @@ export class DataShipService {
   }
 
   sellShip(shipId: number): Observable<number> {
-    return this.startFieldService.getStartField().pipe(mergeMap(field => this.dataApi.DeleteData(`${this.sellEndPoint}?ShipId=${shipId}&StartFieldId=${field.id}`)
+    return this.startFieldService.getStartField().pipe(mergeMap(field => this.dataApi.DeleteData(this.sellEndPoint, { ShipId: shipId, StartFieldId: field.id })
       .pipe(map(state => state),
         catchError(this.errorLog.handleError<number>('sellShip')))));
   }
