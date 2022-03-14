@@ -1,4 +1,12 @@
-<app-game-field [field]="gameField" [labels]="labels" [height]="gameFieldHeight" (notify)="onNotifyGameField($event)"></app-game-field>
+<mat-tab-group mat-align-tabs="center">
+    <mat-tab label="Game field">
+        <app-game-field [field]="gameField" [labels]="labels" [height]="gameFieldHeight" (notify)="onNotifyGameField($event)"></app-game-field>
+    </mat-tab>
+    <mat-tab label="Ship's shop">
+        <app-buy-ship (notify)="onNotifyShopShip()"></app-buy-ship>
+    </mat-tab>
+</mat-tab-group>
+
 <div class="d-flex justify-content-around align-items-center p-2">
     <div>
         <label for="points">Points</label>

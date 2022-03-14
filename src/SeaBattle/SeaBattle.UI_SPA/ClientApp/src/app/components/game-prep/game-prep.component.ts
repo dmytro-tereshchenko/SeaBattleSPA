@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataGameFieldService } from '../../services/data-game-field.service';
 import { DataStartFieldService } from '../../services/data-start-field.service';
 import { DataShipService } from '../../services/data-ship.service';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { GameField } from '../../data/game-field';
 import { GameFieldCell } from '../../data/game-field-cell';
 import { StartFieldCell } from '../../data/start-field-cell';
@@ -25,7 +25,6 @@ export class GamePrepComponent implements OnInit {
   labels: boolean[][];
   startField: StartField;
   selectedShipId: number;
-  ships: GameShip[];
   gameFieldHeight: string;
 
   displayedColumns: string[] = ['shipType', 'size', 'maxHp', 'speed', 'weapons', 'repairs'];
@@ -45,10 +44,8 @@ export class GamePrepComponent implements OnInit {
       this.gameField = f;
 
       this.startFieldService.getStartField().subscribe(sf => {
-        sf.gameShipsId.forEach(shipId => this.shipService.getShip(shipId)
-          .subscribe(ship => this.dataSource.data.push(ship)));
+        this.updateListShips(sf)
 
-        this.startField = sf;
         this.labels = [];
 
         for (var i: number = 0; i < f.sizeX; i++) {
@@ -59,29 +56,6 @@ export class GamePrepComponent implements OnInit {
         }
 
         sf.startFieldCells.forEach(c => this.labels[c.x - 1][c.y - 1] = true);
-
-        this.dataSource = new MatTableDataSource(this.ships);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-
-        // testing with ships
-
-        // this.gameField.gameFieldCells[1][1]=<GameFieldCell>{
-        //   id: null,
-        //   x: 1,
-        //   y: 1,
-        //   stern: false,
-        //   gameShipId: 1,
-        //   playerId: 1
-        // }
-        // this.gameField.gameFieldCells[1][2]=<GameFieldCell>{
-        //   id: null,
-        //   x: 1,
-        //   y: 2,
-        //   stern: false,
-        //   gameShipId: 1,
-        //   playerId: 1
-        // }
       });
     });
   }
@@ -90,8 +64,28 @@ export class GamePrepComponent implements OnInit {
     console.log(cell);
   }
 
+  onNotifyShopShip() {
+    this.startFieldService.getStartFieldFromServer().subscribe(field => this.updateListShips(field));
+  }
+
   select(shipId: number) {
     this.selectedShipId = shipId;
   }
 
+  private updateListShips(field: StartField) {
+    const ships$: Observable<GameShip>[] = [];
+    
+    this.startField = field;
+
+    field.gameShipsId.forEach(shipId => {
+      const ship$: Observable<GameShip> = this.shipService.getShip(shipId);
+      ships$.push(ship$);
+    });
+
+    forkJoin(ships$).subscribe((ships: GameShip[]) => {
+      this.dataSource = new MatTableDataSource(ships);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    });
+  }
 }
