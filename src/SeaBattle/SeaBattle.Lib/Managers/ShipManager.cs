@@ -64,8 +64,10 @@ namespace SeaBattle.Lib.Managers
             startField.GameShips.Add(gameShip);
             startField.Points -= gameShip.Points;
 
-            await _startFieldRepository.UpdateAsync(s => s.Id == startField.Id, startField.GameShips,
-                _startFieldRepository.GetAll(), "GameShips");
+            await _startFieldRepository.UpdateAsync(startField);
+
+            /*await _startFieldRepository.UpdateAsync(s => s.Id == startField.Id, startField.GameShips,
+                _startFieldRepository.GetAll(), "GameShips");*/
 
             return StateCode.Success;
         }
@@ -100,8 +102,10 @@ namespace SeaBattle.Lib.Managers
 
             await _gameShipRepository.DeleteAsync(gameShip);
 
-            await _startFieldRepository.UpdateAsync(s => s.Id == startField.Id, startField.GameShips,
-                _startFieldRepository.GetAll(), "GameShips");
+            await _startFieldRepository.UpdateAsync(startField);
+
+            /*await _startFieldRepository.UpdateAsync(s => s.Id == startField.Id, startField.GameShips,
+                _startFieldRepository.GetAll(), "GameShips");*/
 
             return StateCode.Success;
         }
@@ -184,8 +188,10 @@ namespace SeaBattle.Lib.Managers
 
             gameShip.Weapons.Add(weapon);
 
-            await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.Weapons,
-                _weaponRepository.GetAll(), "Weapons");
+            await _gameShipRepository.UpdateAsync(gameShip);
+
+            /*await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.Weapons,
+                _weaponRepository.GetAll(), "Weapons");*/
 
             return StateCode.Success;
         }
@@ -219,8 +225,10 @@ namespace SeaBattle.Lib.Managers
 
             gameShip.Repairs.Add(repair);
 
-            await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.Repairs,
-                _repairRepository.GetAll(), "Repairs");
+            await _gameShipRepository.UpdateAsync(gameShip);
+
+            /*await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.Repairs,
+                _repairRepository.GetAll(), "Repairs");*/
 
             return StateCode.Success;
         }
@@ -246,8 +254,10 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidEquipment;
             }
 
-            await _gameShipRepository.UpdateAsync(s => s.Id == gameShipId, gameShip.EquippedWeapons,
-                gameShip.EquippedWeapons, "EquippedWeapons");
+            await _gameShipRepository.UpdateAsync(gameShip);
+
+            /*await _gameShipRepository.UpdateAsync(s => s.Id == gameShipId, gameShip.EquippedWeapons,
+                gameShip.EquippedWeapons, "EquippedWeapons");*/
 
             return StateCode.Success;
         }
@@ -273,9 +283,10 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidEquipment;
             }
 
+            await _gameShipRepository.UpdateAsync(gameShip);
 
-            await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.EquippedRepairs,
-                gameShip.EquippedRepairs, "EquippedRepairs");
+            /*await _gameShipRepository.UpdateAsync(s => s.Id == gameShip.Id, gameShip.EquippedRepairs,
+                gameShip.EquippedRepairs, "EquippedRepairs");*/
 
             return StateCode.Success;
         }

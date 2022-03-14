@@ -43,9 +43,11 @@ namespace SeaBattle.GameResources.Mappings
             CreateMap<GameShip, int>()
                 .ConvertUsing(source => source.Id);
 
-            CreateMap<Ship, ShipDto>();
+            CreateMap<Ship, ShipDto>()
+                .ForMember(dest => dest.ShipType, opt => opt.MapFrom(c => (byte)c.ShipType));
 
-            CreateMap<GameShip, GameShipDto>();
+            CreateMap<GameShip, GameShipDto>()
+                .ForMember(dest => dest.ShipType, opt => opt.MapFrom(c => (byte)c.ShipType));
 
             CreateMap<Weapon, WeaponDto>();
 
