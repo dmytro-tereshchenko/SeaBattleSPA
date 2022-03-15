@@ -47,7 +47,7 @@ namespace SeaBattle.Lib.Managers
             var query = await _startFieldRepository.GetWithIncludeAsync(f => f.Id == startFieldId, s => s.GameShips);
             StartField startField = query.FirstOrDefault();
 
-            if (gameShip == null || startField == null)
+            if (gameShip is null || startField is null)
             {
                 Exception ex = new Exception($"Invalid Id arguments in progress {nameof(BuyShip)}");
                 ex.Data.Add("gameShipId", gameShipId);
@@ -80,7 +80,7 @@ namespace SeaBattle.Lib.Managers
             var queryField = await _startFieldRepository.GetWithIncludeAsync(f => f.Id == startFieldId, s => s.GameShips);
             StartField startField = queryField.FirstOrDefault();
 
-            if (gameShip == null || startField == null)
+            if (gameShip is null || startField is null)
             {
                 Exception ex = new Exception($"Invalid Id arguments in progress {nameof(SellShip)}");
                 ex.Data.Add("gameShipId", gameShipId);
@@ -113,7 +113,7 @@ namespace SeaBattle.Lib.Managers
 
             Ship ship = await _shipRepository.FindByIdAsync(shipId);
 
-            if (gamePlayer == null || ship == null)
+            if (gamePlayer is null || ship is null)
             {
                 Exception ex = new Exception($"Invalid Id arguments in progress {nameof(GetNewShip)}");
                 ex.Data.Add("shipId", shipId);
@@ -159,11 +159,11 @@ namespace SeaBattle.Lib.Managers
         {
             Weapon weapon = await _weaponRepository.FindByIdAsync(weaponId);
 
-            var query = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == gameShipId, s => s.Weapons,
-                s => s.Repairs, s => s.Ship);
+            var query = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == gameShipId, s => s.EquippedWeapons,
+                s => s.EquippedRepairs, s => s.Ship);
             GameShip gameShip = query.FirstOrDefault();
 
-            if (weapon == null || gameShip == null)
+            if (weapon is null || gameShip is null)
             {
                 Exception ex = new Exception($"Invalid Id arguments in progress {nameof(AddWeapon)}");
                 ex.Data.Add("gameShip", gameShip);
@@ -172,17 +172,23 @@ namespace SeaBattle.Lib.Managers
                 throw ex;
             }
 
-            if (gameShip.Weapons.Count + gameShip.Repairs.Count == gameShip.Size)
+            if (gameShip.EquippedWeapons.Count + gameShip.EquippedRepairs.Count == gameShip.Size)
             {
                 return StateCode.LimitEquipment;
             }
 
-            if ((int) gameShip.Ship.ShipType == 3)
+            if ((int) gameShip.Ship.ShipType == 2)
             {
                 return StateCode.InvalidEquipment;
             }
 
-            gameShip.Weapons.Add(weapon);
+            EquippedWeapon weap = new EquippedWeapon()
+            {
+                GameShipId = gameShipId,
+                WeaponId = weaponId
+            };
+
+            gameShip.EquippedWeapons.Add(weap);
 
             await _gameShipRepository.UpdateAsync(gameShip);
 
@@ -193,11 +199,11 @@ namespace SeaBattle.Lib.Managers
         {
             Repair repair = await _repairRepository.FindByIdAsync(repairId);
 
-            var query = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == gameShipId, s => s.Weapons,
-                s => s.Repairs, s => s.Ship);
+            var query = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == gameShipId, s => s.EquippedWeapons,
+                s => s.EquippedRepairs, s => s.Ship);
             GameShip gameShip = query.FirstOrDefault();
 
-            if (repair == null || gameShip == null)
+            if (repair is null || gameShip is null)
             {
                 Exception ex = new Exception($"Invalid Id arguments in progress {nameof(AddRepair)}");
                 ex.Data.Add("gameShipId", gameShipId);
@@ -206,7 +212,7 @@ namespace SeaBattle.Lib.Managers
                 throw ex;
             }
 
-            if (gameShip.Weapons.Count + gameShip.Repairs.Count == gameShip.Size)
+            if (gameShip.EquippedWeapons.Count + gameShip.EquippedRepairs.Count == gameShip.Size)
             {
                 return StateCode.LimitEquipment;
             }
@@ -216,7 +222,13 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidEquipment;
             }
 
-            gameShip.Repairs.Add(repair);
+            EquippedRepair rep = new EquippedRepair()
+            {
+                GameShipId = gameShipId,
+                RepairId = repairId
+            };
+
+            gameShip.EquippedRepairs.Add(rep);
 
             await _gameShipRepository.UpdateAsync(gameShip);
 
@@ -229,7 +241,7 @@ namespace SeaBattle.Lib.Managers
                 s => s.EquippedWeapons);
             GameShip gameShip = query.FirstOrDefault();
 
-            if (gameShip == null)
+            if (gameShip is null)
             {
                 Exception ex = new Exception($"Invalid Id arguments in progress {nameof(RemoveWeapon)}");
                 ex.Data.Add("gameShipId", gameShipId);
@@ -239,7 +251,7 @@ namespace SeaBattle.Lib.Managers
 
             EquippedWeapon eqWeapon = gameShip.EquippedWeapons.FirstOrDefault(w => w.WeaponId == weaponId);
 
-            if (eqWeapon == null || !gameShip.EquippedWeapons.Remove(eqWeapon))
+            if (eqWeapon is null || !gameShip.EquippedWeapons.Remove(eqWeapon))
             {
                 return StateCode.InvalidEquipment;
             }
@@ -255,7 +267,7 @@ namespace SeaBattle.Lib.Managers
                 s => s.EquippedRepairs);
             GameShip gameShip = query.FirstOrDefault();
 
-            if (gameShip == null)
+            if (gameShip is null)
             {
                 Exception ex = new Exception($"Invalid Id arguments in progress {nameof(RemoveRepair)}");
                 ex.Data.Add("gameShipId", gameShipId);
@@ -265,7 +277,7 @@ namespace SeaBattle.Lib.Managers
 
             EquippedRepair eqRepair = gameShip.EquippedRepairs.FirstOrDefault(w => w.RepairId == repairId);
 
-            if (eqRepair == null || !gameShip.EquippedRepairs.Remove(eqRepair))
+            if (eqRepair is null || !gameShip.EquippedRepairs.Remove(eqRepair))
             {
                 return StateCode.InvalidEquipment;
             }

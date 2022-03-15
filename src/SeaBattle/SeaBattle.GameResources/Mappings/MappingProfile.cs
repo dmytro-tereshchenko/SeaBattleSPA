@@ -47,11 +47,23 @@ namespace SeaBattle.GameResources.Mappings
                 .ForMember(dest => dest.ShipType, opt => opt.MapFrom(c => (byte)c.ShipType));
 
             CreateMap<GameShip, GameShipDto>()
-                .ForMember(dest => dest.ShipType, opt => opt.MapFrom(c => (byte)c.ShipType));
+                .ForMember(dest => dest.ShipType, opt => opt.MapFrom(c => (byte)c.ShipType))
+                .ForMember(dest => dest.Weapons, opt => opt.MapFrom(c => c.EquippedWeapons))
+                .ForMember(dest => dest.Repairs, opt => opt.MapFrom(c => c.EquippedRepairs));
 
             CreateMap<Weapon, WeaponDto>();
 
+            CreateMap<EquippedWeapon, WeaponDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(c => c.Weapon.Id))
+                .ForMember(dest => dest.AttackRange, opt => opt.MapFrom(c => c.Weapon.AttackRange))
+                .ForMember(dest => dest.Damage, opt => opt.MapFrom(c => c.Weapon.Damage));
+
             CreateMap<Repair, RepairDto>();
+
+            CreateMap<EquippedRepair, RepairDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(c => c.Repair.Id))
+                .ForMember(dest => dest.RepairRange, opt => opt.MapFrom(c => c.Repair.RepairRange))
+                .ForMember(dest => dest.RepairPower, opt => opt.MapFrom(c => c.Repair.RepairPower));
         }
     }
 }
