@@ -3,6 +3,7 @@ import { DataGameFieldService } from '../../services/data-game-field.service';
 import { DataStartFieldService } from '../../services/data-start-field.service';
 import { DataShipService } from '../../services/data-ship.service';
 import { Observable, forkJoin } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { GameField } from '../../data/game-field';
 import { GameFieldCell } from '../../data/game-field-cell';
 import { StartFieldCell } from '../../data/start-field-cell';
@@ -35,7 +36,8 @@ export class GamePrepComponent implements OnInit {
 
   constructor(private gameFieldService: DataGameFieldService,
     private startFieldService: DataStartFieldService,
-    private shipService: DataShipService) {
+    private shipService: DataShipService,
+    private initService: InitializeGameService) {
     this.gameFieldHeight = "50vh";
   }
 
@@ -78,16 +80,60 @@ export class GamePrepComponent implements OnInit {
     this.selectedShipId = shipId;
   }
 
-  editShip(row: GameShip) {
-    console.log(`edit id=${row.id}`);
-  }
-
   sellShip(row: GameShip) {
     this.shipService.sellShip(row.id).subscribe(state => {
       if (state === 10) {
         this.startFieldService.getStartFieldFromServer().subscribe(field => this.updateListShips(field));
       }
     });
+  }
+
+  addWeapon(row: GameShip) {
+    if (row.shipType !== 2 && row.size > row.weapons.length + row.repairs.length) {
+      this.initService.GetWeapons().pipe(mergeMap(w => this.shipService.addWeapon(row.id, w[0].id))).subscribe(s => {
+        if (s === 10) {
+          this.shipService.getShipFromServer(row.id)
+            .subscribe(sh => this.startFieldService.getStartField()
+              .subscribe(field => this.updateListShips(field)));
+        }
+      });
+    }
+  }
+
+  removeWeapon(row: GameShip) {
+    if (row.shipType !== 2 && row.weapons.length > 0) {
+      this.initService.GetWeapons().pipe(mergeMap(w => this.shipService.removeWeapon(row.id, w[0].id))).subscribe(s => {
+        if (s === 10) {
+          this.shipService.getShipFromServer(row.id)
+            .subscribe(sh => this.startFieldService.getStartField()
+              .subscribe(field => this.updateListShips(field)));
+        }
+      });
+    }
+  }
+
+  addRepair(row: GameShip) {
+    if (row.shipType !== 1 && row.size > row.weapons.length + row.repairs.length) {
+      this.initService.GetRepairs().pipe(mergeMap(r => this.shipService.addRepair(row.id, r[0].id))).subscribe(s => {
+        if (s === 10) {
+          this.shipService.getShipFromServer(row.id)
+            .subscribe(sh => this.startFieldService.getStartField()
+              .subscribe(field => this.updateListShips(field)));
+        }
+      });
+    }
+  }
+
+  removeRepair(row: GameShip) {
+    if (row.shipType !== 1 && row.repairs.length > 0) {
+      this.initService.GetRepairs().pipe(mergeMap(r => this.shipService.removeRepair(row.id, r[0].id))).subscribe(s => {
+        if (s === 10) {
+          this.shipService.getShipFromServer(row.id)
+            .subscribe(sh => this.startFieldService.getStartField()
+              .subscribe(field => this.updateListShips(field)));
+        }
+      });
+    }
   }
 
   private updateListShips(field: StartField) {

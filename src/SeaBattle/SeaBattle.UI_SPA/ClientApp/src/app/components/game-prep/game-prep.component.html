@@ -45,20 +45,27 @@
             <!-- Equiped weapons Column -->
             <ng-container matColumnDef="weapons">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Equiped weapons </th>
-                <td mat-cell *matCellDef="let row">{{row.weapons.length}}</td>
+                <td mat-cell *matCellDef="let row">
+                    <div (click)="removeWeapon(row)" class="btn-sm btn btn-outline-secondary m-1 equip" *ngIf="row.shipType===1||row.shipType===3">-</div>
+                    &nbsp;<span>{{row.weapons.length}}</span>&nbsp;
+                    <div (click)="addWeapon(row)" class="btn-sm btn btn-outline-secondary m-1 equip" *ngIf="row.shipType===1||row.shipType===3">+</div>
+                </td>
             </ng-container>
 
             <!-- Equiped repairs Column -->
             <ng-container matColumnDef="repairs">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Equiped repairs </th>
-                <td mat-cell *matCellDef="let row">{{row.repairs.length}}</td>
+                <td mat-cell *matCellDef="let row">
+                    <div (click)="removeRepair(row)" class="btn-sm btn btn-outline-secondary m-1 equip" *ngIf="row.shipType===2||row.shipType===3">-</div>
+                    &nbsp;<span>{{row.repairs.length}}</span>&nbsp;
+                    <div (click)="addRepair(row)" class="btn-sm btn btn-outline-secondary m-1 equip" *ngIf="row.shipType===2||row.shipType===3">+</div>
+                </td>
             </ng-container>
 
             <!-- Buttons Column -->
             <ng-container matColumnDef="buttons">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let row">
-                    <button (click)="editShip(row)" class="btn-sm btn btn-outline-success m-1">Edit</button>
                     <button (click)="sellShip(row)" class="btn-sm btn btn-outline-danger m-1">Sell</button>
                 </td>
             </ng-container>

@@ -30,9 +30,10 @@ table {
 
 td,
 th {
-    width: 14%;
     color: black;
     font-size: large;
+    text-align: center !important;
+    vertical-align: middle !important;
 }
 
 .select:hover {
@@ -50,4 +51,18 @@ th {
 
 .mat-paginator {
     background-color: rgb(61, 141, 95, 0.8);
+}
+
+:host ::ng-deep .mat-sort-header-container {
+    display: flex;
+    justify-content: center;
+}
+
+th.mat-header-cell,
+td.mat-cell {
+    text-align: center;
+}
+
+.equip {
+    width: 1.8rem;
 }
