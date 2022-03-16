@@ -5,6 +5,7 @@ using SeaBattle.GameResources.Dto;
 using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;
 using SeaBattle.Lib.Managers;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
 namespace SeaBattle.GameResources.Controllers
@@ -30,6 +31,26 @@ namespace SeaBattle.GameResources.Controllers
             StartFieldDto dto = mapper.Map<IStartField, StartFieldDto>(startField);
 
             return dto;
+        }
+
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<StateCode>> TransferShipFromGameField([FromServices] IActionManager actionService, RemoveShipDto data)
+        {
+            string name = HttpContext.User.FindFirst("name")?.Value;
+
+            return await actionService.TransferShipFromGameField(name, data.ShipId, data.StartFieldId);
+        }
+
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<StateCode>> TransferShipToGameField([FromServices] IActionManager actionService, PutShipDto data)
+        {
+            string name = HttpContext.User.FindFirst("name")?.Value;
+
+            return await actionService.TransferShipToGameField(name, data.TPosX, data.TPosY, (DirectionOfShipPosition)data.Direction, data.StartFieldId, data.ShipId);
         }
     }
 }

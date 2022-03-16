@@ -96,6 +96,8 @@ namespace SeaBattle.GameResources
 
             services.AddScoped<IShipManager, ShipManager>();
             services.AddScoped<IInitializeManager, InitializeManager>();
+            services.AddScoped<IGameFieldActionUtility, GameFieldActionUtility>();
+            services.AddScoped<IActionManager, ActionManager>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
