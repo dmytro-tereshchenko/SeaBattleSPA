@@ -6,10 +6,8 @@ using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;
 using SeaBattle.Lib.Managers;
 using SeaBattle.Lib.Repositories;
-using System;
 using System.Linq;
 using System.Net.Mime;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SeaBattle.GameResources.Controllers

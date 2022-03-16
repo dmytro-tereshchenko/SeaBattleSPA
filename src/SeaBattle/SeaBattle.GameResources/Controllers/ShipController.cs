@@ -86,7 +86,7 @@ namespace SeaBattle.GameResources.Controllers
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<StateCode>> SellShip([FromServices] IShipManager shipService, [FromServices] IMapper mapper, [FromBody] ShopShipDto data)
+        public async Task<ActionResult<StateCode>> SellShip([FromServices] IShipManager shipService, [FromBody] ShopShipDto data)
         {
             return await shipService.SellShip(data.ShipId, data.StartFieldId);
         }
@@ -94,7 +94,7 @@ namespace SeaBattle.GameResources.Controllers
         [HttpPut]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<StateCode>> AddWeapon([FromServices] IShipManager shipService, [FromServices] IMapper mapper, [FromBody] EquipmentDto data)
+        public async Task<ActionResult<StateCode>> AddWeapon([FromServices] IShipManager shipService, [FromBody] EquipmentDto data)
         {
             return await shipService.AddWeapon(data.ShipId, data.EquipmentId);
         }
@@ -102,7 +102,7 @@ namespace SeaBattle.GameResources.Controllers
         [HttpPut]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<StateCode>> AddRepair([FromServices] IShipManager shipService, [FromServices] IMapper mapper, [FromBody] EquipmentDto data)
+        public async Task<ActionResult<StateCode>> AddRepair([FromServices] IShipManager shipService, [FromBody] EquipmentDto data)
         {
             return await shipService.AddRepair(data.ShipId, data.EquipmentId);
         }
@@ -110,7 +110,7 @@ namespace SeaBattle.GameResources.Controllers
         [HttpPut]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<StateCode>> RemoveWeapon([FromServices] IShipManager shipService, [FromServices] IMapper mapper, [FromBody] EquipmentDto data)
+        public async Task<ActionResult<StateCode>> RemoveWeapon([FromServices] IShipManager shipService, [FromBody] EquipmentDto data)
         {
             return await shipService.RemoveWeapon(data.ShipId, data.EquipmentId);
         }
@@ -118,7 +118,7 @@ namespace SeaBattle.GameResources.Controllers
         [HttpPut]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<StateCode>> RemoveRepair([FromServices] IShipManager shipService, [FromServices] IMapper mapper, [FromBody] EquipmentDto data)
+        public async Task<ActionResult<StateCode>> RemoveRepair([FromServices] IShipManager shipService, [FromBody] EquipmentDto data)
         {
             return await shipService.RemoveRepair(data.ShipId, data.EquipmentId);
         }
