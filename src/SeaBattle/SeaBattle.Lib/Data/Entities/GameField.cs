@@ -93,11 +93,20 @@ namespace SeaBattle.Lib.Entities
                 {
                     if (cell.X == x && cell.Y == y)
                     {
-                        fieldCell = cell;
+                        if (value is null)
+                        {
+                            GameFieldCells.Remove(cell);
+                            return;
+                        }
+                        else
+                        {
+                            fieldCell = cell;
+                            break;
+                        }
                     }
                 }
 
-                if (fieldCell == null)
+                if (fieldCell is null)
                 {
                     fieldCell = new GameFieldCell()
                     {

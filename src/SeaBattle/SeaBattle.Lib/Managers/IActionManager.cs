@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using SeaBattle.Lib.Entities;
 using SeaBattle.Lib.Infrastructure;
 using SeaBattle.Lib.Responses;
@@ -19,62 +20,39 @@ namespace SeaBattle.Lib.Managers
         IGameFieldActionUtility ActionUtility { get; }
 
         /// <summary>
-        /// Get actual game field
-        /// </summary>
-        /// <param name="player">The player who request game field</param>
-        /// <param name="game">Current game</param>
-        /// <returns><see cref="IResponseGameField"/></returns>
-        IResponseGameField GetGameField(IGamePlayer player, IGame game);
-
-        /// <summary>
         /// Remove <see cref="IGameShip"/> from <see cref="IGameField"/> to collection in <see cref="IStartField.Ships"/>
         /// </summary>
-        /// <param name="player">Current player</param>
-        /// <param name="tPosX">X coordinate of removed ship</param>
-        /// <param name="tPosY">Y coordinate of removed ship</param>
-        /// <param name="startField">Start field with game field and collection of unused ships</param>
+        /// <param name="playerName">Current player's name</param>
+        /// <param name="shipId">Id of removed ship</param>
+        /// <param name="startFieldId">Id of Start field with game field and collection of unused ships</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode TransferShipFromGameField(IPlayer player, ushort tPosX, ushort tPosY,
-            IStartField startField);
+        Task<StateCode> TransferShipFromGameField(string playerName, int shipId, int startFieldId);
 
         /// <summary>
         /// Put <see cref="IGameShip"/> from collection of <see cref="IStartField.Ships"/> to <see cref="IGameField"/>
         /// </summary>
-        /// <param name="player">Current player</param>
+        /// <param name="playerName">Current player's name</param>
         /// <param name="tPosX">X coordinate of the ship's stern</param>
         /// <param name="tPosY">Y coordinate of the ship's stern</param>
         /// <param name="direction">The direction of placement ship</param>
-        /// <param name="startField">Start field with game field and collection of unused ships</param>
-        /// <param name="ship">Current ship</param>
+        /// <param name="startFieldId">Id of Start field with game field and collection of unused ships</param>
+        /// <param name="shipId">Id of current ship</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode TransferShipToGameField(IGamePlayer player, ushort tPosX, ushort tPosY,
-            DirectionOfShipPosition direction, IStartField startField, IGameShip ship);
+        Task<StateCode> TransferShipToGameField(string playerName, ushort tPosX, ushort tPosY,
+            DirectionOfShipPosition direction, int startFieldId, int shipId);
 
         /// <summary>
         /// Move <see cref="IGameShip"/> from one position to another on <see cref="IGameField"/>
         /// </summary>
-        /// <param name="player">Current player</param>
-        /// <param name="ship">Current ship</param>
+        /// <param name="playerName">Current player's name</param>
+        /// <param name="gameShipId">Id of current ship</param>
         /// <param name="tPosX">X coordinate of new position of the ship's stern</param>
         /// <param name="tPosY">Y coordinate of new position of the ship's stern</param>
         /// <param name="direction">The direction of placement ship</param>
-        /// <param name="field">Game field</param>
+        /// <param name="gameFieldId">Id of game field</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode MoveShip(IGamePlayer player, IGameShip ship, ushort tPosX, ushort tPosY,
-            DirectionOfShipPosition direction, IGameField field);
-
-        /// <summary>
-        /// Get <see cref="ICollection{T}"/> of <see cref="IGameShip"/> on distance of action.
-        /// </summary>
-        /// <param name="player">Current player</param>
-        /// <param name="ship">Current ship</param>
-        /// <param name="field">Game field</param>
-        /// <param name="action">Type of possible actions (<see cref="ActionType.Attack"/>, <see cref="ActionType.Repair"/>)</param>
-        /// <returns><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGameShip"/></returns>
-        /// <exception cref="ArgumentException">Wrong player</exception>
-        /// <exception cref="InvalidEnumArgumentException">Used action not planned by the game</exception>
-        ICollection<IGameShip> GetVisibleTargetsForShip(IGamePlayer player, IGameShip ship, IGameField field,
-            ActionType action);
+        Task<StateCode> MoveShip(string playerName, int gameShipId, ushort tPosX, ushort tPosY,
+            DirectionOfShipPosition direction, int gameFieldId);
 
         /// <summary>
         /// Get sorted collection of the ship by distance to the center of the field.
@@ -88,32 +66,32 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Attack cell by ship
         /// </summary>
-        /// <param name="player">Current player</param>
-        /// <param name="ship">Current ship</param>
+        /// <param name="playerName">Current player's name</param>
+        /// <param name="gameShipId">Id of current ship</param>
         /// <param name="tPosX">X coordinate of target cell</param>
         /// <param name="tPosY">Y coordinate of target cell</param>
-        /// <param name="field">Game field</param>
+        /// <param name="gameFieldId">Id of Game field</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode AttackShip(IGamePlayer player, IGameShip ship, ushort tPosX, ushort tPosY, IGameField field);
+        Task<StateCode> AttackShip(string playerName, int gameShipId, ushort tPosX, ushort tPosY, int gameFieldId);
 
         /// <summary>
         /// Repair cell by ship
         /// </summary>
-        /// <param name="player">Current player</param>
+        /// <param name="playerName">Current player's name</param>
         /// <param name="ship">Current ship</param>
         /// <param name="tPosX">X coordinate of target cell</param>
         /// <param name="tPosY">Y coordinate of target cell</param>
-        /// <param name="field">Game field</param>
+        /// <param name="gameFieldId">Id of Game field</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode RepairShip(IGamePlayer player, IGameShip ship, ushort tPosX, ushort tPosY, IGameField field);
+        Task<StateCode> RepairShip(string playerName, int gameShipId, ushort tPosX, ushort tPosY, int gameFieldId);
 
         /// <summary>
         /// Repair all friendly ship on distance
         /// </summary>
-        /// <param name="player">Current player</param>
-        /// <param name="ship">Current ship</param>
-        /// <param name="field">Game field</param>
+        /// <param name="playerName">Current player's name</param>
+        /// <param name="gameShipId">Id of current ship</param>
+        /// <param name="gameFieldId">Id of Game field</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
-        StateCode RepairAllShip(IGamePlayer player, IGameShip ship, IGameField field);
+        Task<StateCode> RepairAllShip(string playerName, int gameShipId, int gameFieldId);
     }
 }

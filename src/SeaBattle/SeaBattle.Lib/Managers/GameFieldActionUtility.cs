@@ -9,10 +9,10 @@ namespace SeaBattle.Lib.Managers
 {
     public class GameFieldActionUtility : IGameFieldActionUtility
     {
-        public StateCode PutShipOnField(IGamePlayer player, IGameShip ship, ushort posX, ushort posY,
+        public StateCode PutShipOnField(string playerName, IGameShip ship, ushort posX, ushort posY,
             DirectionOfShipPosition direction, IGameField field)
         {
-            if (ship.GamePlayer != player)
+            if (!ship.GamePlayer.Name.Equals(playerName))
             {
                 return StateCode.InvalidPlayer;
             }
@@ -167,7 +167,7 @@ namespace SeaBattle.Lib.Managers
         }
 
         public IDictionary<IGameShip, ICollection<(ushort, ushort)>> GetAllShipsCoordinates(IGameField field,
-            IGamePlayer player = null)
+            string playerName = null)
         {
             //Dictionary of ships when Key=ship (IGameShip), Value=array of coordinates(X,Y) on field (List<(ushort, ushort)>)
             IDictionary<IGameShip, ICollection<(ushort, ushort)>> ships = new Dictionary<IGameShip, ICollection<(ushort, ushort)>>();
@@ -177,7 +177,7 @@ namespace SeaBattle.Lib.Managers
                 for (ushort j = 1; j <= field.SizeY; j++)
                 {
                     //filtering by team and empty cell
-                    /*if (field[i, j] != null && (player == null || player == field[i, j].GamePlayer))
+                    if (field[i, j] is not null && (playerName is null || playerName.Equals(field[i, j].GamePlayer.Name)))
                     {
                         if (!ships.ContainsKey(field[i, j]))
                         {
@@ -186,7 +186,7 @@ namespace SeaBattle.Lib.Managers
                         }
 
                         ships[field[i, j]].Add((i, j));
-                    }*/
+                    }
                 }
             }
 

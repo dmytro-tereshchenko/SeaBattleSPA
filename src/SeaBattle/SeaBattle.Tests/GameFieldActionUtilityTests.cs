@@ -13,7 +13,7 @@ namespace SeaBattle.Tests
 
         public GameFieldActionUtilityTests()
         {
-            _utility = new GameFieldActionUtility();
+            //_utility = new GameFieldActionUtility();
         }
 
         /*[Fact]
