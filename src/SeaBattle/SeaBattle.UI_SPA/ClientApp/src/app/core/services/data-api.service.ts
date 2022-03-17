@@ -57,7 +57,6 @@ export class DataApiService {
       Accept: 'application/json',
       Authorization: 'Bearer ' + token,
     });
-
     return this.httpClient.put<T>(`${environment.apiRoot}${path}`, data, { headers });
   }
 

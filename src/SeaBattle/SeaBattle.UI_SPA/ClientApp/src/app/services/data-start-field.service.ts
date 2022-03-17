@@ -6,6 +6,8 @@ import { Observable, of, map, catchError } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { DataGameService } from './data-game.service';
 import { StartFieldCell } from '../data/start-field-cell';
+import { GameFieldCell } from '../data/game-field-cell';
+import { Direction } from '../data/direction';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +21,8 @@ export class DataStartFieldService {
   private startField: StartField | null;
 
   private get: string = 'StartField/Get';
+  private putShip: string = 'StartField/TransferShipToGameField';
+  private removeShip: string = 'StartField/TransferShipFromGameField';
 
   getStartField(): Observable<StartField> {
     if (this.startField !== null) {
@@ -39,5 +43,19 @@ export class DataStartFieldService {
     return this.gameService.getGame().pipe(mergeMap(game => this.dataApi.GetData<StartField>(`${this.get}?id=${game.id}`)
       .pipe(map(startField => this.startField = startField),
         catchError(this.errorLog.handleError<StartField>('getStartFieldFromServer')))));
+  }
+
+  putShipOnField(cell: GameFieldCell, direction: Direction, shipId: number): Observable<number> {
+    return this.getStartField().pipe(mergeMap(field => this.dataApi.PutData<number>(this.putShip,
+      { tPosX: cell.x + 1, tPosY: cell.y + 1, direction: direction, startFieldId: field.id, shipId: shipId })
+      .pipe(map(state => state),
+        catchError(this.errorLog.handleError<number>('putShipOnField')))));
+  }
+
+  removeShipFromField(shipId: number): Observable<number> {
+    return this.getStartField().pipe(mergeMap(field => this.dataApi.PutData<number>(this.removeShip,
+      { shipId: shipId, startFieldId: field.id })
+      .pipe(map(state => state),
+        catchError(this.errorLog.handleError<number>('removeShipOnField')))));
   }
 }

@@ -14,7 +14,8 @@ export class GameFieldComponent implements OnInit {
   @Input() field: GameField;
   @Input() labels: boolean[][];
   @Input() height: string;
-  @Input() selectedShipId: number;
+  @Input() selectedShipId: number | null;
+  @Input() clickCell: GameFieldCell | null;
   @Output() notifyClick = new EventEmitter<GameFieldCell>();
   @Output() notifyDblClick = new EventEmitter<GameFieldCell>();
 
@@ -49,9 +50,18 @@ export class GameFieldComponent implements OnInit {
   }
 
   getShipColor(cell: GameFieldCell): string {
-    let index = this.playersId.findIndex(i => i === cell.playerId);
+    if (cell) {
+      if (this.clickCell === cell || (cell.gameShipId !== null && cell.gameShipId === this.selectedShipId)) {
+        return "red";
+      }
 
-    return index === -1 ? this.labelled(cell) ? "rgba(255, 255, 255, 0.5)" : "rgba(255, 255, 255, 0)" : this.colorShips[index];
+      let index = this.playersId.findIndex(i => i === cell.playerId);
+
+      return index === -1 ? this.labelled(cell) ? "rgba(255, 255, 255, 0.5)" : "rgba(255, 255, 255, 0)" : this.colorShips[index];
+    }
+    else {
+      return "rgba(255, 255, 255, 0)";
+    }
   }
 
   selected(cell: GameFieldCell): boolean {
@@ -82,6 +92,7 @@ export class GameFieldComponent implements OnInit {
       }
     }, 250);
   }
+
   callForDblClick(cell: GameFieldCell) {
     this.isSingleClick = false;
     this.notifyDblClick.emit(cell);

@@ -1,6 +1,6 @@
 <mat-tab-group mat-align-tabs="center">
     <mat-tab label="Game field">
-        <app-game-field [field]="gameField" [labels]="labels" [height]="gameFieldHeight" [selectedShipId]="selectedShipId" (notifyDblClick)="onNotifyGameFieldDblClick($event)" (notifyClick)="onNotifyGameFieldClick($event)"></app-game-field>
+        <app-game-field [field]="gameField" [labels]="labels" [height]="gameFieldHeight" [selectedShipId]="selectedShipId" [clickCell]="clickCell" (notifyDblClick)="onNotifyGameFieldDblClick($event)" (notifyClick)="onNotifyGameFieldClick($event)"></app-game-field>
     </mat-tab>
     <mat-tab label="Ship's shop">
         <app-buy-ship (notify)="onNotifyShopShip()"></app-buy-ship>

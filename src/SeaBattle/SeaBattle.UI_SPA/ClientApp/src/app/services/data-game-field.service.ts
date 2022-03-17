@@ -54,7 +54,7 @@ export class DataGameFieldService {
 
   SetGameField(field: GameFieldDto): GameField {
     var cells: GameFieldCell[][];
-
+    
     cells = [];
 
     for (var i: number = 0; i < field.sizeX; i++) {
@@ -72,7 +72,7 @@ export class DataGameFieldService {
     }
 
     field.gameFieldCells.forEach(cell => {
-      cells[cell.x][cell.y] = cell;
+      cells[cell.x - 1][cell.y - 1] = cell;
     });
 
     this.gameField = <GameField>{
