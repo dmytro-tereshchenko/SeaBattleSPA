@@ -36,21 +36,21 @@ namespace SeaBattle.GameResources.Controllers
         [HttpPut]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<StateCode>> TransferShipFromGameField([FromServices] IActionManager actionService, RemoveShipDto data)
+        public async Task<ActionResult<StateCode>> TransferShipFromGameField([FromServices] IActionManager actionService, [FromBody] RemoveShipDto data)
         {
             string name = HttpContext.User.FindFirst("name")?.Value;
 
-            return await actionService.TransferShipFromGameField(name, data.ShipId, data.StartFieldId);
+            return await actionService.TransferShipFromGameField(name, data.shipId, data.startFieldId);
         }
 
         [HttpPut]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<StateCode>> TransferShipToGameField([FromServices] IActionManager actionService, PutShipDto data)
+        public async Task<ActionResult<StateCode>> TransferShipToGameField([FromServices] IActionManager actionService, [FromBody] PutShipDto data)
         {
             string name = HttpContext.User.FindFirst("name")?.Value;
 
-            return await actionService.TransferShipToGameField(name, data.TPosX, data.TPosY, (DirectionOfShipPosition)data.Direction, data.StartFieldId, data.ShipId);
+            return await actionService.TransferShipToGameField(name, data.tPosX, data.tPosY, (DirectionOfShipPosition)data.direction, data.startFieldId, data.shipId);
         }
     }
 }

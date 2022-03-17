@@ -17,15 +17,22 @@ namespace SeaBattle.GameResources.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<GameFieldDto>> GetById([FromServices] GenericRepository<GameField> rep, [FromServices] IMapper mapper, int id)
+        public async Task<ActionResult<GameFieldDto>> GetById([FromServices] GenericRepository<GameField> repField,
+            [FromServices] GenericRepository<GameShip> repShip,
+            [FromServices] IMapper mapper, int id)
         {
-           var query = await rep.GetAsync(f => f.GameId == id);
+            var query = await repField.GetWithIncludeAsync(f => f.GameId == id, f => f.GameFieldCells);
 
             IGameField gameField = query.FirstOrDefault();
 
             if (gameField is null)
             {
                 return NotFound();
+            }
+
+            foreach (var cell in gameField.GameFieldCells)
+            {
+                await repShip.FindByIdAsync(cell.GameShipId);
             }
 
             GameFieldDto dto = mapper.Map<IGameField, GameFieldDto>(gameField);

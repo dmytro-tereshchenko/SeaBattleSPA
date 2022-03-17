@@ -180,9 +180,9 @@ namespace SeaBattle.Lib.Managers
             if (result == StateCode.Success)
             {
                 startField.GameShips.Remove(ship as GameShip);
-            }
 
-            await _startFieldRepository.UpdateAsync(startField);
+                await _startFieldRepository.UpdateAsync(startField);
+            }
 
             return result;
         }

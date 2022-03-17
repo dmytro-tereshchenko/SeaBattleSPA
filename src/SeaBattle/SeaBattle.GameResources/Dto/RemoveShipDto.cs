@@ -2,8 +2,8 @@
 {
     public class RemoveShipDto
     {
-        public int ShipId { get; set; }
+        public int shipId { get; set; }
 
-        public int StartFieldId { get; set; }
+        public int startFieldId { get; set; }
     }
 }

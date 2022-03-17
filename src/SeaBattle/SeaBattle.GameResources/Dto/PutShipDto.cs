@@ -2,14 +2,14 @@
 {
     public class PutShipDto
     {
-        public ushort TPosX { get; set; }
+        public ushort tPosX { get; set; }
 
-        public ushort TPosY { get; set; }
+        public ushort tPosY { get; set; }
 
-        public byte Direction { get; set; }
+        public byte direction { get; set; }
 
-        public int StartFieldId { get; set; }
+        public int startFieldId { get; set; }
 
-        public int ShipId { get; set; }
+        public int shipId { get; set; }
     }
 }
