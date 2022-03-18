@@ -20,8 +20,7 @@ namespace SeaBattle.Lib.Entities
 
         public int GameShipId { get; set; }
 
-        [Required]
-        public int GameFieldId { get; set; }
+        public int? GameFieldId { get; set; }
 
         public GameShip GameShip { get; set; }
 

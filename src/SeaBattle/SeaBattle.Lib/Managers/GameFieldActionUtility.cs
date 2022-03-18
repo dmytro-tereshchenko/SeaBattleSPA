@@ -104,22 +104,23 @@ namespace SeaBattle.Lib.Managers
                 //Check free cells (absents ship or current ship) on diagonal from the cell with coordinates x,y
                 offsetXY = Convert.ToInt16(Math.Pow(-1, i / 2));
                 offsetYX = Convert.ToInt16(Math.Pow(-1, (i + 1) / 2));
-
+                int tx = x + offsetXY;
+                int ty = y + offsetYX;
                 GameShip gs = field[(ushort)(x + offsetXY), (ushort)(y + offsetYX)];
-
                 if (x + offsetXY > 0 && x + offsetXY <= sizeX && y + offsetYX > 0 && y + offsetYX <= sizeY &&
-                    gs is not null &&
-                    gs != ship)
+                    field[(ushort)(x + offsetXY), (ushort)(y + offsetYX)] is not null &&
+                    field[(ushort)(x + offsetXY), (ushort)(y + offsetYX)] != ship)
                 {
                     return false;
                 }
 
                 //Check free cells (absents ship or current ship) on horizontal and vertical from the cell with coordinates x,y
+                tx = x + offsetX;
+                ty = y + offsetY;
                 gs = field[(ushort)(x + offsetX), (ushort)(y + offsetY)];
-
                 if (x + offsetX > 0 && x + offsetX <= sizeX && y + offsetY > 0 && y + offsetY <= sizeY &&
-                    gs is not null &&
-                    gs != ship)
+                    field[(ushort)(x + offsetX), (ushort)(y + offsetY)] is not null &&
+                    field[(ushort)(x + offsetX), (ushort)(y + offsetY)] != ship)
                 {
                     return false;
                 }

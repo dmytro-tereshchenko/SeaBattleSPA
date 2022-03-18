@@ -157,6 +157,17 @@ namespace SeaBattle.Lib.Managers
 
             StartField startField = queryField.FirstOrDefault();
 
+            Dictionary<int, GameShip> ships = new Dictionary<int, GameShip>();
+
+            foreach (var cell in startField.GameField.GameFieldCells)
+            {
+                if (!ships.ContainsKey(cell.GameShipId))
+                {
+                    var queryShip2 = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == cell.GameShipId, s => s.Ship);
+                    ships[cell.GameShipId] = queryShip2.FirstOrDefault();
+                }
+            }
+
             if (!startField.GameShips.Contains(ship))
             {
                 return StateCode.InvalidShip;
@@ -204,6 +215,17 @@ namespace SeaBattle.Lib.Managers
                 f => f.GameFieldCells);
 
             GameField gameField = queryField.FirstOrDefault();
+
+            Dictionary<int, GameShip> ships = new Dictionary<int, GameShip>();
+
+            foreach (var cell in gameField.GameFieldCells)
+            {
+                if (!ships.ContainsKey(cell.GameShipId))
+                {
+                    var queryShip2 = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == cell.GameShipId, s => s.Ship);
+                    ships[cell.GameShipId] = queryShip2.FirstOrDefault();
+                }
+            }
 
             if (!ship.GamePlayer.Name.Equals(playerName))
             {
@@ -273,7 +295,7 @@ namespace SeaBattle.Lib.Managers
             {
                 if (!ships.ContainsKey(cell.GameShipId))
                 {
-                    var queryShip2 = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == gameShipId, s => s.GamePlayer, s => s.Ship);
+                    var queryShip2 = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == cell.GameShipId, s => s.GamePlayer, s => s.Ship);
                     ships[cell.GameShipId] = queryShip2.FirstOrDefault();
                 }
             }
@@ -336,7 +358,7 @@ namespace SeaBattle.Lib.Managers
             {
                 if (!ships.ContainsKey(cell.GameShipId))
                 {
-                    var queryShip2 = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == gameShipId, s => s.GamePlayer, s => s.Ship);
+                    var queryShip2 = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == cell.GameShipId, s => s.GamePlayer, s => s.Ship);
                     ships[cell.GameShipId] = queryShip2.FirstOrDefault();
                 }
             }
@@ -394,7 +416,7 @@ namespace SeaBattle.Lib.Managers
             {
                 if (!ships.ContainsKey(cell.GameShipId))
                 {
-                    var queryShip2 = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == gameShipId, s => s.GamePlayer, s => s.Ship);
+                    var queryShip2 = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == cell.GameShipId, s => s.GamePlayer, s => s.Ship);
                     ships[cell.GameShipId] = queryShip2.FirstOrDefault();
                 }
             }

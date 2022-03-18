@@ -49,7 +49,6 @@ export class GamePrepComponent implements OnInit {
   ngOnInit(): void {
     this.gameFieldService.getGameField().subscribe(f => {
       this.gameField = f;
-      console.log(f);
       this.startFieldService.getStartField().subscribe(sf => {
         this.updateListShips(sf)
 
@@ -76,13 +75,13 @@ export class GamePrepComponent implements OnInit {
     }
     if (this.selectedShipId) {
       if (this.clickCell) {
-        this.putShip(this.getDirection(cell));
+        this.putShip(this.clickCell, this.getDirection(cell));
       }
       else {
         this.shipService.getShip(this.selectedShipId).subscribe(ship => {
           if (ship.size === 1) {
             if (cell.gameShipId !== this.selectedShipId) {
-              this.putShip(Direction.xDec);
+              this.putShip(cell, Direction.xDec);
             }
           }
           else {
@@ -97,23 +96,21 @@ export class GamePrepComponent implements OnInit {
     if (cell.gameShipId) {
       this.startFieldService.removeShipFromField(cell.gameShipId).subscribe(state => {
         if (state === 10) {
-          this.clickCell = null;
-
           this.startFieldService.getStartFieldFromServer()
             .subscribe(field => this.updateListShips(field));
 
           this.gameFieldService.getGameFieldFromServer().subscribe(f => this.gameField = f);
         }
+
+        this.clickCell = null;
       })
     }
   }
 
-  private putShip(direction: Direction) {
-    if (this.selectedShipId && this.clickCell) {
-      this.startFieldService.putShipOnField(this.clickCell, direction, this.selectedShipId).subscribe(state => {
-        console.log(state);
+  private putShip(cell: GameFieldCell, direction: Direction) {
+    if (this.selectedShipId) {
+      this.startFieldService.putShipOnField(cell, direction, this.selectedShipId).subscribe(state => {
         if (state === 10) {
-          this.clickCell = null;
           this.selectedShipId = null;
 
           this.startFieldService.getStartFieldFromServer()
@@ -121,12 +118,14 @@ export class GamePrepComponent implements OnInit {
 
           this.gameFieldService.getGameFieldFromServer().subscribe(f => this.gameField = f);
         }
+
+        this.clickCell = null;
       })
     }
   }
 
   private getDirection(cell: GameFieldCell) {
-    if (Math.abs(cell.x - (this.clickCell?.x ?? 0)) > Math.abs(cell.x - (this.clickCell?.x ?? 0))) {
+    if (Math.abs(cell.x - (this.clickCell?.x ?? 0)) > Math.abs(cell.y - (this.clickCell?.y ?? 0))) {
       if (cell.x < (this.clickCell?.x ?? 0)) {
         return Direction.xDec;
       }
