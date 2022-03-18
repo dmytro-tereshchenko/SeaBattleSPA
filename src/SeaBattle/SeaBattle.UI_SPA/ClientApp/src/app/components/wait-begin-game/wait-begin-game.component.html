@@ -1,0 +1,7 @@
+<h1 class="text-center">Waiting for all players</h1>
+<div>
+    <div *ngFor="let player of players" [class.ready]="player.playerState === 3">
+        <div>{{player.name}}</div>
+        <div>{{player.playerState === 3?"Ready":"Wait"}}</div>
+    </div>
+</div>

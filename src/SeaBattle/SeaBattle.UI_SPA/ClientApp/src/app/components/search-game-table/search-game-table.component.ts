@@ -3,6 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { GameSearch } from '../../data/game-search';
+import { Player } from '../../data/player';
 import { InitializeGameService } from '../../services/initialize-game.service';
 import { DataGameService } from '../../services/data-game.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -44,7 +45,19 @@ export class SearchGameTableComponent implements AfterViewInit {
     this.apiService.GetSearch().subscribe(g => {
       if (g.length > 0) {
         if (g[0].gameState === 3) {
+          this.gameService.getGame().subscribe(game => {
+            this.userService.getUser().then(u => {
+              if (game.players.find(p => p.name === u?.profile.name ?? "")?.playerState === 3) {
+                this.router.navigate(['/wait-begin-game']);
+              }
+            })
+          })
+
           this.router.navigate(['/game-prep']);
+        }
+
+        if (g[0].gameState === 4){
+          this.router.navigate(['/game']);
         }
 
         this.userService.getUser().then(u => {

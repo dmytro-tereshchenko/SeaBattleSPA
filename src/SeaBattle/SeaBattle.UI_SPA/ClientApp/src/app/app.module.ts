@@ -22,6 +22,8 @@ import { SearchGameTableComponent } from './components/search-game-table/search-
 import { GamePrepComponent } from './components/game-prep/game-prep.component';
 import { GameFieldComponent } from './components/game-field/game-field.component';
 import { BuyShipComponent } from './components/buy-ship/buy-ship.component';
+import { WaitBeginGameComponent } from './components/wait-begin-game/wait-begin-game.component';
+import { GameProcessComponent } from './components/game-process/game-process.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,9 @@ import { BuyShipComponent } from './components/buy-ship/buy-ship.component';
     SearchGameTableComponent,
     GamePrepComponent,
     GameFieldComponent,
-    BuyShipComponent
+    BuyShipComponent,
+    WaitBeginGameComponent,
+    GameProcessComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -46,6 +50,8 @@ import { BuyShipComponent } from './components/buy-ship/buy-ship.component';
       { path: 'create-game', component: CreateGameComponent },
       { path: 'join-game', component: SearchGameTableComponent },
       { path: 'game-prep', component: GamePrepComponent },
+      { path: 'wait-begin-game', component: WaitBeginGameComponent },
+      { path: 'game', component: GameProcessComponent },
     ]),
     BrowserAnimationsModule,
     MatSliderModule,

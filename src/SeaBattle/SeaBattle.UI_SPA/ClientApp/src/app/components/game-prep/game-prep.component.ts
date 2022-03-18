@@ -42,7 +42,8 @@ export class GamePrepComponent implements OnInit {
     private startFieldService: DataStartFieldService,
     private shipService: DataShipService,
     private initService: InitializeGameService,
-    private gameService: DataGameService) {
+    private gameService: DataGameService,
+    private router: Router) {
     this.gameFieldHeight = "50vh";
     this.clickCell = null;
     this.selectedShipId = null;
@@ -230,7 +231,7 @@ export class GamePrepComponent implements OnInit {
   ready(){
     this.gameService.readyPlayer().subscribe(state=>{
       if(state===10){
-        
+        this.router.navigate(['/wait-begin-game']);
       }
     })
   }

@@ -4,6 +4,7 @@ import { GameSizeLimit } from '../../data/game-size-limit';
 import { InitializeGameService } from '../../services/initialize-game.service';
 import { DataGameService } from '../../services/data-game.service';
 import { DataGameFieldService } from '../../services/data-game-field.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Game } from '../../data/game';
 import { mergeMap } from 'rxjs/operators';
 import { Router } from "@angular/router"
@@ -19,6 +20,7 @@ export class CreateGameComponent implements OnInit {
     private apiService: InitializeGameService,
     private gameService: DataGameService,
     private gameFieldService: DataGameFieldService,
+    private userService: AuthService,
     private router: Router) {
     this.players = 2;
     this.gameSize = {
@@ -46,7 +48,16 @@ export class CreateGameComponent implements OnInit {
             break;
           }
           case 3: {
+            this.userService.getUser().then(u => {
+              if (g.players.find(p => p.name === u?.profile.name ?? "")?.playerState === 3) {
+                this.router.navigate(['/wait-begin-game']);
+              }
+            })
             this.router.navigate(['/game-prep']);
+            break;
+          }
+          case 4: {
+            this.router.navigate(['/game']);
             break;
           }
         }
