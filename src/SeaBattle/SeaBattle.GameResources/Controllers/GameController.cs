@@ -119,19 +119,39 @@ namespace SeaBattle.GameResources.Controllers
         [HttpPut]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<GameDto>> JoinPlayer([FromServices] IInitializeManager initializeService,
             [FromServices] IMapper mapper,
-            [FromBody] JoinPlayersDto player)
+            [FromBody] PlayerStateDto data)
         {
             string name = HttpContext.User.FindFirst("name")?.Value;
 
-            var response = await initializeService.AddPlayerToGame(player.gameId, name);
+            var response = await initializeService.AddPlayerToGame(data.gameId, name);
 
             if (response.State == StateCode.Success)
             {
                 GameDto dto = mapper.Map<IGame, GameDto>(response.Value);
 
                 return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
+            }
+
+            return BadRequest(response);
+        }
+
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<StateCode>> ReadyPlayer([FromServices] IInitializeManager initializeService,
+            [FromBody] PlayerStateDto data)
+        {
+            string name = HttpContext.User.FindFirst("name")?.Value;
+
+            var response = await initializeService.ReadyPlayer(data.gameId, name);
+
+            if (response == StateCode.Success)
+            {
+                return response;
             }
 
             return BadRequest(response);

@@ -284,8 +284,7 @@ namespace SeaBattle.Lib.Managers
                 game.CurrentGamePlayerMoveId = game.StartFields.First().GamePlayerId;
             }
 
-            await _gameRepository.UpdateAsync(g => g.Id == game.Id, game.GamePlayers,
-                        _gamePlayerRepository.GetAll(), "GamePlayers");
+            await _gameRepository.UpdateAsync(game);
 
             return StateCode.Success;
         }

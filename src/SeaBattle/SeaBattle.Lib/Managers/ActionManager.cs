@@ -22,16 +22,23 @@ namespace SeaBattle.Lib.Managers
 
         private readonly GenericRepository<GameField> _gameFieldRepository;
 
+        private readonly GenericRepository<Game> _gameRepository;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ActionManager"/> class
         /// </summary>
         /// <param name="actionUtility">Utility for actions on <see cref="IGameField"/></param>
-        public ActionManager(IGameFieldActionUtility actionUtility, GenericRepository<StartField> startFieldRepository, GenericRepository<GameShip> gameShipRepository, GenericRepository<GameField> gameFieldRepository)
+        public ActionManager(IGameFieldActionUtility actionUtility,
+            GenericRepository<StartField> startFieldRepository,
+            GenericRepository<GameShip> gameShipRepository,
+            GenericRepository<GameField> gameFieldRepository,
+            GenericRepository<Game> gameRepository)
         {
             ActionUtility = actionUtility;
             _startFieldRepository = startFieldRepository;
             _gameShipRepository = gameShipRepository;
             _gameFieldRepository = gameFieldRepository;
+            _gameRepository = gameRepository;
         }
 
         #region Getting data from GameField
@@ -390,9 +397,13 @@ namespace SeaBattle.Lib.Managers
                 targetShip.Hp = targetShip.MaxHp;
             }
 
+            Game game = await _gameRepository.FindByIdAsync(gameField.GameId);
+
+            bool endGame = CheckEndGame(game);
+
             await _gameShipRepository.UpdateAsync(targetShip);
 
-            return StateCode.Success;
+            return endGame ? StateCode.GameFinished : StateCode.Success;
         }
 
         public async Task<StateCode> RepairAllShip(string playerName, int gameShipId, int gameFieldId)
@@ -448,5 +459,58 @@ namespace SeaBattle.Lib.Managers
         }
 
         #endregion
+
+        public async Task<StateCode> NextMove(int gameId)
+        {
+            var query = await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId, g => g.GamePlayers);
+
+            Game game = query.FirstOrDefault();
+
+            ICollection<GamePlayer> players = game.GamePlayers;
+
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (players.ElementAt(i).Id == game.CurrentGamePlayerMoveId)
+                {
+                    game.CurrentGamePlayerMoveId =
+                        i + 1 < players.Count ? players.ElementAt(i + 1).Id : players.ElementAt(0).Id;
+
+                    return StateCode.Success;
+                }
+            }
+
+            return StateCode.InvalidPlayer;
+        }
+
+        /// <summary>
+        /// Check end game after action and change state <see cref="IGame"/>
+        /// </summary>
+        /// <returns>true if game finished, otherwise false</returns>
+        protected bool CheckEndGame(Game game)
+        {
+            IGamePlayer player = null;
+            for (ushort i = 1; i <= game.GameField.SizeX; i++)
+            {
+                for (ushort j = 1; j < game.GameField.SizeY; j++)
+                {
+                    if (game.GameField[i, j] != null)
+                    {
+                        if (player != null && game.GameField[i, j].GamePlayer != player)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            player = game.GameField[i, j].GamePlayer;
+                        }
+                    }
+                }
+            }
+
+            game.GameState = GameState.Finished;
+            game.WinnerId = player.Id;
+
+            return true;
+        }
     }
 }

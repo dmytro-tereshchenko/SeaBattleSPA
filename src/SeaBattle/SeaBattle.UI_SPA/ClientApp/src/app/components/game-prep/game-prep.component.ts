@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataGameFieldService } from '../../services/data-game-field.service';
 import { DataStartFieldService } from '../../services/data-start-field.service';
 import { DataShipService } from '../../services/data-ship.service';
+import { DataGameService } from '../../services/data-game.service';
 import { Observable, forkJoin } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { GameField } from '../../data/game-field';
@@ -40,7 +41,8 @@ export class GamePrepComponent implements OnInit {
   constructor(private gameFieldService: DataGameFieldService,
     private startFieldService: DataStartFieldService,
     private shipService: DataShipService,
-    private initService: InitializeGameService) {
+    private initService: InitializeGameService,
+    private gameService: DataGameService) {
     this.gameFieldHeight = "50vh";
     this.clickCell = null;
     this.selectedShipId = null;
@@ -223,5 +225,13 @@ export class GamePrepComponent implements OnInit {
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     });
+  }
+
+  ready(){
+    this.gameService.readyPlayer().subscribe(state=>{
+      if(state===10){
+        
+      }
+    })
   }
 }

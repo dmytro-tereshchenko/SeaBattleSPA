@@ -12,6 +12,9 @@
         <label for="points">Points</label>
         <input id="points" readonly [value]="startField.points" *ngIf="startField">
     </div>
+    <div>
+        <button class="btn btn-primary" (click)="ready()">Ready to game</button>
+    </div>
 </div>
 <div class="text-center h1">Ships in reserve</div>
 <div>

@@ -65,5 +65,13 @@ namespace SeaBattle.Lib.Managers
         /// <returns><see cref="IGame"/> Created game</returns>
         /// <exception cref="ArgumentOutOfRangeException">A number of teams are out of possible values.</exception>
         Task<IGame> CreateGame(byte numberOfPlayers);
+
+        /// <summary>
+        /// End of preparing for game
+        /// </summary>
+        /// <param name="gameId">Current game's Id</param>
+        /// <param name="playerName">Player's name</param>
+        /// <returns><see cref="StateCode"/></returns>
+        Task<StateCode> ReadyPlayer(int gameId, string gamePlayerName);
     }
 }

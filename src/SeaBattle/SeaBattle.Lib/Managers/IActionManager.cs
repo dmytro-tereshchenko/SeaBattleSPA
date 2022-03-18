@@ -93,5 +93,12 @@ namespace SeaBattle.Lib.Managers
         /// <param name="gameFieldId">Id of Game field</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
         Task<StateCode> RepairAllShip(string playerName, int gameShipId, int gameFieldId);
+
+        /// <summary>
+        /// Change state <see cref="IGame"/> to next move
+        /// </summary>
+        /// <param name="gameId">Game's id</param>
+        /// <returns><see cref="StateCode"/> result of operation</returns>
+        Task<StateCode> NextMove(int gameId);
     }
 }
