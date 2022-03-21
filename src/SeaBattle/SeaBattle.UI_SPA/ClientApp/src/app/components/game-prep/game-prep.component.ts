@@ -216,6 +216,16 @@ export class GamePrepComponent implements OnInit {
 
     this.startField = field;
 
+    //in case an empty list of ships
+    if (field.gameShipsId.length === 0) {
+      const ships: GameShip[] = [];
+      this.dataSource = new MatTableDataSource(ships);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      return;
+    }
+
+    //otherwise get ships to list
     field.gameShipsId.forEach(shipId => {
       const ship$: Observable<GameShip> = this.shipService.getShip(shipId);
       ships$.push(ship$);
@@ -228,9 +238,9 @@ export class GamePrepComponent implements OnInit {
     });
   }
 
-  ready(){
-    this.gameService.readyPlayer().subscribe(state=>{
-      if(state===10){
+  ready() {
+    this.gameService.readyPlayer().subscribe(state => {
+      if (state === 10) {
         this.router.navigate(['/wait-begin-game']);
       }
     })
