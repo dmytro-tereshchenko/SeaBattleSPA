@@ -56,16 +56,19 @@ export class SearchGameTableComponent implements AfterViewInit {
           this.router.navigate(['/game-prep']);
         }
 
-        if (g[0].gameState === 4){
-          this.router.navigate(['/game']);
-        }
-
         this.userService.getUser().then(u => {
           if (g[0].players.split(", ").includes(u?.profile.name ?? "")) {
             this.waitPlayers = true;
           }
           else {
             this.waitPlayers = false;
+          }
+        })
+      }
+      else {
+        this.gameService.getGame().subscribe(game => {
+          if (game.gameState === 4) {
+            this.router.navigate(['/game']);
           }
         })
       }
