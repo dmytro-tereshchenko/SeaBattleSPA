@@ -244,7 +244,7 @@ namespace SeaBattle.Lib.Managers
         public async Task<StateCode> ReadyPlayer(int gameId, string gamePlayerName)
         {
             var queryGame =
-                await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId, g => g.GamePlayers);
+                await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId, g => g.GamePlayers, g => g.StartFields);
             Game game = queryGame.FirstOrDefault();
 
             var queryPlayer = await _gamePlayerRepository.GetWithIncludeAsync(g => g.Name == gamePlayerName);
