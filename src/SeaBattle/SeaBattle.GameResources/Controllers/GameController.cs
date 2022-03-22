@@ -156,5 +156,31 @@ namespace SeaBattle.GameResources.Controllers
 
             return BadRequest(response);
         }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<StateCode>> EndMove([FromServices] IActionManager actionService, [FromServices] GenericRepository<Game> rep, [FromBody] int id)
+        {
+            string name = HttpContext.User.FindFirst("name")?.Value;
+
+            var query = await rep.GetWithIncludeAsync(g => g.Id == id, g => g.GamePlayers);
+
+            Game game = query.FirstOrDefault();
+
+            if (game is null)
+            {
+                return BadRequest();
+            }
+
+            GamePlayer player = game.GamePlayers.FirstOrDefault(p => p.Name == name);
+
+            if(player is null || player.Id == game.CurrentGamePlayerMoveId)
+            {
+                return BadRequest();
+            }
+
+            return await actionService.NextMove(id);
+        }
     }
 }
