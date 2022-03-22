@@ -59,5 +59,45 @@ namespace SeaBattle.GameResources.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = dto.GameId }, dto);
         }
+
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<StateCode>> MoveShip([FromServices] IActionManager actionService, [FromBody] MoveShipDto data)
+        {
+            string name = HttpContext.User.FindFirst("name")?.Value;
+
+            return await actionService.MoveShip(name, data.GameShipId, data.TPosX, data.TPosY, (DirectionOfShipPosition)data.Direction, data.GameFieldId);
+        }
+
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<StateCode>> AttackShip([FromServices] IActionManager actionService, [FromBody] AttackShipDto data)
+        {
+            string name = HttpContext.User.FindFirst("name")?.Value;
+
+            return await actionService.AttackShip(name, data.GameShipId, data.TPosX, data.TPosY, data.GameFieldId);
+        }
+
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<StateCode>> RepairShip([FromServices] IActionManager actionService, [FromBody] RepairShipDto data)
+        {
+            string name = HttpContext.User.FindFirst("name")?.Value;
+
+            return await actionService.RepairShip(name, data.GameShipId, data.TPosX, data.TPosY, data.GameFieldId);
+        }
+
+        [HttpPut]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<StateCode>> RepairAllShip([FromServices] IActionManager actionService, [FromBody] RepairAllShipDto data)
+        {
+            string name = HttpContext.User.FindFirst("name")?.Value;
+
+            return await actionService.RepairAllShip(name, data.GameShipId, data.GameFieldId);
+        }
     }
 }
