@@ -2,7 +2,9 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { GameField } from '../../data/game-field';
 import { GameFieldCell } from '../../data/game-field-cell';
 import { DataGameService } from '../../services/data-game.service';
+import { DataShipService } from '../../services/data-ship.service';
 import { AuthService } from '../../core/services/auth.service';
+import { GameShip } from 'src/app/data/game-ship';
 
 @Component({
   selector: 'app-game-field',
@@ -20,13 +22,15 @@ export class GameFieldComponent implements OnInit {
   @Output() notifyDblClick = new EventEmitter<GameFieldCell>();
 
   color: string;
+  toolTip: string;
   private colorShips: string[] = ["green", "yellow", "brown", "gray"];
   private playersId: number[];
   private gameState: number;
   private isSingleClick: Boolean = true;
 
   constructor(private userService: AuthService,
-    private gameService: DataGameService) { }
+    private gameService: DataGameService,
+    private shipService: DataShipService) { }
 
   ngOnInit(): void {
     this.userService.getUser().then(user => this.gameService.getGame().subscribe(game => {
@@ -96,5 +100,31 @@ export class GameFieldComponent implements OnInit {
   callForDblClick(cell: GameFieldCell) {
     this.isSingleClick = false;
     this.notifyDblClick.emit(cell);
+  }
+
+  mouseEnter(cell: GameFieldCell): void {
+    if (cell.gameShipId) {
+      this.shipService.getShip(cell.gameShipId)
+        .subscribe(ship => this.gameService.getGame()
+          .subscribe(game => {
+
+            const player = game.players.find(p => p.id === ship.gamePlayerId)?.name;
+            let toolTip: string = `${player}\nHP: ${ship.hp}/${ship.maxHp}`;
+            let gameShip: GameShip = new GameShip(ship);
+
+            if (gameShip.damage() > 0) {
+              toolTip += `\nDamage: ${gameShip.damage()}`;
+            }
+
+            if (gameShip.repairPower() > 0) {
+              toolTip += `\nRepair power: ${gameShip.repairPower()}`;
+            }
+
+            this.toolTip = toolTip;
+          }))
+    }
+    else{
+      this.toolTip = "";
+    }
   }
 }
