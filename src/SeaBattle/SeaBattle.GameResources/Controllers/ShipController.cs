@@ -70,6 +70,17 @@ namespace SeaBattle.GameResources.Controllers
             return dto.ToArray();
         }
 
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ICollection<int>>> GetVisibleShips([FromServices] ActionManager actionService, [FromServices] IMapper mapper, [FromQuery] VisibleShipsDto data)
+        {
+            string name = HttpContext.User.FindFirst("name")?.Value;
+
+            ICollection<IGameShip> ships = await actionService.GetVisibleTargetsForShip(name, data.GameShipId, data.GameFieldId, (ActionType)data.Action);
+
+            return ships.Select(s => s.Id).ToArray();
+        }
+
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]

@@ -19,7 +19,8 @@ namespace SeaBattle.GameResources.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<GameFieldDto>> GetById([FromServices] GenericRepository<GameField> repField,
             [FromServices] GenericRepository<GameShip> repShip,
-            [FromServices] IMapper mapper, int id)
+            [FromServices] IMapper mapper, 
+            int id)
         {
             var query = await repField.GetWithIncludeAsync(f => f.GameId == id, f => f.GameFieldCells);
 
