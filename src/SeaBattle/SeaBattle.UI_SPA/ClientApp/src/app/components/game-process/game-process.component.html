@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-around align-items-center p-2">
     <div>Move: <span *ngIf="game" [style.color]="getColor(game.currentPlayerMove)">{{game.currentPlayerMove}}</span></div>
-    <button mat-raised-button class="btn btn-outline-primary">End move</button>
+    <button mat-raised-button class="btn btn-outline-primary" (click)="endMove()">End move</button>
 </div>
 <app-game-field [field]="gameField" [labels]="labels" [height]="gameFieldHeight" [selectedShipId]="selectedShipId" [clickCell]="clickCell" (notifyDblClick)="onNotifyGameFieldDblClick($event)" (notifyClick)="onNotifyGameFieldClick($event)"></app-game-field>
