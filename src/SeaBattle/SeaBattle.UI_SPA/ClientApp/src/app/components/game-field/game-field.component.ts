@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { GameField } from '../../data/game-field';
 import { GameFieldCell } from '../../data/game-field-cell';
+import { colorPlayers } from '../../data/mock-color-players';
 import { DataGameService } from '../../services/data-game.service';
 import { DataShipService } from '../../services/data-ship.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -21,9 +22,8 @@ export class GameFieldComponent implements OnInit {
   @Output() notifyClick = new EventEmitter<GameFieldCell>();
   @Output() notifyDblClick = new EventEmitter<GameFieldCell>();
 
-  color: string;
   toolTip: string;
-  private colorShips: string[] = ["green", "yellow", "brown", "gray"];
+  private colorShips: string[] = colorPlayers;
   private playersId: number[];
   private gameState: number;
   private isSingleClick: Boolean = true;
@@ -107,7 +107,6 @@ export class GameFieldComponent implements OnInit {
       this.shipService.getShip(cell.gameShipId)
         .subscribe(ship => this.gameService.getGame()
           .subscribe(game => {
-
             const player = game.players.find(p => p.id === ship.gamePlayerId)?.name;
             let toolTip: string = `${player}\nHP: ${ship.hp}/${ship.maxHp}`;
             let gameShip: GameShip = new GameShip(ship);

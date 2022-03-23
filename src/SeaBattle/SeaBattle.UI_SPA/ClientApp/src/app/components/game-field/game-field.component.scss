@@ -16,3 +16,7 @@
 ::ng-deep .mat-tooltip {
     white-space: pre-line;
 }
+
+::ng-deep .mat-tooltip::first-line {
+    color: rgb(187, 255, 0);
+}
