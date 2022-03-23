@@ -20,6 +20,19 @@ namespace SeaBattle.Lib.Managers
         IGameFieldActionUtility ActionUtility { get; }
 
         /// <summary>
+        /// Get <see cref="ICollection{T}"/> of <see cref="IGameShip"/> on distance of action.
+        /// </summary>
+        /// <param name="playerName">Current playe's name</param>
+        /// <param name="gameShipId">Current ship's Id</param>
+        /// <param name="gameFieldId">Game field's Id</param>
+        /// <param name="action">Type of possible actions (<see cref="ActionType.Attack"/>, <see cref="ActionType.Repair"/>)</param>
+        /// <returns><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGameShip"/></returns>
+        /// <exception cref="ArgumentException">Wrong player</exception>
+        /// <exception cref="InvalidEnumArgumentException">Used action not planned by the game</exception>
+        Task<ICollection<IGameShip>> GetVisibleTargetsForShip(string playerName, int gameShipId, int gameFieldId,
+            ActionType action);
+
+        /// <summary>
         /// Remove <see cref="IGameShip"/> from <see cref="IGameField"/> to collection in <see cref="IStartField.Ships"/>
         /// </summary>
         /// <param name="playerName">Current player's name</param>

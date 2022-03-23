@@ -59,26 +59,40 @@ namespace SeaBattle.Lib.Managers
                 .ToDictionary(s=>s.Key, s=>s.Value);
         }
 
-        /// <summary>
-        /// Get <see cref="ICollection{T}"/> of <see cref="IGameShip"/> on distance of action.
-        /// </summary>
-        /// <param name="playerName">Current playe's namer</param>
-        /// <param name="ship">Current ship</param>
-        /// <param name="field">Game field</param>
-        /// <param name="action">Type of possible actions (<see cref="ActionType.Attack"/>, <see cref="ActionType.Repair"/>)</param>
-        /// <returns><see cref="ICollection{T}"/> whose generic type argument is <see cref="IGameShip"/></returns>
-        /// <exception cref="ArgumentException">Wrong player</exception>
-        /// <exception cref="InvalidEnumArgumentException">Used action not planned by the game</exception>
-        private ICollection<IGameShip> GetVisibleTargetsForShip(string playerName, IGameShip ship, IGameField field,
+        public async Task<ICollection<IGameShip>> GetVisibleTargetsForShip(string playerName, int gameShipId, int gameFieldId,
             ActionType action)
         {
+            var queryShip = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == gameShipId,
+                s => s.GamePlayer,
+                s => s.Ship,
+                s => s.Repairs,
+                s => s.EquippedRepairs);
+
+            GameShip ship = queryShip.FirstOrDefault();
+
+            var queryField = await _gameFieldRepository.GetWithIncludeAsync(f => f.Id == gameFieldId,
+                f => f.GameFieldCells);
+
+            GameField gameField = queryField.FirstOrDefault();
+
+            Dictionary<int, GameShip> shipsInclude = new Dictionary<int, GameShip>();
+
+            foreach (var cell in gameField.GameFieldCells)
+            {
+                if (!shipsInclude.ContainsKey(cell.GameShipId))
+                {
+                    var queryShip2 = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == cell.GameShipId, s => s.GamePlayer, s => s.Ship);
+                    shipsInclude[cell.GameShipId] = queryShip2.FirstOrDefault();
+                }
+            }
+
             if (!ship.GamePlayer.Name.Equals(playerName))
             {
                 throw new ArgumentException($"Wrong ship for player {playerName}");
             }
 
             //Search coordinates of ships
-            IDictionary<IGameShip, ICollection<(ushort, ushort)>> ships = ActionUtility.GetAllShipsCoordinates(field, playerName);
+            IDictionary<IGameShip, ICollection<(ushort, ushort)>> ships = ActionUtility.GetAllShipsCoordinates(gameField, playerName);
 
             //Coordinates of geometric center for current ship
             (float, float) centerOfCurrentShip = ActionUtility.GetGeometricCenterOfShip(ships[ship]);
@@ -437,7 +451,7 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            ICollection<IGameShip> targetShips = GetVisibleTargetsForShip(playerName, ship, gameField, ActionType.Repair);
+            ICollection<IGameShip> targetShips = await GetVisibleTargetsForShip(playerName, ship.Id, gameField.Id, ActionType.Repair);
 
             if (targetShips.Count == 0)
             {
