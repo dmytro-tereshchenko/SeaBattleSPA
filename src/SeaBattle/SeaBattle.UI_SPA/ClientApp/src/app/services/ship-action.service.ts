@@ -59,4 +59,23 @@ export class ShipActionService {
       .pipe(map(ships => ships),
         catchError(this.errorLog.handleError<number[]>('getVissibleShips')))));
   }
+
+  getDirection(oldCell: GameFieldCell, newCell: GameFieldCell): Direction {
+    if (Math.abs(newCell.x - oldCell.x) > Math.abs(newCell.y - oldCell.y)) {
+      if (newCell.x < oldCell.x) {
+        return Direction.xDec;
+      }
+      else {
+        return Direction.xInc;
+      }
+    }
+    else {
+      if (newCell.y < oldCell.y) {
+        return Direction.yDec;
+      }
+      else {
+        return Direction.yInc;
+      }
+    }
+  }
 }

@@ -13,6 +13,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { InitializeGameService } from '../../services/initialize-game.service';
+import { ShipActionService } from '../../services/ship-action.service';
 import { Router } from "@angular/router";
 import { GameShip } from '../../data/game-ship';
 import { Direction } from '../../data/direction';
@@ -43,6 +44,7 @@ export class GamePrepComponent implements OnInit {
     private shipService: DataShipService,
     private initService: InitializeGameService,
     private gameService: DataGameService,
+    private actionService: ShipActionService,
     private router: Router) {
     this.gameFieldHeight = "50vh";
     this.clickCell = null;
@@ -78,7 +80,7 @@ export class GamePrepComponent implements OnInit {
     }
     if (this.selectedShipId) {
       if (this.clickCell) {
-        this.putShip(this.clickCell, this.getDirection(cell));
+        this.putShip(this.clickCell, this.actionService.getDirection(this.clickCell, cell));
       }
       else {
         this.shipService.getShip(this.selectedShipId).subscribe(ship => {
@@ -124,25 +126,6 @@ export class GamePrepComponent implements OnInit {
 
         this.clickCell = null;
       })
-    }
-  }
-
-  private getDirection(cell: GameFieldCell) {
-    if (Math.abs(cell.x - (this.clickCell?.x ?? 0)) > Math.abs(cell.y - (this.clickCell?.y ?? 0))) {
-      if (cell.x < (this.clickCell?.x ?? 0)) {
-        return Direction.xDec;
-      }
-      else {
-        return Direction.xInc;
-      }
-    }
-    else {
-      if (cell.y < (this.clickCell?.y ?? 0)) {
-        return Direction.yDec;
-      }
-      else {
-        return Direction.yInc;
-      }
     }
   }
 
