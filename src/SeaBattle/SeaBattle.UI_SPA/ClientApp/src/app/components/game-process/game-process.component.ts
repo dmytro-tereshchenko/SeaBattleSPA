@@ -4,6 +4,8 @@ import { GameField } from '../../data/game-field';
 import { GameFieldCell } from '../../data/game-field-cell';
 import { Game } from '../../data/game';
 import { Player } from '../../data/player';
+import { GameShip } from '../../data/game-ship';
+import { Direction } from '../../data/direction';
 import { colorPlayers } from '../../data/mock-color-players';
 import { DataGameService } from '../../services/data-game.service';
 import { DataGameFieldService } from '../../services/data-game-field.service';
@@ -22,7 +24,7 @@ export class GameProcessComponent implements OnInit {
   game: Game;
   gameField: GameField;
   labels: boolean[][];
-  selectedShipId: number | null;
+  selectedShip: GameShip | null;
   gameFieldHeight: string;
   clickCell: GameFieldCell | null;
   private colorShips: string[] = colorPlayers;
@@ -41,7 +43,7 @@ export class GameProcessComponent implements OnInit {
     private actionService: ShipActionService) {
     this.gameFieldHeight = "80vh";
     this.clickCell = null;
-    this.selectedShipId = null;
+    this.selectedShip = null;
     this.isMoved = false;
     this.isActioned = false;
   }
@@ -84,25 +86,84 @@ export class GameProcessComponent implements OnInit {
   }
 
   onNotifyGameFieldClick(cell: GameFieldCell) {
+    if (cell && this.game.currentPlayerMove === this.player?.name) {
+      if (cell.gameShipId) {
+        this.shipService.getShip(cell.gameShipId).subscribe(ship => {
+          if (ship.gamePlayerId === this.selectedShip?.gamePlayerId) {
+            if (this.selectedShip?.id !== cell.gameShipId) {
+              this.clickCell = null;
+            }
 
+            //can change choice of player ship if you haven't moved or actioned 
+            if (!this.isMoved && !this.isActioned) {
+              this.selectedShip = ship;
+            }
+          }
+        })
+      }
+      if (this.selectedShip) {
+        if (this.clickCell) {
+          this.moveShip(this.clickCell, this.actionService.getDirection(this.clickCell, cell));
+        }
+        else {
+          this.shipService.getShip(this.selectedShip.id).subscribe(ship => {
+            if (ship.size === 1) {
+              if (cell.gameShipId !== this.selectedShip?.id) {
+                this.moveShip(cell, Direction.xDec);
+              }
+            }
+            else {
+              this.clickCell = cell;
+            }
+          })
+        }
+      }
+    }
   }
 
   onNotifyGameFieldDblClick(cell: GameFieldCell) {
-    if (this.game.currentPlayerMove == this.player?.name &&
+    if (this.game.currentPlayerMove === this.player?.name &&
       cell &&
       cell.gameShipId &&
-      !this.isActioned &&
-      ((this.selectedShipId == null && cell.gameShipId) || (
-        this.selectedShipId && cell.gameShipId === this.selectedShipId))) {
-      this.actionService.repairAll(cell.gameShipId).subscribe(state => {
-        if (state === 10 || state === 21) {
-          this.isActioned = true;
-          this.selectedShipId = cell.gameShipId;
+      !this.isActioned) {
+      this.shipService.getShip(cell.gameShipId).subscribe(ship => {
+        if (this.player?.id === ship.gamePlayerId) {
+          //repair all visible team ships
+          if ((this.selectedShip == null && cell.gameShipId) || (
+            this.selectedShip && cell.gameShipId === this.selectedShip.id)) {
+            this.actionService.repairAll(cell.gameShipId).subscribe(state => {
+              if (state === 10 || state === 21) {
+                this.isActioned = true;
+                this.shipService.getShip(cell.gameShipId!).subscribe(ship => this.selectedShip = ship);
 
-          this.actionService.getVissibleShips(cell.gameShipId!, ActionType.repair).subscribe(ships => {
-            ships.forEach(shipId => this.shipService.getShipFromServer(shipId))
+                this.actionService.getVissibleShips(cell.gameShipId!, ActionType.repair).subscribe(ships => {
+                  ships.forEach(shipId => this.shipService.getShipFromServer(shipId).subscribe())
+                })
+              }
+            })
+          }
+          //repair target ship
+          else if (this.selectedShip &&
+            cell.gameShipId !== this.selectedShip.id) {
+            this.actionService.repair(this.selectedShip.id, cell).subscribe(state => {
+              if (state === 10) {
+                this.isActioned = true;
+                this.shipService.getShipFromServer(cell.gameShipId!).subscribe();
+              }
+            })
+          }
+        }
+        //attack target ship
+        else if (this.selectedShip) {
+          this.actionService.attack(this.selectedShip.id, cell).subscribe(state => {
+            if (state === 10) {
+              this.isActioned = true;
+              this.shipService.getShipFromServer(cell.gameShipId!).subscribe();
+            }
           })
-
+        }
+        //in case actioned update game field 
+        if (this.isActioned) {
           this.gameFieldService.getGameFieldFromServer().subscribe(field => this.gameField = field);
 
           if (this.isMoved) {
@@ -116,7 +177,7 @@ export class GameProcessComponent implements OnInit {
   endMove() {
     this.isActioned = false;
     this.isMoved = false;
-    this.selectedShipId = null;
+    this.selectedShip = null;
 
     this.actionService.endMove().subscribe(state => {
       if (state === 10) {
@@ -126,6 +187,24 @@ export class GameProcessComponent implements OnInit {
         })
       }
     })
+  }
+
+  private moveShip(cell: GameFieldCell, direction: Direction) {
+    if (this.selectedShip) {
+      this.actionService.move(this.selectedShip.id, cell, direction).subscribe(state => {
+        if (state === 10) {
+          this.isMoved = true;
+
+          this.gameFieldService.getGameFieldFromServer().subscribe(f => this.gameField = f);
+
+          if (this.isActioned) {
+            this.endMove();
+          }
+        }
+
+        this.clickCell = null;
+      })
+    }
   }
 
   private update() {
