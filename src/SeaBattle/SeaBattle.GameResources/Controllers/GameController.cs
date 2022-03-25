@@ -160,7 +160,7 @@ namespace SeaBattle.GameResources.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<StateCode>> EndMove([FromServices] IActionManager actionService, [FromServices] GenericRepository<Game> rep, [FromBody] int id)
+        public async Task<ActionResult<StateCode>> EndMove([FromServices] IActionManager actionService, [FromServices] GenericRepository<Game> rep, int id)
         {
             string name = HttpContext.User.FindFirst("name")?.Value;
 
@@ -175,7 +175,7 @@ namespace SeaBattle.GameResources.Controllers
 
             GamePlayer player = game.GamePlayers.FirstOrDefault(p => p.Name == name);
 
-            if(player is null || player.Id == game.CurrentGamePlayerMoveId)
+            if(player is null || player.Id != game.CurrentGamePlayerMoveId)
             {
                 return BadRequest();
             }

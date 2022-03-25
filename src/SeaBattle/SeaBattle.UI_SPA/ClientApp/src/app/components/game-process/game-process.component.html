@@ -2,4 +2,4 @@
     <div>Move: <span *ngIf="game" [style.color]="getColor(game.currentPlayerMove)">{{game.currentPlayerMove}}</span></div>
     <button mat-raised-button class="btn btn-outline-primary" (click)="endMove()">End move</button>
 </div>
-<app-game-field [field]="gameField" [labels]="labels" [height]="gameFieldHeight" [selectedShipId]="selectedShip?.id!" [clickCell]="clickCell" (notifyDblClick)="onNotifyGameFieldDblClick($event)" (notifyClick)="onNotifyGameFieldClick($event)"></app-game-field>
+<app-game-field [field]="gameField" [labels]="labels" [height]="gameFieldHeight" [selectedShipId]="selectedShip?.id ?? 0" [clickCell]="clickCell" (notifyDblClick)="onNotifyGameFieldDblClick($event)" (notifyClick)="onNotifyGameFieldClick($event)"></app-game-field>

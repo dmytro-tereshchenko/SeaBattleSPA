@@ -489,6 +489,8 @@ namespace SeaBattle.Lib.Managers
                     game.CurrentGamePlayerMoveId =
                         i + 1 < players.Count ? players.ElementAt(i + 1).Id : players.ElementAt(0).Id;
 
+                    await _gameRepository.UpdateAsync(game);
+
                     return StateCode.Success;
                 }
             }

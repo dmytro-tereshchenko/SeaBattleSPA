@@ -125,10 +125,10 @@ namespace SeaBattle.GameResources
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers().RequireAuthorization("ApiScope");
+                endpoints.MapControllers();//.RequireAuthorization("ApiScope");
 
                 endpoints.MapControllerRoute(name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}").RequireAuthorization("ApiScope");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");//.RequireAuthorization("ApiScope");
             });
         }
     }

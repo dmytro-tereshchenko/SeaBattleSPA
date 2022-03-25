@@ -25,7 +25,7 @@ export class ShipActionService {
   private vissibleShipsEndPoint: string = 'Ship/GetVisibleShips';
 
   move(shipId: number, cell: GameFieldCell, direction: Direction): Observable<number> {
-    return this.fieldService.getGameField().pipe(mergeMap(field => this.dataApi.PutData<number>(this.moveEndPoint, { GameShipId: shipId, TPosX: cell.x, TPosY: cell.y, Direction: direction, GameFieldId: field.id })
+    return this.fieldService.getGameField().pipe(mergeMap(field => this.dataApi.PutData<number>(this.moveEndPoint, { GameShipId: shipId, TPosX: cell.x + 1, TPosY: cell.y + 1, Direction: direction, GameFieldId: field.id })
       .pipe(map(state => state),
         catchError(this.errorLog.handleError<number>('moveShip')))));
   }
@@ -49,13 +49,13 @@ export class ShipActionService {
   }
 
   endMove(): Observable<number> {
-    return this.fieldService.getGameField().pipe(mergeMap(field => this.dataApi.PutData<number>(this.endMoveEndPoint, { id: field.gameId })
+    return this.fieldService.getGameField().pipe(mergeMap(field => this.dataApi.PutData<number>(`${this.endMoveEndPoint}/${field.gameId}`, null)
       .pipe(map(state => state),
         catchError(this.errorLog.handleError<number>('endMove')))));
   }
 
   getVissibleShips(shipId: number, action: ActionType): Observable<number[]> {
-    return this.fieldService.getGameField().pipe(mergeMap(field => this.dataApi.GetData<number[]>(`${this.endMoveEndPoint}?GameShipId=${shipId}&GameFieldId=${field.id}&Action=${action}`)
+    return this.fieldService.getGameField().pipe(mergeMap(field => this.dataApi.GetData<number[]>(`${this.vissibleShipsEndPoint}?GameShipId=${shipId}&&GameFieldId=${field.id}&&Action=${action}`)
       .pipe(map(ships => ships),
         catchError(this.errorLog.handleError<number[]>('getVissibleShips')))));
   }

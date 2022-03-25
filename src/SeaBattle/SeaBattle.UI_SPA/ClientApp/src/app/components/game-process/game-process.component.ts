@@ -67,6 +67,11 @@ export class GameProcessComponent implements OnInit {
           this.players.push(p.name);
         }
       })
+
+      //in case of current move isn't the player's move then auto-update and wait
+      if (game.currentPlayerMove !== this.player?.name) {
+        this.subscription = this.source.subscribe(val => this.update());
+      }
     }))
   }
 
@@ -86,10 +91,11 @@ export class GameProcessComponent implements OnInit {
   }
 
   onNotifyGameFieldClick(cell: GameFieldCell) {
+    let changeShip: boolean = false;
     if (cell && this.game.currentPlayerMove === this.player?.name) {
       if (cell.gameShipId) {
         this.shipService.getShip(cell.gameShipId).subscribe(ship => {
-          if (ship.gamePlayerId === this.selectedShip?.gamePlayerId) {
+          if (ship.gamePlayerId === this.player?.id) {
             if (this.selectedShip?.id !== cell.gameShipId) {
               this.clickCell = null;
             }
@@ -97,11 +103,12 @@ export class GameProcessComponent implements OnInit {
             //can change choice of player ship if you haven't moved or actioned 
             if (!this.isMoved && !this.isActioned) {
               this.selectedShip = ship;
+              changeShip = true;
             }
           }
         })
       }
-      if (this.selectedShip) {
+      if (this.selectedShip && !changeShip) {
         if (this.clickCell) {
           this.moveShip(this.clickCell, this.actionService.getDirection(this.clickCell, cell));
         }
@@ -122,6 +129,8 @@ export class GameProcessComponent implements OnInit {
   }
 
   onNotifyGameFieldDblClick(cell: GameFieldCell) {
+    console.log("cell");
+    console.log(cell);
     if (this.game.currentPlayerMove === this.player?.name &&
       cell &&
       cell.gameShipId &&
@@ -137,7 +146,9 @@ export class GameProcessComponent implements OnInit {
                 this.shipService.getShip(cell.gameShipId!).subscribe(ship => this.selectedShip = ship);
 
                 this.actionService.getVissibleShips(cell.gameShipId!, ActionType.repair).subscribe(ships => {
-                  ships.forEach(shipId => this.shipService.getShipFromServer(shipId).subscribe())
+                  if (ships) {
+                    ships.forEach(shipId => this.shipService.getShipFromServer(shipId).subscribe())
+                  }
                 })
               }
             })
@@ -155,8 +166,12 @@ export class GameProcessComponent implements OnInit {
         }
         //attack target ship
         else if (this.selectedShip) {
+          console.log("selectedShip");
+          console.log(this.selectedShip);
           this.actionService.attack(this.selectedShip.id, cell).subscribe(state => {
-            if (state === 10) {
+            console.log("state");
+            console.log(state);
+            if (state === 10 || state === 23) {
               this.isActioned = true;
               this.shipService.getShipFromServer(cell.gameShipId!).subscribe();
             }
@@ -175,18 +190,20 @@ export class GameProcessComponent implements OnInit {
   }
 
   endMove() {
-    this.isActioned = false;
-    this.isMoved = false;
-    this.selectedShip = null;
+    if (this.game.currentPlayerMove === this.player?.name) {
+      this.isActioned = false;
+      this.isMoved = false;
+      this.selectedShip = null;
 
-    this.actionService.endMove().subscribe(state => {
-      if (state === 10) {
-        this.gameService.getGameFromServer().subscribe(game => {
-          this.game = game;
-          this.subscription = this.source.subscribe(val => this.update());
-        })
-      }
-    })
+      this.actionService.endMove().subscribe(state => {
+        if (state === 10) {
+          this.gameService.getGameFromServer().subscribe(game => {
+            this.game = game;
+            this.subscription = this.source.subscribe(val => this.update());
+          })
+        }
+      })
+    }
   }
 
   private moveShip(cell: GameFieldCell, direction: Direction) {
