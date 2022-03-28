@@ -353,9 +353,13 @@ namespace SeaBattle.Lib.Managers
 
             targetShip.Hp -= ship.Damage;
 
+            Game game = await _gameRepository.FindByIdAsync(gameField.GameId);
+
+            bool endGame = CheckEndGame(game);
+
             await _gameShipRepository.UpdateAsync(targetShip);
 
-            return StateCode.Success;
+            return endGame ? StateCode.GameFinished : StateCode.Success;
         }
 
         public async Task<StateCode> RepairShip(string playerName, int gameShipId, ushort tPosX, ushort tPosY, int gameFieldId)
@@ -411,13 +415,9 @@ namespace SeaBattle.Lib.Managers
                 targetShip.Hp = targetShip.MaxHp;
             }
 
-            Game game = await _gameRepository.FindByIdAsync(gameField.GameId);
-
-            bool endGame = CheckEndGame(game);
-
             await _gameShipRepository.UpdateAsync(targetShip);
 
-            return endGame ? StateCode.GameFinished : StateCode.Success;
+            return StateCode.Success;
         }
 
         public async Task<StateCode> RepairAllShip(string playerName, int gameShipId, int gameFieldId)
@@ -509,9 +509,9 @@ namespace SeaBattle.Lib.Managers
             {
                 for (ushort j = 1; j < game.GameField.SizeY; j++)
                 {
-                    if (game.GameField[i, j] != null)
+                    if (game.GameField[i, j] is not null)
                     {
-                        if (player != null && game.GameField[i, j].GamePlayer != player)
+                        if (player is not null && game.GameField[i, j].GamePlayer != player)
                         {
                             return false;
                         }
