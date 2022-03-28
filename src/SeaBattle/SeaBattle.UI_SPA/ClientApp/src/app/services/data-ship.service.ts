@@ -83,4 +83,8 @@ export class DataShipService {
         catchError(this.errorLog.handleError<number>('removeRepair')));
   }
 
+  deleteShip(id: number) {
+    this.ships.delete(id);
+  }
+
 }

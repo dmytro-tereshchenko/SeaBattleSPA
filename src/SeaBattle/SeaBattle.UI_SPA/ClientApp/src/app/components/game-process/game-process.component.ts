@@ -51,12 +51,23 @@ export class GameProcessComponent implements OnInit {
   ngOnInit(): void {
     this.source = interval(this.updateTimeOut);
 
-    this.gameFieldService.getGameField().subscribe(f => this.gameField = f);
+    this.gameFieldService.getGameField().subscribe(f => {
+      this.gameField = f;
+
+      this.labels = [];
+
+      for (var i: number = 0; i < f.sizeX; i++) {
+        this.labels[i] = [];
+        for (var j: number = 0; j < f.sizeY; j++) {
+          this.labels[i][j] = false;
+        }
+      }
+    });
 
     this.userService.getUser().then(user => this.gameService.getGame().subscribe(game => {
       this.game = game;
       this.players = [];
-      this.player = game.players.find(p => p.name === (user?.profile.name ?? ''));
+      this.player = game.players.find(p => p.name === user?.profile.name);
 
       if (this.player) {
         this.players.push(this.player.name);
@@ -92,18 +103,24 @@ export class GameProcessComponent implements OnInit {
 
   onNotifyGameFieldClick(cell: GameFieldCell) {
     let changeShip: boolean = false;
-    if (cell && this.game.currentPlayerMove === this.player?.name) {
+    if (cell &&
+      !this.isMoved &&
+      this.game.currentPlayerMove === this.player?.name) {
       if (cell.gameShipId) {
         this.shipService.getShip(cell.gameShipId).subscribe(ship => {
           if (ship.gamePlayerId === this.player?.id) {
             if (this.selectedShip?.id !== cell.gameShipId) {
               this.clickCell = null;
             }
+            else if (this.labels[cell.x - 1][cell.y - 1]) {
+              this.clickCell = cell;
+            }
 
             //can change choice of player ship if you haven't moved or actioned 
             if (!this.isMoved && !this.isActioned) {
               this.selectedShip = ship;
               changeShip = true;
+              this.setMoveArea();
             }
           }
         })
@@ -119,7 +136,7 @@ export class GameProcessComponent implements OnInit {
                 this.moveShip(cell, Direction.xDec);
               }
             }
-            else {
+            else if (this.labels[cell.x - 1][cell.y - 1]) {
               this.clickCell = cell;
             }
           })
@@ -129,8 +146,6 @@ export class GameProcessComponent implements OnInit {
   }
 
   onNotifyGameFieldDblClick(cell: GameFieldCell) {
-    console.log("cell");
-    console.log(cell);
     if (this.game.currentPlayerMove === this.player?.name &&
       cell &&
       cell.gameShipId &&
@@ -143,6 +158,7 @@ export class GameProcessComponent implements OnInit {
             this.actionService.repairAll(cell.gameShipId).subscribe(state => {
               if (state === 10 || state === 21) {
                 this.isActioned = true;
+
                 this.shipService.getShip(cell.gameShipId!).subscribe(ship => this.selectedShip = ship);
 
                 this.actionService.getVissibleShips(cell.gameShipId!, ActionType.repair).subscribe(ships => {
@@ -150,6 +166,8 @@ export class GameProcessComponent implements OnInit {
                     ships.forEach(shipId => this.shipService.getShipFromServer(shipId).subscribe())
                   }
                 })
+
+                this.updateAfterAction();
               }
             })
           }
@@ -159,34 +177,76 @@ export class GameProcessComponent implements OnInit {
             this.actionService.repair(this.selectedShip.id, cell).subscribe(state => {
               if (state === 10) {
                 this.isActioned = true;
+
                 this.shipService.getShipFromServer(cell.gameShipId!).subscribe();
+
+                this.updateAfterAction();
               }
             })
           }
         }
         //attack target ship
         else if (this.selectedShip) {
-          console.log("selectedShip");
-          console.log(this.selectedShip);
           this.actionService.attack(this.selectedShip.id, cell).subscribe(state => {
-            console.log("state");
-            console.log(state);
             if (state === 10 || state === 23) {
               this.isActioned = true;
+
               this.shipService.getShipFromServer(cell.gameShipId!).subscribe();
+
+              this.updateAfterAction();
             }
           })
         }
-        //in case actioned update game field 
-        if (this.isActioned) {
-          this.gameFieldService.getGameFieldFromServer().subscribe(field => this.gameField = field);
-
-          if (this.isMoved) {
-            this.endMove();
-          }
-        }
       })
     }
+  }
+
+  //in case actioned update game field 
+  private updateAfterAction() {
+    this.gameFieldService.getGameFieldFromServer().subscribe(field => this.gameField = field);
+
+    if (this.isMoved) {
+      this.endMove();
+    }
+  }
+
+  private clearLabelArea() {
+    for (var i: number = 0; i < this.gameField.sizeX; i++) {
+      for (var j: number = 0; j < this.gameField.sizeY; j++) {
+        this.labels[i][j] = false;
+      }
+    }
+  }
+
+  private setMoveArea() {
+    const shipcells: GameFieldCell[] = [];
+
+    this.gameField.gameFieldCells.forEach(cells => {
+      shipcells.push(...cells.filter(cell => cell.gameShipId === this.selectedShip?.id))
+    });
+
+    for (var i: number = 0; i < this.gameField.sizeX; i++) {
+      for (var j: number = 0; j < this.gameField.sizeY; j++) {
+        this.labels[i][j] = Math.min(...shipcells.map(cell =>
+          this.getDistanceBetween2Points(cell.x, cell.y, i + 1, j + 1))) <= this.selectedShip?.speed! && this.checkNearShip(i, j) ? true : false;
+      }
+    }
+  }
+
+  private getDistanceBetween2Points(num1X: number, num1Y: number, num2X: number, num2Y: number): number {
+    return Math.sqrt(Math.pow(num1X - num2X, 2) + Math.pow(num1Y - num2Y, 2));
+  }
+
+  private checkNearShip(x: number, y: number): boolean {
+    for (var i: number = x - 1 < 0 ? 0 : x - 1; i <= (x + 1 >= this.gameField.sizeX ? this.gameField.sizeX : x + 1); i++) {
+      for (var j: number = y - 1 < 0 ? 0 : y - 1; j <= (y + 1 >= this.gameField.sizeY ? this.gameField.sizeY : y + 1); j++) {
+        const cell: GameFieldCell = this.gameField.gameFieldCells[i][j];
+        if (cell.gameShipId && cell.gameShipId !== this.selectedShip?.id) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   endMove() {
@@ -194,6 +254,7 @@ export class GameProcessComponent implements OnInit {
       this.isActioned = false;
       this.isMoved = false;
       this.selectedShip = null;
+      this.clickCell = null;
 
       this.actionService.endMove().subscribe(state => {
         if (state === 10) {
@@ -214,6 +275,8 @@ export class GameProcessComponent implements OnInit {
 
           this.gameFieldService.getGameFieldFromServer().subscribe(f => this.gameField = f);
 
+          this.clearLabelArea();
+
           if (this.isActioned) {
             this.endMove();
           }
@@ -227,8 +290,28 @@ export class GameProcessComponent implements OnInit {
   private update() {
     this.gameService.getGameFromServer().subscribe(game => {
       if (game.currentPlayerMove !== this.game.currentPlayerMove) {
+        //update game
         this.game = game;
-        this.gameFieldService.getGameFieldFromServer().subscribe(field => this.gameField = field);
+
+        //update game field
+        this.gameFieldService.getGameFieldFromServer().subscribe(field => {
+          this.gameField = field;
+
+          //update ships
+          const shipsId: number[] = [];
+          field.gameFieldCells.forEach(async (shipcells) => shipcells.forEach(
+            async (shipCell) => {
+              if (shipCell.gameShipId && !shipsId.includes(shipCell.gameShipId)) {
+                this.shipService.getShipFromServer(shipCell.gameShipId).subscribe();
+                shipsId.push(shipCell.gameShipId);
+              }
+            }
+          ))
+        });
+      }
+
+      //stop update and wait move of this player
+      if (this.game.currentPlayerMove === this.player?.name) {
         this.subscription.unsubscribe();
       }
     })
