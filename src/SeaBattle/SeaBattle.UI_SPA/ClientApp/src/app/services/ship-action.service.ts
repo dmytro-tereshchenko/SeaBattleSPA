@@ -7,6 +7,7 @@ import { ActionType } from '../data/action-type';
 import { DataApiService } from '../core/services/data-api.service';
 import { ErrorLogService } from '../services/error-log.service';
 import { DataGameFieldService } from './data-game-field.service';
+import { DataShipService } from '../services/data-ship.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class ShipActionService {
 
   constructor(private dataApi: DataApiService,
     private errorLog: ErrorLogService,
-    private fieldService: DataGameFieldService) { }
+    private fieldService: DataGameFieldService,
+    private shipService: DataShipService) { }
 
   private moveEndPoint: string = 'GameField/MoveShip';
   private attackEndPoint: string = 'GameField/AttackShip';
@@ -25,14 +27,19 @@ export class ShipActionService {
   private vissibleShipsEndPoint: string = 'Ship/GetVisibleShips';
 
   move(shipId: number, cell: GameFieldCell, direction: Direction): Observable<number> {
-    return this.fieldService.getGameField().pipe(mergeMap(field => this.dataApi.PutData<number>(this.moveEndPoint, { GameShipId: shipId, TPosX: cell.x + 1, TPosY: cell.y + 1, Direction: direction, GameFieldId: field.id })
+    return this.fieldService.getGameField().pipe(mergeMap(field => this.dataApi.PutData<number>(this.moveEndPoint, { GameShipId: shipId, TPosX: cell.x, TPosY: cell.y, Direction: direction, GameFieldId: field.id })
       .pipe(map(state => state),
         catchError(this.errorLog.handleError<number>('moveShip')))));
   }
 
   attack(shipId: number, cell: GameFieldCell): Observable<number> {
     return this.fieldService.getGameField().pipe(mergeMap(field => this.dataApi.PutData<number>(this.attackEndPoint, { GameShipId: shipId, TPosX: cell.x, TPosY: cell.y, GameFieldId: field.id })
-      .pipe(map(state => state),
+      .pipe(map(state => {
+        if (state === 23) {
+          this.shipService.deleteShip(cell.gameShipId!);
+        }
+        return state;
+      }),
         catchError(this.errorLog.handleError<number>('attackShip')))));
   }
 
