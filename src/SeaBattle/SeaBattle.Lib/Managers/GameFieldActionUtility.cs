@@ -42,6 +42,8 @@ namespace SeaBattle.Lib.Managers
                 field[cell.Item1, cell.Item2] = ship as GameShip;
             }
 
+            field.GameFieldCells.FirstOrDefault(c => c.X == posX && c.Y == posY).Stern = true;
+
             return StateCode.Success;
         }
 
