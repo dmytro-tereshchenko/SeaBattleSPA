@@ -47,7 +47,7 @@ export class DataStartFieldService {
 
   putShipOnField(cell: GameFieldCell, direction: Direction, shipId: number): Observable<number> {
     return this.getStartField().pipe(mergeMap(field => this.dataApi.PutData<number>(this.putShip,
-      { tPosX: cell.x + 1, tPosY: cell.y + 1, direction: direction, startFieldId: field.id, shipId: shipId })
+      { tPosX: cell.x, tPosY: cell.y, direction: direction, startFieldId: field.id, shipId: shipId })
       .pipe(map(state => state),
         catchError(this.errorLog.handleError<number>('putShipOnField')))));
   }

@@ -54,7 +54,7 @@ export class DataGameFieldService {
 
   SetGameField(field: GameFieldDto): GameField {
     var cells: GameFieldCell[][];
-    
+
     cells = [];
 
     for (var i: number = 0; i < field.sizeX; i++) {
@@ -62,8 +62,8 @@ export class DataGameFieldService {
       for (var j: number = 0; j < field.sizeY; j++) {
         cells[i][j] = <GameFieldCell>{
           id: null,
-          x: i,
-          y: j,
+          x: i + 1,
+          y: j + 1,
           stern: false,
           gameShipId: null,
           playerId: null

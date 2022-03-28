@@ -85,7 +85,7 @@ export class GameFieldComponent implements OnInit {
       return false;
     }
 
-    return this.labels[cell.x][cell.y]
+    return this.labels[cell.x - 1][cell.y - 1]
   }
 
   callForClick(cell: GameFieldCell) {
@@ -122,7 +122,7 @@ export class GameFieldComponent implements OnInit {
             this.toolTip = toolTip;
           }))
     }
-    else{
+    else {
       this.toolTip = "";
     }
   }
