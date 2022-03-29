@@ -21,6 +21,9 @@ export class GameFieldComponent implements OnInit {
   @Input() clickCell: GameFieldCell | null;
   @Output() notifyClick = new EventEmitter<GameFieldCell>();
   @Output() notifyDblClick = new EventEmitter<GameFieldCell>();
+  @Output() notifyMouseDown = new EventEmitter<GameFieldCell>();
+  @Output() notifyMouseOver = new EventEmitter<GameFieldCell>();
+  @Output() notifyMouseUp = new EventEmitter<GameFieldCell>();
 
   toolTip: string;
   private colorShips: string[] = colorPlayers;
