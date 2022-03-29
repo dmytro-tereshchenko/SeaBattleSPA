@@ -36,6 +36,9 @@ export class GameProcessComponent implements OnInit {
   private subscription: Subscription;
   private source: Observable<number>
 
+  private shipCoords: GameFieldCell[] = [];
+  private tempCoords: GameFieldCell[] = [];
+
   constructor(private gameFieldService: DataGameFieldService,
     private gameService: DataGameService,
     private shipService: DataShipService,
@@ -108,39 +111,23 @@ export class GameProcessComponent implements OnInit {
       this.game.currentPlayerMove === this.player?.name) {
       if (cell.gameShipId) {
         this.shipService.getShip(cell.gameShipId).subscribe(ship => {
-          if (ship.gamePlayerId === this.player?.id) {
-            if (this.selectedShip?.id !== cell.gameShipId) {
-              this.clickCell = null;
-            }
-            else if (this.labels[cell.x - 1][cell.y - 1]) {
-              this.clickCell = cell;
-            }
-
-            //can change choice of player ship if you haven't moved or actioned 
-            if (!this.isMoved && !this.isActioned) {
-              this.selectedShip = ship;
-              changeShip = true;
-              this.setMoveArea();
-            }
+          if (ship.gamePlayerId === this.player?.id &&
+            !this.isMoved &&
+            !this.isActioned) {
+            this.selectedShip = ship;
+            changeShip = true;
+            this.clickCell = null;
+            this.getShipCoords();
+            this.setMoveArea();
           }
         })
       }
-      if (this.selectedShip && !changeShip) {
-        if (this.clickCell) {
-          this.moveShip(this.clickCell, this.actionService.getDirection(this.clickCell, cell));
-        }
-        else {
-          this.shipService.getShip(this.selectedShip.id).subscribe(ship => {
-            if (ship.size === 1) {
-              if (cell.gameShipId !== this.selectedShip?.id) {
-                this.moveShip(cell, Direction.xDec);
-              }
-            }
-            else if (this.labels[cell.x - 1][cell.y - 1]) {
-              this.clickCell = cell;
-            }
-          })
-        }
+      if (this.selectedShip &&
+        !changeShip &&
+        !this.clickCell &&
+        this.selectedShip.size === 1 &&
+        cell.gameShipId !== this.selectedShip?.id) {
+        this.moveShip(cell, Direction.xDec);
       }
     }
   }
@@ -201,12 +188,136 @@ export class GameProcessComponent implements OnInit {
     }
   }
 
+  onNotifyGameFieldMouseDown(cell: GameFieldCell) {
+    if (this.selectedShip &&
+      this.selectedShip?.size !== 1 &&
+      !this.isMoved) {
+      this.clickCell = cell;
+    }
+  }
+
+  onNotifyGameFieldMouseOver(cell: GameFieldCell) {
+    if (this.selectedShip &&
+      this.clickCell &&
+      this.selectedShip?.size !== 1 &&
+      !this.isMoved) {
+      this.shipCoords.forEach(c => {
+        this.gameField.gameFieldCells[c.x - 1][c.y - 1].gameShipId = null;
+        this.gameField.gameFieldCells[c.x - 1][c.y - 1].playerId = null;
+      });
+      this.tempCoords.forEach(c => {
+        this.gameField.gameFieldCells[c.x - 1][c.y - 1].gameShipId = null;
+        this.gameField.gameFieldCells[c.x - 1][c.y - 1].playerId = null;
+      });
+
+      this.tempCoords = [];
+
+      let i: number = 0;
+      let temp: number;
+
+      switch (this.actionService.getDirection(this.clickCell, cell)) {
+        case Direction.xDec: {
+          while (i < this.selectedShip.size) {
+            temp = this.clickCell.x - i - 1;
+            if (temp < 0) {
+              this.tempCoords = [];
+              this.shipCoords.forEach(c => {
+                this.gameField.gameFieldCells[c.x - 1][c.y - 1].gameShipId = this.selectedShip?.id!;
+                this.gameField.gameFieldCells[c.x - 1][c.y - 1].playerId = this.selectedShip?.gamePlayerId!;
+              });
+              return;
+            }
+            else {
+              this.tempCoords.push(this.gameField.gameFieldCells[temp][this.clickCell.y - 1])
+            }
+            i++;
+          }
+          break;
+        }
+        case Direction.xInc: {
+          while (i < this.selectedShip.size) {
+            temp = this.clickCell.x + i - 1;
+            if (temp >= this.gameField.sizeX) {
+              this.tempCoords = [];
+              this.shipCoords.forEach(c => {
+                this.gameField.gameFieldCells[c.x - 1][c.y - 1].gameShipId = this.selectedShip?.id!;
+                this.gameField.gameFieldCells[c.x - 1][c.y - 1].playerId = this.selectedShip?.gamePlayerId!;
+              });
+              return;
+            }
+            else {
+              this.tempCoords.push(this.gameField.gameFieldCells[temp][this.clickCell.y - 1]);
+            }
+            i++;
+          }
+          break;
+        }
+        case Direction.yDec: {
+          while (i < this.selectedShip.size) {
+            temp = this.clickCell.y - i - 1;
+            if (temp < 0) {
+              this.tempCoords = [];
+              this.shipCoords.forEach(c => {
+                this.gameField.gameFieldCells[c.x - 1][c.y - 1].gameShipId = this.selectedShip?.id!;
+                this.gameField.gameFieldCells[c.x - 1][c.y - 1].playerId = this.selectedShip?.gamePlayerId!;
+              });
+              return;
+            }
+            else {
+              this.tempCoords.push(this.gameField.gameFieldCells[this.clickCell.x - 1][temp]);
+            }
+            i++;
+          }
+          break;
+        }
+        case Direction.yInc: {
+          while (i < this.selectedShip.size) {
+            temp = this.clickCell.y + i - 1;
+            if (temp >= this.gameField.sizeX) {
+              this.tempCoords = [];
+              this.shipCoords.forEach(c => {
+                this.gameField.gameFieldCells[c.x - 1][c.y - 1].gameShipId = this.selectedShip?.id!;
+                this.gameField.gameFieldCells[c.x - 1][c.y - 1].playerId = this.selectedShip?.gamePlayerId!;
+              });
+              return;
+            }
+            else {
+              this.tempCoords.push(this.gameField.gameFieldCells[this.clickCell.x - 1][temp]);
+            }
+            i++;
+          }
+          break;
+        }
+      }
+
+      if (this.tempCoords.length > 0) {
+        this.tempCoords.forEach(c => {
+          this.gameField.gameFieldCells[c.x - 1][c.y - 1].gameShipId = this.selectedShip?.id!;
+          this.gameField.gameFieldCells[c.x - 1][c.y - 1].playerId = this.selectedShip?.gamePlayerId!;
+        });
+      }
+    }
+  }
+
+  onNotifyGameFieldMouseUp(cell: GameFieldCell) {
+    if (this.selectedShip &&
+      this.selectedShip?.size !== 1 &&
+      this.clickCell &&
+      this.tempCoords.length > 0 &&
+      !this.isMoved) {
+      this.moveShip(this.clickCell, this.actionService.getDirection(this.clickCell, cell));
+    }
+  }
+
   //in case actioned update game field 
   private updateAfterAction() {
     this.gameFieldService.getGameFieldFromServer().subscribe(field => this.gameField = field);
 
     if (this.isMoved) {
       this.endMove();
+    }
+    else {
+      this.setMoveArea();
     }
   }
 
@@ -233,19 +344,61 @@ export class GameProcessComponent implements OnInit {
     }
   }
 
+  private setAtackArea() {
+    this.getShipCoords();
+
+    const centerShipX: number = (this.shipCoords[0].x + this.shipCoords[this.shipCoords.length - 1].x) / 2 - 0.5;
+    const centerShipY: number = (this.shipCoords[0].y + this.shipCoords[this.shipCoords.length - 1].y) / 2 - 0.5;
+
+    const ship: GameShip = new GameShip(this.selectedShip!);
+
+    for (var i: number = 0; i < this.gameField.sizeX; i++) {
+      for (var j: number = 0; j < this.gameField.sizeY; j++) {
+        this.labels[i][j] = this.getDistanceBetween2Points(i + 0.5, j + 0.5, centerShipX, centerShipY) <= ship.attackRange() ? true : false;
+      }
+    }
+  }
+
+  private getShipCoords() {
+    this.shipCoords = [];
+
+    for (var i: number = 0; i < this.gameField.sizeX; i++) {
+      for (var j: number = 0; j < this.gameField.sizeY; j++) {
+        if (this.gameField.gameFieldCells[i][j].gameShipId === this.selectedShip?.id) {
+          this.shipCoords.push(this.gameField.gameFieldCells[i][j]);
+
+          let ti: number = i + 1;
+          while (this.gameField.gameFieldCells[ti][j].gameShipId === this.selectedShip?.id) {
+            this.shipCoords.push(this.gameField.gameFieldCells[ti][j]);
+            ti++;
+          }
+
+          let tj: number = j + 1;
+          while (this.gameField.gameFieldCells[i][tj].gameShipId === this.selectedShip?.id) {
+            this.shipCoords.push(this.gameField.gameFieldCells[i][tj]);
+            tj++;
+          }
+
+          return;
+        }
+      }
+    }
+  }
+
   private getDistanceBetween2Points(num1X: number, num1Y: number, num2X: number, num2Y: number): number {
     return Math.sqrt(Math.pow(num1X - num2X, 2) + Math.pow(num1Y - num2Y, 2));
   }
 
   private checkNearShip(x: number, y: number): boolean {
-    for (var i: number = x - 1 < 0 ? 0 : x - 1; i <= (x + 1 >= this.gameField.sizeX ? this.gameField.sizeX : x + 1); i++) {
-      for (var j: number = y - 1 < 0 ? 0 : y - 1; j <= (y + 1 >= this.gameField.sizeY ? this.gameField.sizeY : y + 1); j++) {
+    for (var i: number = x - 1 < 0 ? 0 : x - 1; i < (x + 2 >= this.gameField.sizeX ? this.gameField.sizeX : x + 2); i++) {
+      for (var j: number = y - 1 < 0 ? 0 : y - 1; j < (y + 2 >= this.gameField.sizeY ? this.gameField.sizeY : y + 2); j++) {
         const cell: GameFieldCell = this.gameField.gameFieldCells[i][j];
         if (cell.gameShipId && cell.gameShipId !== this.selectedShip?.id) {
           return false;
         }
       }
     }
+
     return true;
   }
 
@@ -255,6 +408,7 @@ export class GameProcessComponent implements OnInit {
       this.isMoved = false;
       this.selectedShip = null;
       this.clickCell = null;
+      this.clearLabelArea();
 
       this.actionService.endMove().subscribe(state => {
         if (state === 10) {
@@ -273,13 +427,27 @@ export class GameProcessComponent implements OnInit {
         if (state === 10) {
           this.isMoved = true;
 
-          this.gameFieldService.getGameFieldFromServer().subscribe(f => this.gameField = f);
+          this.gameFieldService.getGameFieldFromServer().subscribe(f => {
+            this.gameField = f;
 
-          this.clearLabelArea();
-
-          if (this.isActioned) {
-            this.endMove();
-          }
+            if (this.isActioned) {
+              this.endMove();
+            }
+            else {
+              this.setAtackArea();
+            }
+          });
+        }
+        else {
+          this.tempCoords.forEach(c => {
+            this.gameField.gameFieldCells[c.x - 1][c.y - 1].gameShipId = null;
+            this.gameField.gameFieldCells[c.x - 1][c.y - 1].playerId = null;
+          });
+          this.shipCoords.forEach(c => {
+            this.gameField.gameFieldCells[c.x - 1][c.y - 1].gameShipId = this.selectedShip?.id!;
+            this.gameField.gameFieldCells[c.x - 1][c.y - 1].playerId = this.selectedShip?.gamePlayerId!;
+          });
+          this.tempCoords = [];
         }
 
         this.clickCell = null;

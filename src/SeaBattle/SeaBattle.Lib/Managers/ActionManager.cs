@@ -257,7 +257,6 @@ namespace SeaBattle.Lib.Managers
             ICollection<(ushort, ushort)> locOfShip = ActionUtility.GetShipCoordinates(ship, gameField);
 
             //check distance between target point and the nearest cell of current ship.
-
             if (locOfShip.Select(s => ActionUtility.GetDistanceBetween2Points((tPosX, tPosY), s)).OrderBy(d => d).First() >
                 ship.Speed)
             {
@@ -344,8 +343,6 @@ namespace SeaBattle.Lib.Managers
 
             if (targetShip.Hp <= ship.Damage)
             {
-                //ActionUtility.RemoveShipFromField(targetShip, gameField);
-
                 await _gameShipRepository.DeleteAsync(targetShip);
 
                 return StateCode.TargetDestroyed;
