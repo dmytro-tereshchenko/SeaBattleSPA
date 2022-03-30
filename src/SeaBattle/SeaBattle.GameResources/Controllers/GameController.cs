@@ -30,7 +30,9 @@ namespace SeaBattle.GameResources.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<GameDto>> GetById([FromServices] GenericRepository<Game> rep, [FromServices] IMapper mapper, int id)
         {
-            IGame game = await rep.FindByIdAsync(id);
+            var query = await rep.GetWithIncludeAsync(g => g.Id == id, g => g.GamePlayers);
+
+            IGame game = query.FirstOrDefault();
 
             if (game is null)
             {
@@ -181,6 +183,28 @@ namespace SeaBattle.GameResources.Controllers
             }
 
             return await actionService.NextMove(id);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<string>> GetWinner([FromServices] GenericRepository<Game> repGame, [FromServices] GenericRepository<GamePlayer> repPlayer, int id)
+        {
+            Game game = await repGame.FindByIdAsync(id);
+
+            if(game is null || game.WinnerId is null)
+            {
+                return NotFound();
+            }
+
+            GamePlayer player = await repPlayer.FindByIdAsync(game.WinnerId ?? -1);
+
+            if (player is null)
+            {
+                return NotFound();
+            }
+
+            return player.Name;
         }
     }
 }
