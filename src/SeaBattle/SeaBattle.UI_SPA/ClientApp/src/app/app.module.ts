@@ -11,6 +11,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
@@ -62,7 +63,8 @@ import { GameProcessComponent } from './components/game-process/game-process.com
     MatPaginatorModule,
     MatSortModule,
     MatTabsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TextFieldModule
   ],
   providers: [],
   bootstrap: [AppComponent]

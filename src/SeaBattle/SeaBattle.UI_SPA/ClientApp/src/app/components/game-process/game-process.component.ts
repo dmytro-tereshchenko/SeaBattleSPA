@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { Observable, interval, Subscription } from 'rxjs';
 import { GameField } from '../../data/game-field';
 import { GameFieldCell } from '../../data/game-field-cell';
@@ -27,6 +28,8 @@ export class GameProcessComponent implements OnInit {
   selectedShip: GameShip | null;
   gameFieldHeight: string;
   clickCell: GameFieldCell | null;
+  message: string;
+  @ViewChild('autosize') autosize: CdkTextareaAutosize;
   private colorShips: string[] = colorPlayers;
   private players: string[];
   private player: Player | undefined;
@@ -44,7 +47,7 @@ export class GameProcessComponent implements OnInit {
     private shipService: DataShipService,
     private userService: AuthService,
     private actionService: ShipActionService) {
-    this.gameFieldHeight = "80vh";
+    this.gameFieldHeight = "75vh";
     this.clickCell = null;
     this.selectedShip = null;
     this.isMoved = false;
@@ -107,6 +110,7 @@ export class GameProcessComponent implements OnInit {
   onNotifyGameFieldClick(cell: GameFieldCell) {
     let changeShip: boolean = false;
     if (cell &&
+      this.game.gameState === 4 &&
       !this.isMoved &&
       this.game.currentPlayerMove === this.player?.name) {
       if (cell.gameShipId) {
@@ -135,6 +139,7 @@ export class GameProcessComponent implements OnInit {
   onNotifyGameFieldDblClick(cell: GameFieldCell) {
     if (this.game.currentPlayerMove === this.player?.name &&
       cell &&
+      this.game.gameState === 4 &&
       cell.gameShipId &&
       !this.isActioned) {
       this.shipService.getShip(cell.gameShipId).subscribe(ship => {
@@ -155,6 +160,13 @@ export class GameProcessComponent implements OnInit {
                 })
 
                 this.updateAfterAction();
+
+                if (state === 10) {
+                  this.message = "The ships around have been repaired";
+                }
+                else {
+                  this.message = "There are no ships around";
+                }
               }
             })
           }
@@ -168,6 +180,14 @@ export class GameProcessComponent implements OnInit {
                 this.shipService.getShipFromServer(cell.gameShipId!).subscribe();
 
                 this.updateAfterAction();
+
+                this.message = "Target ship was repaired";
+              }
+              else if (state === 22) {
+                this.message = "Wrong target"
+              }
+              else if (state === 21) {
+                this.message = "Target is out of range"
               }
             })
           }
@@ -181,6 +201,22 @@ export class GameProcessComponent implements OnInit {
               this.shipService.getShipFromServer(cell.gameShipId!).subscribe();
 
               this.updateAfterAction();
+
+              if (state === 10) {
+                this.message = "Hit on the target ship"
+              }
+              else {
+                this.message = "The target ship was destroyed"
+              }
+            }
+            else if (state === 22) {
+              this.message = "Wrong target"
+            }
+            else if (state === 21) {
+              this.message = "Target is out of range"
+            }
+            else if (state === 31) {
+              this.getWinner();
             }
           })
         }
@@ -190,6 +226,7 @@ export class GameProcessComponent implements OnInit {
 
   onNotifyGameFieldMouseDown(cell: GameFieldCell) {
     if (this.selectedShip &&
+      this.game.gameState === 4 &&
       this.selectedShip?.size !== 1 &&
       !this.isMoved) {
       this.clickCell = cell;
@@ -198,6 +235,7 @@ export class GameProcessComponent implements OnInit {
 
   onNotifyGameFieldMouseOver(cell: GameFieldCell) {
     if (this.selectedShip &&
+      this.game.gameState === 4 &&
       this.clickCell &&
       this.selectedShip?.size !== 1 &&
       !this.isMoved) {
@@ -301,6 +339,7 @@ export class GameProcessComponent implements OnInit {
 
   onNotifyGameFieldMouseUp(cell: GameFieldCell) {
     if (this.selectedShip &&
+      this.game.gameState === 4 &&
       this.selectedShip?.size !== 1 &&
       this.clickCell &&
       this.tempCoords.length > 0 &&
@@ -364,17 +403,17 @@ export class GameProcessComponent implements OnInit {
 
     for (var i: number = 0; i < this.gameField.sizeX; i++) {
       for (var j: number = 0; j < this.gameField.sizeY; j++) {
-        if (this.gameField.gameFieldCells[i][j].gameShipId === this.selectedShip?.id) {
+        if (this.gameField.gameFieldCells[i][j]?.gameShipId === this.selectedShip?.id) {
           this.shipCoords.push(this.gameField.gameFieldCells[i][j]);
 
           let ti: number = i + 1;
-          while (this.gameField.gameFieldCells[ti][j].gameShipId === this.selectedShip?.id) {
+          while (this.gameField.gameFieldCells[ti][j]?.gameShipId === this.selectedShip?.id) {
             this.shipCoords.push(this.gameField.gameFieldCells[ti][j]);
             ti++;
           }
 
           let tj: number = j + 1;
-          while (this.gameField.gameFieldCells[i][tj].gameShipId === this.selectedShip?.id) {
+          while (this.gameField.gameFieldCells[i][tj]?.gameShipId === this.selectedShip?.id) {
             this.shipCoords.push(this.gameField.gameFieldCells[i][tj]);
             tj++;
           }
@@ -410,6 +449,8 @@ export class GameProcessComponent implements OnInit {
       this.clickCell = null;
       this.clearLabelArea();
 
+      this.gameFieldService.getGameFieldFromServer().subscribe(field => this.gameField = field);
+
       this.actionService.endMove().subscribe(state => {
         if (state === 10) {
           this.gameService.getGameFromServer().subscribe(game => {
@@ -437,6 +478,8 @@ export class GameProcessComponent implements OnInit {
               this.setAtackArea();
             }
           });
+
+          this.message = "Ship was moved";
         }
         else {
           this.tempCoords.forEach(c => {
@@ -448,6 +491,13 @@ export class GameProcessComponent implements OnInit {
             this.gameField.gameFieldCells[c.x - 1][c.y - 1].playerId = this.selectedShip?.gamePlayerId!;
           });
           this.tempCoords = [];
+
+          if (state === 21) {
+            this.message = "Out of distance of move";
+          }
+          else if (state === 12) {
+            this.message = "Wrong position for ship";
+          }
         }
 
         this.clickCell = null;
@@ -456,8 +506,8 @@ export class GameProcessComponent implements OnInit {
   }
 
   private update() {
-    this.gameService.getGameFromServer().subscribe(game => {
-      if (game.currentPlayerMove !== this.game.currentPlayerMove) {
+    this.gameService.getGameByIdFromServer().subscribe(game => {
+      if (game.gameState === 4 && game.currentPlayerMove !== this.game.currentPlayerMove) {
         //update game
         this.game = game;
 
@@ -478,10 +528,18 @@ export class GameProcessComponent implements OnInit {
         });
       }
 
+      if (game.gameState === 5) {
+        this.getWinner();
+      }
+
       //stop update and wait move of this player
-      if (this.game.currentPlayerMove === this.player?.name) {
+      if (game.gameState === 5 || this.game.currentPlayerMove === this.player?.name) {
         this.subscription.unsubscribe();
       }
     })
+  }
+
+  private getWinner() {
+    this.gameService.getWinner().subscribe(winner => this.message = `End of game.\nWinner is ${winner}`);
   }
 }

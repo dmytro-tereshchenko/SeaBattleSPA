@@ -251,17 +251,17 @@ export class GamePrepComponent implements OnInit {
 
     for (var i: number = 0; i < this.gameField.sizeX; i++) {
       for (var j: number = 0; j < this.gameField.sizeY; j++) {
-        if (this.gameField.gameFieldCells[i][j].gameShipId === this.selectedShip?.id) {
+        if (this.gameField.gameFieldCells[i][j]?.gameShipId === this.selectedShip?.id) {
           this.shipCoords.push(this.gameField.gameFieldCells[i][j]);
 
           let ti: number = i + 1;
-          while (this.gameField.gameFieldCells[ti][j].gameShipId === this.selectedShip?.id) {
+          while (this.gameField.gameFieldCells[ti][j]?.gameShipId === this.selectedShip?.id) {
             this.shipCoords.push(this.gameField.gameFieldCells[ti][j]);
             ti++;
           }
 
           let tj: number = j + 1;
-          while (this.gameField.gameFieldCells[i][tj].gameShipId === this.selectedShip?.id) {
+          while (this.gameField.gameFieldCells[i][tj]?.gameShipId === this.selectedShip?.id) {
             this.shipCoords.push(this.gameField.gameFieldCells[i][tj]);
             tj++;
           }
@@ -294,8 +294,6 @@ export class GamePrepComponent implements OnInit {
             }
           });
         }
-
-        //this.gameFieldService.getGameFieldFromServer().subscribe(f => this.gameField = f);
 
         this.tempCoords = [];
         this.shipCoords = [];
