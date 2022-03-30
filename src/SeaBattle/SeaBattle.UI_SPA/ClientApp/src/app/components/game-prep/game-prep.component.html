@@ -1,6 +1,7 @@
 <mat-tab-group mat-align-tabs="center">
     <mat-tab label="Game field">
-        <app-game-field [field]="gameField" [labels]="labels" [height]="gameFieldHeight" [selectedShipId]="selectedShipId" [clickCell]="clickCell" (notifyDblClick)="onNotifyGameFieldDblClick($event)" (notifyClick)="onNotifyGameFieldClick($event)"></app-game-field>
+        <app-game-field [field]="gameField" [labels]="labels" [height]="gameFieldHeight" [selectedShipId]="selectedShip?.id ?? 0" [clickCell]="clickCell" (notifyDblClick)="onNotifyGameFieldDblClick($event)" (notifyClick)="onNotifyGameFieldClick($event)" (notifyMouseDown)="onNotifyGameFieldMouseDown($event)"
+            (notifyMouseOver)="onNotifyGameFieldMouseOver($event)" (notifyMouseUp)="onNotifyGameFieldMouseUp($event)"></app-game-field>
     </mat-tab>
     <mat-tab label="Ship's shop">
         <app-buy-ship (notify)="onNotifyShopShip()"></app-buy-ship>
@@ -74,7 +75,7 @@
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row (click)="select(row.id)" [ngClass]="{'select': true, 'selected': row.id===selectedShipId}" *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-row (click)="select(row)" [ngClass]="{'select': true, 'selected': row.id===selectedShip?.id}" *matRowDef="let row; columns: displayedColumns;"></tr>
 
         </table>
 
