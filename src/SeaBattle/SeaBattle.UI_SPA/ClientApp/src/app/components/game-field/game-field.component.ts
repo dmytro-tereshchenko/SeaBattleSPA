@@ -25,6 +25,9 @@ export class GameFieldComponent implements OnInit {
   @Output() notifyMouseOver = new EventEmitter<GameFieldCell>();
   @Output() notifyMouseUp = new EventEmitter<GameFieldCell>();
 
+  minSize: number = 5;
+  maxSize: number = 50;
+  size: number = 30;
   toolTip: string;
   private colorShips: string[] = colorPlayers;
   private playersId: number[];
