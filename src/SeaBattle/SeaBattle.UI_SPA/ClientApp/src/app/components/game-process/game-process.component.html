@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-around align-items-center p-2">
+<div class="d-flex justify-content-around align-items-center p-0 m-0">
     <div>Move: <span *ngIf="game" [style.color]="getColor(game.currentPlayerMove)">{{game.currentPlayerMove}}</span></div>
     <button mat-raised-button class="btn btn-outline-primary" (click)="endMove()">End move</button>
     <mat-form-field appearance="fill">

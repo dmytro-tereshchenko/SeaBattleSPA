@@ -47,7 +47,7 @@ export class GameProcessComponent implements OnInit {
     private shipService: DataShipService,
     private userService: AuthService,
     private actionService: ShipActionService) {
-    this.gameFieldHeight = "75vh";
+    this.gameFieldHeight = "calc(100vh - 166px)";
     this.clickCell = null;
     this.selectedShip = null;
     this.isMoved = false;
@@ -221,6 +221,8 @@ export class GameProcessComponent implements OnInit {
           })
         }
       })
+
+      this.clickCell = null;
     }
   }
 
@@ -482,14 +484,8 @@ export class GameProcessComponent implements OnInit {
           this.message = "Ship was moved";
         }
         else {
-          this.tempCoords.forEach(c => {
-            this.gameField.gameFieldCells[c.x - 1][c.y - 1].gameShipId = null;
-            this.gameField.gameFieldCells[c.x - 1][c.y - 1].playerId = null;
-          });
-          this.shipCoords.forEach(c => {
-            this.gameField.gameFieldCells[c.x - 1][c.y - 1].gameShipId = this.selectedShip?.id!;
-            this.gameField.gameFieldCells[c.x - 1][c.y - 1].playerId = this.selectedShip?.gamePlayerId!;
-          });
+          this.gameFieldService.getGameFieldFromServer().subscribe(f => this.gameField = f);
+
           this.tempCoords = [];
 
           if (state === 21) {

@@ -1,4 +1,4 @@
-<mat-tab-group mat-align-tabs="center">
+<mat-tab-group mat-align-tabs="center" class="p-0 m-0">
     <mat-tab label="Game field">
         <app-game-field [field]="gameField" [labels]="labels" [height]="gameFieldHeight" [selectedShipId]="selectedShip?.id ?? 0" [clickCell]="clickCell" (notifyDblClick)="onNotifyGameFieldDblClick($event)" (notifyClick)="onNotifyGameFieldClick($event)" (notifyMouseDown)="onNotifyGameFieldMouseDown($event)"
             (notifyMouseOver)="onNotifyGameFieldMouseOver($event)" (notifyMouseUp)="onNotifyGameFieldMouseUp($event)"></app-game-field>

@@ -28,10 +28,14 @@ namespace SeaBattle.Lib.Managers
 
         private readonly GenericRepository<StartFieldCell> _startFieldCellRepository;
 
+        private readonly GenericRepository<GameShip> _gameShipRepository;
+
+        private readonly IGameFieldActionUtility _actionUtility;
+
         public InitializeManager(IGameConfig gameConfig, IShipStorageUtility storageUtility,
             GenericRepository<Game> gameRepository, GenericRepository<GameField> gameFieldRepository,
             GenericRepository<GamePlayer> gamePlayerRepository, GenericRepository<StartField> startFieldRepository,
-            GenericRepository<StartFieldCell> startFieldCellRepository)
+            GenericRepository<StartFieldCell> startFieldCellRepository, IGameFieldActionUtility actionUtility, GenericRepository<GameShip> gameShipRepository)
         {
             _gameConfig = gameConfig;
             _storageUtility = storageUtility;
@@ -40,6 +44,8 @@ namespace SeaBattle.Lib.Managers
             _gamePlayerRepository = gamePlayerRepository;
             _startFieldRepository = startFieldRepository;
             _startFieldCellRepository = startFieldCellRepository;
+            _actionUtility = actionUtility;
+            _gameShipRepository = gameShipRepository;
         }
 
         public async Task<IResponseGameField> CreateGameField(int gameId, ushort sizeX, ushort sizeY)
@@ -283,6 +289,74 @@ namespace SeaBattle.Lib.Managers
                 //first player who get startField - first moves
                 game.CurrentGamePlayerMoveId = game.StartFields.First().GamePlayerId;
             }
+
+            await _gameRepository.UpdateAsync(game);
+
+            return StateCode.Success;
+        }
+
+        public async Task<StateCode> QuitGame(int gameId, string gamePlayerName)
+        {
+            var queryGame =
+                await _gameRepository.GetWithIncludeAsync(g => g.Id == gameId, g => g.GamePlayers);
+            Game game = queryGame.FirstOrDefault();
+
+            var queryPlayer = await _gamePlayerRepository.GetWithIncludeAsync(g => g.Name == gamePlayerName);
+            GamePlayer player = queryPlayer.FirstOrDefault();
+
+            if (game is null || player is null)
+            {
+                Exception ex = new Exception($"Invalid Id arguments in progress {nameof(ReadyPlayer)}");
+                ex.Data.Add("gameId", gameId);
+                ex.Data.Add("gamePlayerName", gamePlayerName);
+
+                throw ex;
+            }
+
+            if (!game.GamePlayers.Contains(player))
+            {
+                return StateCode.InvalidPlayer;
+            }
+
+            if (game.GameState == GameState.Init)
+            {
+                var queryStartField = await _startFieldRepository.GetWithIncludeAsync(field => field.GameId == gameId && field.GamePlayerId == player.Id,
+                    field => field.GameShips,
+                    field => field.GameField,
+                    field => field.GameField.GameFieldCells);
+                StartField startField = queryStartField.FirstOrDefault();
+
+                if(startField is not null)
+                {
+                    GameShip gameShip = null;
+
+                    foreach (GameFieldCell cell in startField.GameField.GameFieldCells)
+                    {
+                        var queryShip = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == cell.GameShipId, s => s.Ship);
+
+                        gameShip = queryShip.FirstOrDefault();
+
+                        if (gameShip.GamePlayerId==player.Id)
+                        {
+                            startField.GameShips.Add(gameShip);
+                            _actionUtility.RemoveShipFromField(gameShip, startField.GameField);
+                        }
+                    }
+
+                    foreach (GameShip ship in startField.GameShips)
+                    {
+                        startField.GameShips.Remove(ship);
+                        startField.Points += ship.Points;
+
+                        await _gameShipRepository.DeleteAsync(ship);
+                    }
+
+                    startField.GamePlayerId = null;
+                    startField.GamePlayer = null;
+                }
+            }
+
+            game.GamePlayers.Remove(player);
 
             await _gameRepository.UpdateAsync(game);
 

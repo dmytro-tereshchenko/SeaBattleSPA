@@ -73,5 +73,13 @@ namespace SeaBattle.Lib.Managers
         /// <param name="playerName">Player's name</param>
         /// <returns><see cref="StateCode"/></returns>
         Task<StateCode> ReadyPlayer(int gameId, string gamePlayerName);
+
+        /// <summary>
+        /// Quit from game
+        /// </summary>
+        /// <param name="gameId">Current game's Id</param>
+        /// <param name="playerName">Player's name</param>
+        /// <returns><see cref="StateCode"/></returns>
+        Task<StateCode> QuitGame(int gameId, string gamePlayerName);
     }
 }
