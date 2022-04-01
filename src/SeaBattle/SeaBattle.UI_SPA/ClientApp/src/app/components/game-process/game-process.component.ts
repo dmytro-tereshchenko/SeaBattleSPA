@@ -12,8 +12,10 @@ import { DataGameService } from '../../services/data-game.service';
 import { DataGameFieldService } from '../../services/data-game-field.service';
 import { DataShipService } from '../../services/data-ship.service';
 import { ShipActionService } from '../../services/ship-action.service';
+import { DataStartFieldService } from '../../services/data-start-field.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ActionType } from 'src/app/data/action-type';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-game-process',
@@ -46,7 +48,9 @@ export class GameProcessComponent implements OnInit {
     private gameService: DataGameService,
     private shipService: DataShipService,
     private userService: AuthService,
-    private actionService: ShipActionService) {
+    private actionService: ShipActionService,
+    private startFieldService: DataStartFieldService,
+    private router: Router) {
     this.gameFieldHeight = "calc(100vh - 166px)";
     this.clickCell = null;
     this.selectedShip = null;
@@ -57,7 +61,7 @@ export class GameProcessComponent implements OnInit {
   ngOnInit(): void {
     this.source = interval(this.updateTimeOut);
 
-    this.gameFieldService.getGameField().subscribe(f => {
+    this.gameFieldService.getGameFieldFromServer().subscribe(f => {
       this.gameField = f;
 
       this.labels = [];
@@ -464,6 +468,22 @@ export class GameProcessComponent implements OnInit {
     }
   }
 
+  quit() {
+    if (this.game.gameState !== 5) {
+      this.gameService.quitGame().subscribe(state => {
+        if (state === 10) {
+          this.gameService.clear();
+          this.gameFieldService.clear();
+          this.shipService.clear();
+          this.startFieldService.clear();
+          this.router.navigate(['/']);
+        }
+      })
+    }
+
+    this.router.navigate(['/']);
+  }
+
   private moveShip(cell: GameFieldCell, direction: Direction) {
     if (this.selectedShip) {
       this.actionService.move(this.selectedShip.id, cell, direction).subscribe(state => {
@@ -503,6 +523,7 @@ export class GameProcessComponent implements OnInit {
 
   private update() {
     this.gameService.getGameByIdFromServer().subscribe(game => {
+      console.log(game);
       if (game.gameState === 4 && game.currentPlayerMove !== this.game.currentPlayerMove) {
         //update game
         this.game = game;
@@ -525,6 +546,7 @@ export class GameProcessComponent implements OnInit {
       }
 
       if (game.gameState === 5) {
+        this.game = game;
         this.getWinner();
       }
 
@@ -536,6 +558,12 @@ export class GameProcessComponent implements OnInit {
   }
 
   private getWinner() {
-    this.gameService.getWinner().subscribe(winner => this.message = `End of game.\nWinner is ${winner}`);
+    this.gameService.getWinner().subscribe(winner => {
+      this.message = `End of game.\nWinner is ${winner}`;
+      this.gameService.clear();
+      this.gameFieldService.clear();
+      this.shipService.clear();
+      this.startFieldService.clear();
+    });
   }
 }

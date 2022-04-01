@@ -22,6 +22,7 @@ export class DataGameService {
   private addPlayerEndPoint: string = 'game/JoinPlayer';
   private readyPlayerEndPoint: string = 'game/ReadyPlayer';
   private winnerEndPoint: string = 'game/GetWinner';
+  private quitEndPoint: string = 'game/QuitGame';
 
   getGame(): Observable<Game> {
     if (this.game !== null) {
@@ -61,5 +62,15 @@ export class DataGameService {
   getWinner(): Observable<string> {
     return this.dataApi.GetData<string>(`${this.winnerEndPoint}/${this.game?.id}`).pipe(map(winner => winner),
       catchError(this.errorLog.handleError<string>('getWinner')));
+  }
+
+  quitGame(): Observable<number> {
+    return this.dataApi.PutData<number>(`${this.quitEndPoint}/${this.game?.id}`, null)
+      .pipe(map(state => state),
+        catchError(this.errorLog.handleError<number>('quitGame')));
+  }
+
+  clear() {
+    this.game = null;
   }
 }

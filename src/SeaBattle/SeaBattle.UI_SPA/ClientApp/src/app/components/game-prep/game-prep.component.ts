@@ -52,6 +52,7 @@ export class GamePrepComponent implements OnInit {
     this.gameFieldHeight = "50vh";
     this.clickCell = null;
     this.selectedShip = null;
+    this.labels = [];
   }
 
   ngOnInit(): void {
@@ -59,7 +60,7 @@ export class GamePrepComponent implements OnInit {
       this.gameField = f;
       this.startFieldService.getStartField().subscribe(sf => {
         this.updateListShips(sf)
-
+        
         this.labels = [];
 
         for (var i: number = 0; i < f.sizeX; i++) {
@@ -294,6 +295,9 @@ export class GamePrepComponent implements OnInit {
             }
           });
         }
+        else{
+          this.gameFieldService.getGameFieldFromServer().subscribe(f => this.gameField = f);
+        }
 
         this.tempCoords = [];
         this.shipCoords = [];
@@ -371,7 +375,7 @@ export class GamePrepComponent implements OnInit {
     const ships$: Observable<GameShip>[] = [];
 
     this.startField = field;
-
+  
     //in case an empty list of ships
     if (field.gameShipsId.length === 0) {
       const ships: GameShip[] = [];
@@ -398,6 +402,18 @@ export class GamePrepComponent implements OnInit {
     this.gameService.readyPlayer().subscribe(state => {
       if (state === 10) {
         this.router.navigate(['/wait-begin-game']);
+      }
+    })
+  }
+
+  quit() {
+    this.gameService.quitGame().subscribe(state => {
+      if (state === 10) {
+        this.gameService.clear();
+        this.gameFieldService.clear();
+        this.startFieldService.clear();
+        this.shipService.clear();
+        this.router.navigate(['/']);
       }
     })
   }

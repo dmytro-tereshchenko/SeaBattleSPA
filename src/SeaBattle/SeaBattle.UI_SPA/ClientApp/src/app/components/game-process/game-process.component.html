@@ -1,6 +1,7 @@
 <div class="d-flex justify-content-around align-items-center p-0 m-0">
     <div>Move: <span *ngIf="game" [style.color]="getColor(game.currentPlayerMove)">{{game.currentPlayerMove}}</span></div>
     <button mat-raised-button class="btn btn-outline-primary" (click)="endMove()">End move</button>
+    <button mat-raised-button class="btn btn-outline-primary" (click)="quit()">Quit</button>
     <mat-form-field appearance="fill">
         <mat-label>Messages</mat-label>
         <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" readonly="true" cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3">{{message}}</textarea>

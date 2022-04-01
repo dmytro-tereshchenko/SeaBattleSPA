@@ -6,9 +6,12 @@ import { GameSearch } from '../../data/game-search';
 import { Player } from '../../data/player';
 import { InitializeGameService } from '../../services/initialize-game.service';
 import { DataGameService } from '../../services/data-game.service';
+import { DataGameFieldService } from '../../services/data-game-field.service';
+import { DataShipService } from '../../services/data-ship.service';
+import { DataStartFieldService } from '../../services/data-start-field.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Router } from "@angular/router";
-import { interval, Subscription } from 'rxjs';
+import { catchError, interval, of, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-search-game-table',
@@ -28,6 +31,9 @@ export class SearchGameTableComponent implements AfterViewInit {
 
   constructor(private apiService: InitializeGameService,
     private gameService: DataGameService,
+    private gameFieldService: DataGameFieldService,
+    private shipService: DataShipService,
+    private startFieldService: DataStartFieldService,
     private userService: AuthService,
     private router: Router) { }
 
@@ -67,7 +73,7 @@ export class SearchGameTableComponent implements AfterViewInit {
       }
       else {
         this.gameService.getGame().subscribe(game => {
-          if (game.gameState === 4) {
+          if (game?.gameState === 4) {
             this.router.navigate(['/game']);
           }
         })
@@ -92,5 +98,21 @@ export class SearchGameTableComponent implements AfterViewInit {
     if (!this.waitPlayers) {
       this.gameService.joinPlayer(row.id).subscribe();
     }
+  }
+
+  quit() {
+    this.gameService.getGame().subscribe(game => {
+      if (game) {
+        this.gameService.quitGame().subscribe(state => {
+          if (state === 10) {
+            this.gameService.clear();
+            this.gameFieldService.clear();
+            this.startFieldService.clear();
+            this.shipService.clear();
+          }
+        })
+      }
+      this.router.navigate(['/']);
+    })
   }
 }

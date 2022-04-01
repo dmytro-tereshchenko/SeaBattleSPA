@@ -85,4 +85,8 @@ export class DataGameFieldService {
 
     return this.gameField;
   }
+
+  clear() {
+    this.gameField = null;
+  }
 }

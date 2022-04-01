@@ -58,4 +58,8 @@ export class DataStartFieldService {
       .pipe(map(state => state),
         catchError(this.errorLog.handleError<number>('removeShipOnField')))));
   }
+
+  clear() {
+    this.startField = null;
+  }
 }

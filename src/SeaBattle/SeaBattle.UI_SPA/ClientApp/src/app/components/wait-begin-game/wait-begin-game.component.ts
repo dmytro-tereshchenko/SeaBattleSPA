@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DataGameService } from '../../services/data-game.service';
+import { DataGameFieldService } from '../../services/data-game-field.service';
+import { DataShipService } from '../../services/data-ship.service';
+import { DataStartFieldService } from '../../services/data-start-field.service';
 import { Player } from '../../data/player';
 import { interval, Subscription } from 'rxjs';
 import { Router } from "@angular/router";
@@ -12,6 +15,9 @@ import { Router } from "@angular/router";
 export class WaitBeginGameComponent implements OnInit {
 
   constructor(private gameService: DataGameService,
+    private gameFieldService: DataGameFieldService,
+    private shipService: DataShipService,
+    private startFieldService: DataStartFieldService,
     private router: Router) { }
 
   players: Player[];
@@ -36,6 +42,22 @@ export class WaitBeginGameComponent implements OnInit {
         this.router.navigate(['/game']);
       }
     });
+  }
+
+  quit() {
+    this.gameService.getGame().subscribe(game => {
+      if (game) {
+        this.gameService.quitGame().subscribe(state => {
+          if (state === 10) {
+            this.gameService.clear();
+            this.gameFieldService.clear();
+            this.startFieldService.clear();
+            this.shipService.clear();
+          }
+        })
+      }
+      this.router.navigate(['/']);
+    })
   }
 
 }

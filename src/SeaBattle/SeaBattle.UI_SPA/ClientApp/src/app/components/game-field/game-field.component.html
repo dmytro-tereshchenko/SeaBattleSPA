@@ -1,6 +1,6 @@
 <div class="d-flex m-0 p-0">
     <div class="fieldRoot" *ngIf="field" [ngStyle]="{'height': height}">
-        <div *ngFor="let row of field.gameFieldCells" class="d-flex flex-row">
+        <div *ngFor="let row of field.gameFieldCells" class="d-flex flex-row justify-content-center">
             <div *ngFor="let cell of row" matTooltip={{toolTip}} (mouseenter)="mouseEnter(cell)" (dblclick)="selected(cell) ? callForDblClick(cell) : '' " class="cell" (click)="selected(cell) ? callForClick(cell) : '' " (mousedown)="notifyMouseDown.emit(cell)" (mouseover)="notifyMouseOver.emit(cell)"
                 (mouseup)="notifyMouseUp.emit(cell)" [ngClass]="{'select': selected(cell)}" [style.background-color]="getShipColor(cell)" [style.height.px]="size" [style.flex-basis.px]="size">
             </div>

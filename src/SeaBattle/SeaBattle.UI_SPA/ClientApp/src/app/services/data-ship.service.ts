@@ -87,4 +87,8 @@ export class DataShipService {
     this.ships.delete(id);
   }
 
+  clear(){
+    this.ships.clear();
+  }
+
 }
