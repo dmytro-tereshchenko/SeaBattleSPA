@@ -211,6 +211,12 @@ namespace SeaBattle.Lib.Managers
             else
             {
                 startField = game.StartFields.FirstOrDefault(f => f.GamePlayer is null);
+
+                var queryStartField = await _startFieldRepository.GetWithIncludeAsync(f => f.Id == startField.Id,
+                f => f.StartFieldCells,
+                f => f.GameShips);
+
+                startField = queryStartField.FirstOrDefault();
             }
 
             //add current player to start field
@@ -277,7 +283,8 @@ namespace SeaBattle.Lib.Managers
 
             player.PlayerState = PlayerState.Ready;
 
-            if (game.GamePlayers.All(p => p.PlayerState == PlayerState.Ready))
+            if (game.MaxNumberOfPlayers == game.GamePlayers.Count &&
+                game.GamePlayers.All(p => p.PlayerState == PlayerState.Ready))
             {
                 foreach (var gamePlayer in game.GamePlayers)
                 {
@@ -318,45 +325,69 @@ namespace SeaBattle.Lib.Managers
                 return StateCode.InvalidPlayer;
             }
 
-            if (game.GameState == GameState.Init)
+            var queryStartField = await _startFieldRepository.GetWithIncludeAsync(field => field.GameId == gameId && field.GamePlayerId == player.Id,
+                field => field.GameShips,
+                field => field.GameField,
+                field => field.GameField.GameFieldCells);
+            StartField startField = queryStartField.FirstOrDefault();
+
+            if (startField is not null)
             {
-                var queryStartField = await _startFieldRepository.GetWithIncludeAsync(field => field.GameId == gameId && field.GamePlayerId == player.Id,
-                    field => field.GameShips,
-                    field => field.GameField,
-                    field => field.GameField.GameFieldCells);
-                StartField startField = queryStartField.FirstOrDefault();
+                GameShip gameShip = null;
 
-                if(startField is not null)
+                List<GameFieldCell> cells = startField.GameField.GameFieldCells.ToList();
+                foreach (GameFieldCell cell in cells)
                 {
-                    GameShip gameShip = null;
+                    var queryShip = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == cell.GameShipId, s => s.Ship);
 
-                    foreach (GameFieldCell cell in startField.GameField.GameFieldCells)
+                    gameShip = queryShip.FirstOrDefault();
+
+                    if (gameShip.GamePlayerId == player.Id && !startField.GameShips.Contains(gameShip))
                     {
-                        var queryShip = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == cell.GameShipId, s => s.Ship);
-
-                        gameShip = queryShip.FirstOrDefault();
-
-                        if (gameShip.GamePlayerId==player.Id)
-                        {
-                            startField.GameShips.Add(gameShip);
-                            _actionUtility.RemoveShipFromField(gameShip, startField.GameField);
-                        }
+                        startField.GameShips.Add(gameShip);
+                        _actionUtility.RemoveShipFromField(gameShip, startField.GameField);
                     }
-
-                    foreach (GameShip ship in startField.GameShips)
-                    {
-                        startField.GameShips.Remove(ship);
-                        startField.Points += ship.Points;
-
-                        await _gameShipRepository.DeleteAsync(ship);
-                    }
-
-                    startField.GamePlayerId = null;
-                    startField.GamePlayer = null;
                 }
+
+                List<GameShip> ships = startField.GameShips.ToList();
+                foreach (GameShip ship in ships)
+                {
+                    var queryShip = await _gameShipRepository.GetWithIncludeAsync(s => s.Id == ship.Id, s => s.Ship);
+
+                    gameShip = queryShip.FirstOrDefault();
+
+                    if (!startField.GameShips.Contains(gameShip))
+                    {
+                        startField.GameShips.Remove(gameShip);
+                    }
+                    startField.Points += ship.Points;
+
+                    await _gameShipRepository.DeleteAsync(ship);
+                }
+
+                startField.GamePlayerId = null;
+                startField.GamePlayer = null;
             }
 
+            if (game.GameState != GameState.Process)
+            {
+                game.GameState = GameState.SearchPlayers;
+            }
+
+            player.PlayerState = PlayerState.Created;
+
             game.GamePlayers.Remove(player);
+
+            if (game.GamePlayers.Count == 0)
+            {
+                game.GameState = GameState.Finished;
+            }
+            else if (game.GameState == GameState.Process && game.GamePlayers.Count == 1)
+            {
+                game.GameState = GameState.Finished;
+                game.WinnerId = game.GamePlayers.FirstOrDefault().Id;
+                game.GamePlayers.FirstOrDefault().PlayerState = PlayerState.Created;
+            }
 
             await _gameRepository.UpdateAsync(game);
 

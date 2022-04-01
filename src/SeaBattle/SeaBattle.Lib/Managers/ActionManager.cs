@@ -332,7 +332,7 @@ namespace SeaBattle.Lib.Managers
 
             GameShip targetShip = gameField[tPosX, tPosY];
 
-            (float, float) centerOfTargetPoint = ((float) tPosX - 0.5f, (float) tPosY - 0.5f);
+            (float, float) centerOfTargetPoint = ((float)tPosX - 0.5f, (float)tPosY - 0.5f);
 
             if (ActionUtility.GetDistanceBetween2Points(centerOfTargetPoint,
                     ActionUtility.GetGeometricCenterOfShip(ActionUtility.GetShipCoordinates(ship, gameField))) >
@@ -345,18 +345,23 @@ namespace SeaBattle.Lib.Managers
             {
                 await _gameShipRepository.DeleteAsync(targetShip);
 
-                return StateCode.TargetDestroyed;
+                var queryGame = await _gameRepository.GetWithIncludeAsync(g => g.Id == gameField.GameId,
+               g => g.GamePlayers);
+
+                Game game = queryGame.FirstOrDefault();
+
+                bool endGame = CheckEndGame(game);
+
+                await _gameRepository.UpdateAsync(game);
+
+                return endGame ? StateCode.GameFinished : StateCode.TargetDestroyed;
             }
 
             targetShip.Hp -= ship.Damage;
 
-            Game game = await _gameRepository.FindByIdAsync(gameField.GameId);
-
-            bool endGame = CheckEndGame(game);
-
             await _gameShipRepository.UpdateAsync(targetShip);
 
-            return endGame ? StateCode.GameFinished : StateCode.Success;
+            return StateCode.Success;
         }
 
         public async Task<StateCode> RepairShip(string playerName, int gameShipId, ushort tPosX, ushort tPosY, int gameFieldId)
@@ -502,20 +507,17 @@ namespace SeaBattle.Lib.Managers
         protected bool CheckEndGame(Game game)
         {
             IGamePlayer player = null;
-            for (ushort i = 1; i <= game.GameField.SizeX; i++)
+            foreach(GameFieldCell cell in game.GameField.GameFieldCells)
             {
-                for (ushort j = 1; j < game.GameField.SizeY; j++)
+                if (cell.GameShip is not null && game.GamePlayers.Contains(cell.GameShip.GamePlayer))
                 {
-                    if (game.GameField[i, j] is not null)
+                    if (player is not null && cell.GameShip.GamePlayer != player)
                     {
-                        if (player is not null && game.GameField[i, j].GamePlayer != player)
-                        {
-                            return false;
-                        }
-                        else
-                        {
-                            player = game.GameField[i, j].GamePlayer;
-                        }
+                        return false;
+                    }
+                    else
+                    {
+                        player = cell.GameShip.GamePlayer;
                     }
                 }
             }

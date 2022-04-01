@@ -105,7 +105,7 @@ namespace SeaBattle.GameResources.Controllers
             //otherwise take array of games to join
             if (games is null || games.Length == 0)
             {
-                games = query.Where(g => g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) is null && g.GameState == GameState.SearchPlayers).ToArray();
+                games = query.Where(g => g.GamePlayers.FirstOrDefault(g => g.Name.Equals(name)) is null && g.GameState == GameState.SearchPlayers || g.GameState == GameState.Init).ToArray();
             }
 
             if (games is null)
@@ -225,7 +225,7 @@ namespace SeaBattle.GameResources.Controllers
 
             GamePlayer player = game.GamePlayers.FirstOrDefault(p => p.Name == name);
 
-            if (player is null || player.Id != game.CurrentGamePlayerMoveId)
+            if (player is null)
             {
                 return BadRequest();
             }
