@@ -1,0 +1,38 @@
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+    color: black;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+table {
+    width: 100%;
+    background-color: rgba(111, 228, 159, 0.3);
+}
+
+td,
+th {
+    width: 15%;
+    color: black;
+    font-size: large;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.mat-header-cell {
+    background-color: rgba(33, 114, 67, 0.4);
+}
+
+.mat-paginator {
+    background-color: rgb(61, 141, 95, 0.8);
+}
+
+:host ::ng-deep .mat-sort-header-container {
+    display: flex;
+    justify-content: center;
+}
+
+th.mat-header-cell,
+td.mat-cell {
+    text-align: center;
+}

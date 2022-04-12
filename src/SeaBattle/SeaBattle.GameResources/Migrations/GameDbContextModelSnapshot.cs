@@ -135,7 +135,7 @@ namespace SeaBattle.GameResources.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("GameFieldId")
+                    b.Property<int?>("GameFieldId")
                         .HasColumnType("int");
 
                     b.Property<int>("GameShipId")
@@ -412,7 +412,7 @@ namespace SeaBattle.GameResources.Migrations
                     b.HasOne("SeaBattle.Lib.Entities.GameShip", "GameShip")
                         .WithMany("EquippedRepairs")
                         .HasForeignKey("GameShipId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SeaBattle.Lib.Entities.Repair", "Repair")
@@ -431,7 +431,7 @@ namespace SeaBattle.GameResources.Migrations
                     b.HasOne("SeaBattle.Lib.Entities.GameShip", "GameShip")
                         .WithMany("EquippedWeapons")
                         .HasForeignKey("GameShipId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SeaBattle.Lib.Entities.Weapon", "Weapon")
@@ -461,13 +461,12 @@ namespace SeaBattle.GameResources.Migrations
                     b.HasOne("SeaBattle.Lib.Entities.GameField", "GameField")
                         .WithMany("GameFieldCells")
                         .HasForeignKey("GameFieldId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("SeaBattle.Lib.Entities.GameShip", "GameShip")
                         .WithMany("GameFieldCells")
                         .HasForeignKey("GameShipId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("GameField");

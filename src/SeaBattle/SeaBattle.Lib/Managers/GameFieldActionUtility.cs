@@ -9,15 +9,14 @@ namespace SeaBattle.Lib.Managers
 {
     public class GameFieldActionUtility : IGameFieldActionUtility
     {
-        public StateCode PutShipOnField(IGamePlayer player, IGameShip ship, ushort posX, ushort posY,
+        public StateCode PutShipOnField(string playerName, IGameShip ship, ushort posX, ushort posY,
             DirectionOfShipPosition direction, IGameField field)
         {
-            if (ship.GamePlayer != player)
+            if (!ship.GamePlayer.Name.Equals(playerName))
             {
                 return StateCode.InvalidPlayer;
             }
 
-            byte i = 0;
             bool check = true;
             ICollection<(ushort, ushort)> coordinates = GetCoordinatesShipByPosition(ship.Size, posX, posY, direction);
 
@@ -42,6 +41,8 @@ namespace SeaBattle.Lib.Managers
             {
                 field[cell.Item1, cell.Item2] = ship as GameShip;
             }
+
+            field.GameFieldCells.FirstOrDefault(c => c.X == posX && c.Y == posY).Stern = true;
 
             return StateCode.Success;
         }
@@ -106,7 +107,7 @@ namespace SeaBattle.Lib.Managers
                 offsetXY = Convert.ToInt16(Math.Pow(-1, i / 2));
                 offsetYX = Convert.ToInt16(Math.Pow(-1, (i + 1) / 2));
                 if (x + offsetXY > 0 && x + offsetXY <= sizeX && y + offsetYX > 0 && y + offsetYX <= sizeY &&
-                    field[(ushort)(x + offsetXY), (ushort)(y + offsetYX)] != null &&
+                    field[(ushort)(x + offsetXY), (ushort)(y + offsetYX)] is not null &&
                     field[(ushort)(x + offsetXY), (ushort)(y + offsetYX)] != ship)
                 {
                     return false;
@@ -114,7 +115,7 @@ namespace SeaBattle.Lib.Managers
 
                 //Check free cells (absents ship or current ship) on horizontal and vertical from the cell with coordinates x,y
                 if (x + offsetX > 0 && x + offsetX <= sizeX && y + offsetY > 0 && y + offsetY <= sizeY &&
-                    field[(ushort)(x + offsetX), (ushort)(y + offsetY)] != null &&
+                    field[(ushort)(x + offsetX), (ushort)(y + offsetY)] is not null &&
                     field[(ushort)(x + offsetX), (ushort)(y + offsetY)] != ship)
                 {
                     return false;
@@ -167,7 +168,7 @@ namespace SeaBattle.Lib.Managers
         }
 
         public IDictionary<IGameShip, ICollection<(ushort, ushort)>> GetAllShipsCoordinates(IGameField field,
-            IGamePlayer player = null)
+            string playerName = null)
         {
             //Dictionary of ships when Key=ship (IGameShip), Value=array of coordinates(X,Y) on field (List<(ushort, ushort)>)
             IDictionary<IGameShip, ICollection<(ushort, ushort)>> ships = new Dictionary<IGameShip, ICollection<(ushort, ushort)>>();
@@ -177,7 +178,7 @@ namespace SeaBattle.Lib.Managers
                 for (ushort j = 1; j <= field.SizeY; j++)
                 {
                     //filtering by team and empty cell
-                    /*if (field[i, j] != null && (player == null || player == field[i, j].GamePlayer))
+                    if (field[i, j] is not null && (playerName is null || playerName.Equals(field[i, j].GamePlayer.Name)))
                     {
                         if (!ships.ContainsKey(field[i, j]))
                         {
@@ -186,7 +187,7 @@ namespace SeaBattle.Lib.Managers
                         }
 
                         ships[field[i, j]].Add((i, j));
-                    }*/
+                    }
                 }
             }
 

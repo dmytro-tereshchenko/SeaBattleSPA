@@ -47,8 +47,8 @@ namespace SeaBattle.Lib.Managers
         /// </summary>
         /// <param name="gameId">Current game's Id</param>
         /// <param name="playerName">Player's name</param>
-        /// <returns><see cref="IResponseGamePlayer"/></returns>
-        Task<IResponseGamePlayer> AddPlayerToGame(int gameId, string playerName);
+        /// <returns><see cref="IResponseGame"/></returns>
+        Task<IResponseGame> AddPlayerToGame(int gameId, string playerName);
 
         /// <summary>
         /// Get start field by player and game. In case absence of starting fields, create them.
@@ -65,5 +65,21 @@ namespace SeaBattle.Lib.Managers
         /// <returns><see cref="IGame"/> Created game</returns>
         /// <exception cref="ArgumentOutOfRangeException">A number of teams are out of possible values.</exception>
         Task<IGame> CreateGame(byte numberOfPlayers);
+
+        /// <summary>
+        /// End of preparing for game
+        /// </summary>
+        /// <param name="gameId">Current game's Id</param>
+        /// <param name="playerName">Player's name</param>
+        /// <returns><see cref="StateCode"/></returns>
+        Task<StateCode> ReadyPlayer(int gameId, string gamePlayerName);
+
+        /// <summary>
+        /// Quit from game
+        /// </summary>
+        /// <param name="gameId">Current game's Id</param>
+        /// <param name="playerName">Player's name</param>
+        /// <returns><see cref="StateCode"/></returns>
+        Task<StateCode> QuitGame(int gameId, string gamePlayerName);
     }
 }

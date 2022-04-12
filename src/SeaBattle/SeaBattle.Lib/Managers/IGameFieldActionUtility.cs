@@ -11,7 +11,7 @@ namespace SeaBattle.Lib.Managers
         /// <summary>
         /// Place ship on game field
         /// </summary>
-        /// <param name="player">Current player</param>
+        /// <param name="playerName">Current player's name</param>
         /// <param name="ship">Target ship</param>
         /// <param name="posX">X coordinate of the ship's stern</param>
         /// <param name="posY">Y coordinate of the ship's stern</param>
@@ -19,7 +19,7 @@ namespace SeaBattle.Lib.Managers
         /// <param name="field">Game field</param>
         /// <returns><see cref="StateCode"/> result of operation</returns>
         /// <exception cref="InvalidEnumArgumentException">Used direction not planned by the game</exception>
-        StateCode PutShipOnField(IGamePlayer player, IGameShip ship, ushort posX, ushort posY,
+        StateCode PutShipOnField(string playerName, IGameShip ship, ushort posX, ushort posY,
             DirectionOfShipPosition direction, IGameField field);
 
         /// <summary>
@@ -57,11 +57,11 @@ namespace SeaBattle.Lib.Managers
         /// Get coordinates of ships  
         /// </summary>
         /// <param name="field">Game field</param>
-        /// <param name="player">Current player for filtering <see cref="IGameShip"/>, if null - get all ships without filter.</param>
+        /// <param name="playerName">Current player's name for filtering <see cref="IGameShip"/>, if null - get all ships without filter.</param>
         /// <returns><see cref="IDictionary{TKey,TValue}"/> whose generic key argument is <see cref="IGameShip"/>, generic type argument
         /// is <see cref="ICollection{T}"/> whose generic type argument is (<see cref="ushort"/>, <see cref="ushort"/>) coordinates (X,Y)</returns>
         IDictionary<IGameShip, ICollection<(ushort, ushort)>> GetAllShipsCoordinates(IGameField field,
-            IGamePlayer player = null);
+            string playerName = null);
 
         /// <summary>
         /// Calculate and get coordinates of the geometric center of the ship

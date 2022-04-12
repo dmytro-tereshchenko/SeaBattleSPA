@@ -28,6 +28,11 @@
     <None Remove="ClientApp\src\app\core\services\auth.service.ts" />
     <None Remove="ClientApp\src\app\core\services\test-api.service.spec.ts" />
     <None Remove="ClientApp\src\app\core\services\test-api.service.ts" />
+    <None Remove="ClientApp\tsconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ClientApp\tsconfig.json" />
   </ItemGroup>
 
   <ItemGroup>

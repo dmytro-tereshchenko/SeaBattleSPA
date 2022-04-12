@@ -5,6 +5,7 @@
 using IdentityServer4.Models;
 using System.Collections.Generic;
 using IdentityServer4;
+using IdentityModel;
 
 namespace SeaBattle.AuthorizationService
 {
@@ -16,6 +17,20 @@ namespace SeaBattle.AuthorizationService
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
                    };
+
+        public static IEnumerable<ApiResource> GetAllResources =>
+                  new[]
+                    {
+                // Add a resource for some set of APIs that we may be protecting
+                // Note that the constructor will automatically create an allowed scope with
+                // name and claims equal to the resource's name and claims. If the resource
+                // has different scopes/levels of access, the scopes property can be set to
+                // list specific scopes included in this resource, instead.
+                new ApiResource(
+                    "userInfo",                                       // Api resource name
+                    "My API Set #1",                                // Display name
+                    new[] { JwtClaimTypes.Name, JwtClaimTypes.Role }) // Claims to be included in access token
+                     };
 
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
@@ -42,7 +57,11 @@ namespace SeaBattle.AuthorizationService
                     },
 
                     // scopes that client has access to
-                    AllowedScopes = { "resourse-api", "token-api" }
+                    AllowedScopes = {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "resourse-api", "token-api", "userInfo"
+                    }
                 },
                 new Client
                 {
@@ -58,7 +77,11 @@ namespace SeaBattle.AuthorizationService
                     },
 
                     // scopes that client has access to
-                    AllowedScopes = { "resourse-api", "token-api" }
+                    AllowedScopes = {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "resourse-api", "token-api", "userInfo"
+                    }
                 },
                 new Client
                 {
@@ -66,13 +89,14 @@ namespace SeaBattle.AuthorizationService
                     ClientName = "Angular Client",
                     AllowedGrantTypes = GrantTypes.Code,
                     RequireClientSecret = false,
-                    AccessTokenLifetime = 3600,
+                    AccessTokenLifetime = 36000,
                     AllowOfflineAccess = true,
                     RefreshTokenExpiration = TokenExpiration.Sliding,
                     AbsoluteRefreshTokenLifetime = 360000,
                     SlidingRefreshTokenLifetime = 36000,
                     AlwaysSendClientClaims = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
+                    //AccessTokenType = AccessTokenType.Reference,
 
                     RedirectUris =           { "https://localhost:44391/assets/signin-callback.html" },
                     PostLogoutRedirectUris = { "https://localhost:44391/index.html" },
@@ -82,7 +106,7 @@ namespace SeaBattle.AuthorizationService
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "resourse-api", "token-api"
+                        "resourse-api", "token-api", "userInfo"
                     }
                 }
             };

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace SeaBattle.Lib.Entities
 {
@@ -69,15 +70,7 @@ namespace SeaBattle.Lib.Entities
                         $"[{x},{y}] out of range [1, 1]:[{SizeX},{SizeY}] in {nameof(GameField)}");
                 }
 
-                foreach (var cell in GameFieldCells)
-                {
-                    if (cell.X == x && cell.Y == y)
-                    {
-                        return cell.GameShip;
-                    }
-                }
-
-                return null;
+                return GameFieldCells.FirstOrDefault(c => c.X == x && c.Y == y)?.GameShip ?? null;
             }
             set
             {
@@ -87,30 +80,30 @@ namespace SeaBattle.Lib.Entities
                         $"[{x},{y}] out of range [1, 1]:[{SizeX},{SizeY}] in {nameof(GameField)}");
                 }
 
-                GameFieldCell fieldCell = null;
+                GameFieldCell fieldCell = GameFieldCells.FirstOrDefault(c => c.X == x && c.Y == y);
 
-                foreach (var cell in GameFieldCells)
+                if (value is null)
                 {
-                    if (cell.X == x && cell.Y == y)
+                    GameFieldCells.Remove(fieldCell);
+                    return;
+                }
+                else
+                {
+                    if (fieldCell is null)
                     {
-                        fieldCell = cell;
+                        fieldCell = new GameFieldCell()
+                        {
+                            X = x,
+                            Y = y,
+                            GameFieldId = Id,
+                            GameField = this
+                        };
+                        GameFieldCells.Add(fieldCell);
                     }
-                }
 
-                if (fieldCell == null)
-                {
-                    fieldCell = new GameFieldCell()
-                    {
-                        X = x,
-                        Y = y,
-                        GameFieldId = Id,
-                        GameField = this
-                    };
-                    GameFieldCells.Add(fieldCell);
+                    fieldCell.GameShip = value;
+                    fieldCell.GameShipId = value.Id;
                 }
-
-                fieldCell.GameShip = value;
-                fieldCell.GameShipId = value.Id;
             }
         }
 

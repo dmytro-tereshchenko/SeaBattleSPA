@@ -1,0 +1,27 @@
+.fieldRoot {
+    overflow: auto;
+    height: 70vh;
+    flex: 1 1 auto;
+}
+
+.cell {
+    flex: 0 0 30px;
+    border: 1px solid rgb(20, 7, 54);
+    height: 30px;
+}
+
+.select:hover {
+    cursor: pointer;
+}
+
+::ng-deep .mat-tooltip {
+    white-space: pre-line;
+}
+
+::ng-deep .mat-tooltip::first-line {
+    color: rgb(187, 255, 0);
+}
+
+mat-slider {
+    height: 30vh;
+}

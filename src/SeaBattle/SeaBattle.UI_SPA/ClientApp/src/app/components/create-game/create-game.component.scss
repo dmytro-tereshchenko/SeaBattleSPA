@@ -1,0 +1,22 @@
+:host {
+    height: 100%;
+    min-height: 100%;
+}
+
+* {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.3rem;
+}
+
+mat-slider {
+    width: 300px;
+}
+
+h1 {
+    font-size: 1.3em;
+    font-weight: 500;
+}
+
+label {
+    width: 200px;
+}

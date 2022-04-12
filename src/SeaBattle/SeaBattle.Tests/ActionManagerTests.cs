@@ -11,7 +11,7 @@ namespace SeaBattle.Tests
 
         public ActionManagerTests()
         {
-            _manager = new ActionManager(new GameFieldActionUtility());
+            //_manager = new ActionManager(new GameFieldActionUtility());
         }
 
         /*[Fact]

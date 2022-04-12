@@ -1,0 +1,31 @@
+<div class="row align-items-center justify-content-center content-show">
+    <div>
+        <h1 class="text-center">Create game</h1>
+        <div class="text-center">
+            <div>
+                <label for="sizeGame">Amount of players</label>
+                <mat-slider id="sizeGame" min="2" max="{{gameSize.maxPlayerSize}}" step="1" [(ngModel)]="players" thumbLabel tickInterval="1"></mat-slider>
+            </div>
+        </div>
+        <div class="text-center">
+            <div>
+                <label for="sizeFieldX">Size X of game field</label>
+                <mat-slider id="sizeFieldX" min="{{gameSize.fieldMinSizeX}}" max="{{gameSize.fieldMaxSizeX}}" step="1" [(ngModel)]="sizeX" thumbLabel tickInterval="1"></mat-slider>
+            </div>
+        </div>
+        <div class="text-center">
+            <div>
+                <label for="sizeFieldY">Size Y of game field</label>
+                <mat-slider id="sizeFieldY" min="{{gameSize.fieldMinSizeY}}" max="{{gameSize.fieldMaxSizeY}}" step="1" [(ngModel)]="sizeY" thumbLabel tickInterval="1"></mat-slider>
+            </div>
+        </div>
+        <div class="text-center">
+            <button (click)="createGame()" class="btn-sm btn btn-outline-primary m-2">
+                Create
+            </button>
+            <button (click)="goBack()" class="btn-sm btn btn-outline-primary m-2">
+                Back
+            </button>
+        </div>
+    </div>
+</div>

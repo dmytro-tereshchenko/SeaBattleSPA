@@ -27,7 +27,7 @@
         /// Foreign key Id <see cref="GameField"/>
         /// </summary>
         /// <value><see cref="int"/></value>
-        int GameFieldId { get; set; }
+        int? GameFieldId { get; set; }
 
         /// <summary>
         /// Navigate property <see cref="GameShip"/>

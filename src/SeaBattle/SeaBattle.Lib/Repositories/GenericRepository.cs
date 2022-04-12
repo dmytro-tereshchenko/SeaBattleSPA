@@ -34,9 +34,9 @@ namespace SeaBattle.Lib.Repositories
             _dbSet = context.Set<TEntity>();
         }
 
-        public virtual ICollection<TEntity> GetAll() => _dbSet.AsNoTracking().ToList();
+        public virtual ICollection<TEntity> GetAll() => _dbSet.ToList();//.AsNoTracking().ToList();
 
-        public virtual async Task<ICollection<TEntity>> GetAllAsync() => await _dbSet.AsNoTracking().ToListAsync();
+        public virtual async Task<ICollection<TEntity>> GetAllAsync() => await _dbSet.ToListAsync();//.AsNoTracking().ToListAsync();
 
         public virtual TEntity FindById(int id) => _dbSet.Find(id);
 
@@ -44,12 +44,12 @@ namespace SeaBattle.Lib.Repositories
 
         public virtual IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> predicate)
         {
-            return _dbSet.AsNoTracking().Where(predicate).ToList();
+            return _dbSet.Where(predicate).ToList();//.AsNoTracking().Where(predicate).ToList();
         }
 
         public virtual async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _dbSet.AsNoTracking().Where(predicate).ToListAsync();
+            return await _dbSet.Where(predicate).ToListAsync();//.AsNoTracking().Where(predicate).ToListAsync();
         }
 
         public virtual TEntity Create(TEntity item)
@@ -168,7 +168,7 @@ namespace SeaBattle.Lib.Repositories
         /// <returns><see cref="IQueryable{TEntity}"/> query to database with loading data.</returns>
         private IQueryable<TEntity> Include(params Expression<Func<TEntity, object>>[] includeProperties)
         {
-            IQueryable<TEntity> query = _dbSet.AsNoTracking();
+            IQueryable<TEntity> query = _dbSet;//.AsNoTracking();
             return includeProperties
                 .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
         }

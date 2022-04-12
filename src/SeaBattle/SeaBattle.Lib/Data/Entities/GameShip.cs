@@ -36,13 +36,13 @@ namespace SeaBattle.Lib.Entities
         [NotMapped]
         public ushort Damage
         {
-            get => Convert.ToUInt16(Weapons?.Sum(w => w.Damage) ?? 0);
+            get => Convert.ToUInt16(EquippedWeapons?.Sum(w => w.Weapon.Damage) ?? 0);
         }
 
         [NotMapped]
         public ushort RepairPower
         {
-            get => Convert.ToUInt16(Repairs?.Sum(r => r.RepairPower) ?? 0);
+            get => Convert.ToUInt16(EquippedRepairs?.Sum(r => r.Repair.RepairPower) ?? 0);
         }
 
         [NotMapped]
