@@ -61,8 +61,19 @@ namespace SeaBattle.GameResources
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
+            //in case of local db server
+            //string connectionString = Configuration.GetConnectionString("DefaultConnection");
+
+            //in case of containerization in docker
+            string server = Configuration["DBServer"] ?? Configuration.GetValue<string>("ConnectionDb:Server");
+            string port = Configuration["DBPort"] ?? Configuration.GetValue<string>("ConnectionDb:Port");
+            string user = Configuration["DBUser"] ?? Configuration.GetValue<string>("ConnectionDb:User");
+            string password = Configuration["DBPassword"] ?? Configuration.GetValue<string>("ConnectionDb:Password");
+            string database = Configuration["Database"] ?? Configuration.GetValue<string>("ConnectionDb:Database");
+            string connectionString = $"Server={server},{port};Initial Catalog={database};User ID={user};Password={password}";
+
             services.AddDbContext<GameDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly(migrationsAssembly)));
+                options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
 
             services.AddSingleton<IShipStorageUtility, ShipStorageUtility>(sp =>
             {
@@ -110,6 +121,14 @@ namespace SeaBattle.GameResources
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+
+            using (var serviceScope = app.ApplicationServices.CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<GameDbContext>())
+                {
+                    context.Database.Migrate();
+                }
             }
 
             app.UseErrorLogger();

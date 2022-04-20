@@ -12,9 +12,9 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "weatherforecast/get",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
       }
     },
     "SeaBattle.GameResources": {
@@ -30,9 +30,11 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast/get",
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": true,
+      "httpPort": 40078,
+      "sslPort": 44359
     }
   }
 }
