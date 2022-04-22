@@ -61,16 +61,23 @@ namespace SeaBattle.GameResources
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-            //in case of local db server
-            //string connectionString = Configuration.GetConnectionString("DefaultConnection");
+            string connectionString;
 
-            //in case of containerization in docker
-            string server = Configuration["DBServer"] ?? Configuration.GetValue<string>("ConnectionDb:Server");
-            string port = Configuration["DBPort"] ?? Configuration.GetValue<string>("ConnectionDb:Port");
-            string user = Configuration["DBUser"] ?? Configuration.GetValue<string>("ConnectionDb:User");
-            string password = Configuration["DBPassword"] ?? Configuration.GetValue<string>("ConnectionDb:Password");
-            string database = Configuration["Database"] ?? Configuration.GetValue<string>("ConnectionDb:Database");
-            string connectionString = $"Server={server},{port};Initial Catalog={database};User ID={user};Password={password}";
+            if (Configuration["DBServer"] is null)
+            {
+                //in case of local db server
+                connectionString = Configuration.GetConnectionString("DefaultConnection");
+            }
+            else
+            {
+                //in case of containerization in docker
+                string server = Configuration["DBServer"] ?? Configuration.GetValue<string>("ConnectionDb:Server");
+                string port = Configuration["DBPort"] ?? Configuration.GetValue<string>("ConnectionDb:Port");
+                string user = Configuration["DBUser"] ?? Configuration.GetValue<string>("ConnectionDb:User");
+                string password = Configuration["DBPassword"] ?? Configuration.GetValue<string>("ConnectionDb:Password");
+                string database = Configuration["Database"] ?? Configuration.GetValue<string>("ConnectionDb:Database");
+                connectionString = $"Server={server},{port};Initial Catalog={database};User ID={user};Password={password}";
+            }
 
             services.AddDbContext<GameDbContext>(options =>
                 options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
@@ -123,11 +130,14 @@ namespace SeaBattle.GameResources
                 app.UseDeveloperExceptionPage();
             }
 
-            using (var serviceScope = app.ApplicationServices.CreateScope())
+            if (Configuration["DBServer"] is not null)
             {
-                using (var context = serviceScope.ServiceProvider.GetService<GameDbContext>())
+                using (var serviceScope = app.ApplicationServices.CreateScope())
                 {
-                    context.Database.Migrate();
+                    using (var context = serviceScope.ServiceProvider.GetService<GameDbContext>())
+                    {
+                        context.Database.Migrate();
+                    }
                 }
             }
 
