@@ -14,17 +14,17 @@ namespace SeaBattle.UIConsole
     /// </summary>
     public class GameUI : IGameUI
     {
-        private IGameManager _manager;
+        //private IGameManager _manager;
 
         private IPresenter _presenter;
 
         private ICollection<IGamePlayer> _players;
 
-        public GameUI(IGameManager manager, IPresenter presenter)
+        /*public GameUI(IGameManager manager, IPresenter presenter)
         {
             _manager = manager;
             _presenter = presenter;
-        }
+        }*/
 
         /*public void Start()
         {

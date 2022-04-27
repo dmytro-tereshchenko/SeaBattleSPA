@@ -1,0 +1,68 @@
+version: '3.4'
+
+name: "SeaBattle"
+
+services:
+  seabattle-gameresources-db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: seabattle-gameresources-db
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Pa55w0rd2022"
+      MSSQL_PID: Express
+    ports:
+      - "1434:1433"
+    
+  seabattle-gameresources-api:
+    build:
+      context: .
+      dockerfile: SeaBattle.GameResources/Dockerfile
+    container_name: seabattle-gameresources-api
+    environment:
+      DBServer: "seabattle-gameresources-db"
+      DBPort: "1433"
+      DBUser: "SA"
+      DBPassword: "Pa55w0rd2022"
+      Datbase: "SeaBattle.GameResources"
+    ports:
+      - "40078:80"
+      - "44359:443"
+    depends_on:
+      - seabattle-gameresources-db
+  
+  seabattle-authorizationservice-db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: seabattle-authorizationservice-db
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Pa66w0rd2022"
+      MSSQL_PID: Express
+    ports:
+      - "1435:1433"
+    
+  seabattle-authorizationservice-api:
+    build:
+      context: .
+      dockerfile: SeaBattle.AuthorizationService/Dockerfile
+    container_name: seabattle-authorizationservice-api
+    environment:
+      DBServer: "seabattle-authorizationservice-db"
+      DBPort: "1433"
+      DBUser: "SA"
+      DBPassword: "Pa66w0rd2022"
+      Datbase: "SeaBattle.AuthorizationService"
+    ports:
+      - "44715:80"
+      - "44367:443"
+    depends_on:
+      - seabattle-authorizationservice-db
+
+  seabattle-ui-client:
+    build:
+      context: .
+      dockerfile: SeaBattle.UI_SPA/Dockerfile
+    container_name: seabattle-ui-client
+    ports:
+      - "60349:80"
+      - "44391:443"
+

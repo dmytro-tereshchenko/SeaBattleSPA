@@ -13,6 +13,7 @@ using SeaBattle.AuthorizationService.Data;
 using SeaBattle.AuthorizationService.IdentityServer.Helpers;
 using SeaBattle.AuthorizationService.Models;
 using SeaBattle.AuthorizationService.Services;
+using System.Linq;
 
 namespace SeaBattle.AuthorizationService
 {
@@ -38,8 +39,26 @@ namespace SeaBattle.AuthorizationService
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
+            string connectionString;
+
+            if (Configuration["DBServer"] is null)
+            {
+                //in case of local db server
+                connectionString = Configuration.GetConnectionString("DefaultConnection");
+            }
+            else
+            {
+                //in case of containerization in docker
+                string server = Configuration["DBServer"] ?? Configuration.GetValue<string>("ConnectionDb:Server");
+                string port = Configuration["DBPort"] ?? Configuration.GetValue<string>("ConnectionDb:Port");
+                string user = Configuration["DBUser"] ?? Configuration.GetValue<string>("ConnectionDb:User");
+                string password = Configuration["DBPassword"] ?? Configuration.GetValue<string>("ConnectionDb:Password");
+                string database = Configuration["Database"] ?? Configuration.GetValue<string>("ConnectionDb:Database");
+                connectionString = $"Server={server},{port};Initial Catalog={database};User ID={user};Password={password}";
+            }
+            
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                options.UseSqlServer(connectionString,
                     sql => sql.MigrationsAssembly(migrationsAssembly)));
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
@@ -79,6 +98,15 @@ namespace SeaBattle.AuthorizationService
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+            }
+
+            using (var serviceScope = app.ApplicationServices.CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+                {
+                    //Create and initiate db
+                    SeedData.EnsureSeedData(context.Database.GetConnectionString());
+                }
             }
 
             app.UseStaticFiles();
