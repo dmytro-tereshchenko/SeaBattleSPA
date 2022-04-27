@@ -57,3 +57,12 @@ services:
     depends_on:
       - seabattle-authorizationservice-db
 
+  seabattle-ui-client:
+    build:
+      context: .
+      dockerfile: SeaBattle.UI_SPA/Dockerfile
+    container_name: seabattle-ui-client
+    ports:
+      - "60349:80"
+      - "44391:443"
+
