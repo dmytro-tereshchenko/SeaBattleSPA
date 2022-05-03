@@ -13,7 +13,10 @@ using SeaBattle.AuthorizationService.Data;
 using SeaBattle.AuthorizationService.IdentityServer.Helpers;
 using SeaBattle.AuthorizationService.Models;
 using SeaBattle.AuthorizationService.Services;
-using System.Linq;
+using SeaBattle.AuthorizationService.Utilites;
+using Microsoft.IdentityModel.Logging;
+using System.Net;
+using System.Net.Http;
 
 namespace SeaBattle.AuthorizationService
 {
@@ -31,6 +34,12 @@ namespace SeaBattle.AuthorizationService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            /*IdentityModelEventSource.ShowPII = true;
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                                                   | SecurityProtocolType.Tls11
+                                                   | SecurityProtocolType.Tls12;*/
+
             services.AddControllersWithViews();
 
             services.AddScoped<IAccountControllerHelper, AccountControllerHelper>();
@@ -39,23 +48,7 @@ namespace SeaBattle.AuthorizationService
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-            string connectionString;
-
-            if (Configuration["DBServer"] is null)
-            {
-                //in case of local db server
-                connectionString = Configuration.GetConnectionString("DefaultConnection");
-            }
-            else
-            {
-                //in case of containerization in docker
-                string server = Configuration["DBServer"] ?? Configuration.GetValue<string>("ConnectionDb:Server");
-                string port = Configuration["DBPort"] ?? Configuration.GetValue<string>("ConnectionDb:Port");
-                string user = Configuration["DBUser"] ?? Configuration.GetValue<string>("ConnectionDb:User");
-                string password = Configuration["DBPassword"] ?? Configuration.GetValue<string>("ConnectionDb:Password");
-                string database = Configuration["Database"] ?? Configuration.GetValue<string>("ConnectionDb:Database");
-                connectionString = $"Server={server},{port};Initial Catalog={database};User ID={user};Password={password}";
-            }
+            string connectionString = Config.GetConnectionString(Configuration);
             
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString,
@@ -80,7 +73,6 @@ namespace SeaBattle.AuthorizationService
                 .AddInMemoryClients(Config.Clients)
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddProfileService<ProfileService>();
-
 
             // not recommended for production - you need to store your key material somewhere secure
             //builder.AddDeveloperSigningCredential();

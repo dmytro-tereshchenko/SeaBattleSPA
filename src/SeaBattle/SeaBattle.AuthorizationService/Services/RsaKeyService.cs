@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
-namespace SeaBattle.AuthorizationService
+namespace SeaBattle.AuthorizationService.Services
 {
     public class RsaKeyService
     {

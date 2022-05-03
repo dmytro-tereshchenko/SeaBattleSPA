@@ -6,8 +6,10 @@ using IdentityServer4.Models;
 using System.Collections.Generic;
 using IdentityServer4;
 using IdentityModel;
+using Microsoft.Extensions.Configuration;
+using System;
 
-namespace SeaBattle.AuthorizationService
+namespace SeaBattle.AuthorizationService.Utilites
 {
     public static class Config
     {
@@ -96,11 +98,11 @@ namespace SeaBattle.AuthorizationService
                     SlidingRefreshTokenLifetime = 36000,
                     AlwaysSendClientClaims = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
-                    //AccessTokenType = AccessTokenType.Reference,
-
-                    RedirectUris =           { "https://localhost:44391/assets/signin-callback.html" },
-                    PostLogoutRedirectUris = { "https://localhost:44391/index.html" },
-                    AllowedCorsOrigins =     { "https://localhost:44391" },
+                    AccessTokenType = AccessTokenType.Reference,
+                    
+                    RedirectUris =           { $"{Environment.GetEnvironmentVariable("SPA_CLIENT_DOMAIN")}/assets/signin-callback.html" },
+                    PostLogoutRedirectUris = { $"{Environment.GetEnvironmentVariable("SPA_CLIENT_DOMAIN")}/index.html" },
+                    AllowedCorsOrigins =     { Environment.GetEnvironmentVariable("SPA_CLIENT_DOMAIN") },
 
                     AllowedScopes =
                     {
@@ -110,5 +112,28 @@ namespace SeaBattle.AuthorizationService
                     }
                 }
             };
+
+        public static string GetConnectionString(IConfiguration config)
+        {
+            string connectionString;
+
+            if (config["DBServer"] is null)
+            {
+                //in case of local db server
+                connectionString = config.GetConnectionString("DefaultConnection");
+            }
+            else
+            {
+                //in case of containerization in docker
+                string server = config["DBServer"] ?? config.GetValue<string>("ConnectionDb:Server");
+                string port = config["DBPort"] ?? config.GetValue<string>("ConnectionDb:Port");
+                string user = config["DBUser"] ?? config.GetValue<string>("ConnectionDb:User");
+                string password = config["DBPassword"] ?? config.GetValue<string>("ConnectionDb:Password");
+                string database = config["Database"] ?? config.GetValue<string>("ConnectionDb:Database");
+                connectionString = $"Server={server},{port};Initial Catalog={database};User ID={user};Password={password}";
+            }
+
+            return connectionString;
+        }
     }
 }

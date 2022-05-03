@@ -14,7 +14,7 @@ using SeaBattle.AuthorizationService.Data;
 using SeaBattle.AuthorizationService.Models;
 using Serilog;
 
-namespace SeaBattle.AuthorizationService
+namespace SeaBattle.AuthorizationService.Utilites
 {
     public class SeedData
     {

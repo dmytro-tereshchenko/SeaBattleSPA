@@ -21,7 +21,7 @@ namespace SeaBattle.GameResources.Controllers
             GameSizeLimitDto dto = mapper.Map<LimitSize, GameSizeLimitDto>(initializeService.GetLimitSizeField());
 
             dto.MaxPlayerSize = initializeService.GetMaxNumberOfPlayers();
-
+            System.Console.WriteLine($"Size={dto.MaxPlayerSize}, minX={dto.FieldMinSizeX}, maxX={dto.FieldMaxSizeX}, minY={dto.FieldMinSizeY}, maxY={dto.FieldMaxSizeY}");
             return dto;
         }
 
@@ -114,7 +114,7 @@ namespace SeaBattle.GameResources.Controllers
             }
 
             GameSearchDto[] dto = mapper.Map<Game[], GameSearchDto[]>(games);
-
+            
             return dto;
         }
 

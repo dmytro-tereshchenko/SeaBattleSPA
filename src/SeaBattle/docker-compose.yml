@@ -18,6 +18,8 @@ services:
       context: .
       dockerfile: SeaBattle.GameResources/Dockerfile
     container_name: seabattle-gameresources-api
+    env_file: 
+      - ./.env
     environment:
       DBServer: "seabattle-gameresources-db"
       DBPort: "1433"
@@ -45,6 +47,8 @@ services:
       context: .
       dockerfile: SeaBattle.AuthorizationService/Dockerfile
     container_name: seabattle-authorizationservice-api
+    env_file: 
+      - ./.env
     environment:
       DBServer: "seabattle-authorizationservice-db"
       DBPort: "1433"

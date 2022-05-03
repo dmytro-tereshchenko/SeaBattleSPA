@@ -14,7 +14,8 @@
       "launchBrowser": true,
       "launchUrl": "",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SPA_CLIENT_DOMAIN": "https://localhost:44391"
       }
     },
     "SeaBattle.AuthorizationService": {
