@@ -98,7 +98,7 @@ namespace SeaBattle.AuthorizationService.Utilites
                     SlidingRefreshTokenLifetime = 36000,
                     AlwaysSendClientClaims = true,
                     AlwaysIncludeUserClaimsInIdToken = true,
-                    AccessTokenType = AccessTokenType.Reference,
+                    //AccessTokenType = AccessTokenType.Reference,
                     
                     RedirectUris =           { $"{Environment.GetEnvironmentVariable("SPA_CLIENT_DOMAIN")}/assets/signin-callback.html" },
                     PostLogoutRedirectUris = { $"{Environment.GetEnvironmentVariable("SPA_CLIENT_DOMAIN")}/index.html" },

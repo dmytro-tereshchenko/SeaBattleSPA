@@ -7,6 +7,7 @@ services:
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=pa55word
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/seabattle.pfx
+      - ASPNETCORE_HTTPS_PORT=44359
     ports:
       - "80"
       - "443"
@@ -21,6 +22,7 @@ services:
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=pa55word
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/seabattle.pfx
+      - ASPNETCORE_HTTPS_PORT=44715
     ports:
       - "80"
       - "443"

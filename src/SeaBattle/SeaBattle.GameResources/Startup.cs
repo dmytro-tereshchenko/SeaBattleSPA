@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Authentication;
@@ -32,7 +33,9 @@ namespace SeaBattle.GameResources
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //IdentityModelEventSource.ShowPII = true;
+            /*IdentityModelEventSource.ShowPII = true;*/
+            
+            //ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
@@ -46,19 +49,19 @@ namespace SeaBattle.GameResources
                         ValidateAudience = false
                     };
 
-                    options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+                    //options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
 
                     // if token does not contain a dot, it is a reference token
-                    options.ForwardDefaultSelector = Selector.ForwardReferenceToken("introspection");
-                })
-                .AddOAuth2Introspection("introspection", options =>
+                    //options.ForwardDefaultSelector = Selector.ForwardReferenceToken("introspection");
+                });
+                /*.AddOAuth2Introspection("introspection", options =>
                 {
                     options.Authority = Configuration["TOKEN_SERVER_DOMAIN"]; //token server
 
                     options.ClientId = "resourseApi";
 
                     options.ClientSecret = "secret-resourse-api";
-                });
+                });*/
 
             services.AddAuthorization(options =>
             {
@@ -132,6 +135,8 @@ namespace SeaBattle.GameResources
                     }
                 }
             }
+
+            //app.UseMiddleware<SSLBypassMiddleware>();
 
             app.UseErrorLogger();
 

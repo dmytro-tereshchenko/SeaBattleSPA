@@ -39,6 +39,7 @@ namespace SeaBattle.AuthorizationService
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
                                                    | SecurityProtocolType.Tls11
                                                    | SecurityProtocolType.Tls12;*/
+            //ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
             services.AddControllersWithViews();
 
@@ -100,6 +101,8 @@ namespace SeaBattle.AuthorizationService
                     SeedData.EnsureSeedData(context.Database.GetConnectionString());
                 }
             }
+
+            //app.UseMiddleware<SSLBypassMiddleware>();
 
             app.UseStaticFiles();
 
