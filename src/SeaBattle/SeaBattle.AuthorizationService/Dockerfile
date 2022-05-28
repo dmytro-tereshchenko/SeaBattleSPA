@@ -15,11 +15,11 @@ WORKDIR "/src/SeaBattle.AuthorizationService"
 RUN dotnet build "SeaBattle.AuthorizationService.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "SeaBattle.AuthorizationService.csproj" -c Release -o /app/publish
+RUN dotnet publish "SeaBattle.AuthorizationService.csproj" -c Release -o /app/publish 
 
 FROM base AS final
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 44715
+EXPOSE 44367
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "SeaBattle.AuthorizationService.dll"]

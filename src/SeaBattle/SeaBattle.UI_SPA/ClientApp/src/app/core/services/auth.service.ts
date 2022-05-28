@@ -17,9 +17,9 @@ export class AuthService {
     const settings = {
       authority: environment.stsAuthority,
       client_id: environment.clientId,
-      redirect_uri: `${environment.clientRoot}assets/signin-callback.html`,
-      silent_redirect_uri: `${environment.clientRoot}assets/silent-callback.html`,
-      post_logout_redirect_uri: `${environment.clientRoot}index.html`,
+      redirect_uri: `${environment.clientRoot}/assets/signin-callback.html`,
+      silent_redirect_uri: `${environment.clientRoot}/assets/silent-callback.html`,
+      post_logout_redirect_uri: `${environment.clientRoot}/index.html`,
       response_type: 'code',
       scope: environment.clientScope
     };

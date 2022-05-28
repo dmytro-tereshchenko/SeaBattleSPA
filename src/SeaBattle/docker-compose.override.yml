@@ -4,13 +4,13 @@ services:
   seabattle-gameresources-api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=https://+:44359;http://+:40078
       - ASPNETCORE_Kestrel__Certificates__Default__Password=pa55word
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/seabattle.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/SeaBattle.GameResources.pfx
       - ASPNETCORE_HTTPS_PORT=44359
     ports:
-      - "80"
-      - "443"
+      - "40078:40078"
+      - "44359:44359"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
@@ -19,13 +19,13 @@ services:
   seabattle-authorizationservice-api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=https://+:44367;http://+:44715
       - ASPNETCORE_Kestrel__Certificates__Default__Password=pa55word
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/seabattle.pfx
-      - ASPNETCORE_HTTPS_PORT=44715
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/SeaBattle.AuthorizationService.pfx
+      - ASPNETCORE_HTTPS_PORT=44367
     ports:
-      - "80"
-      - "443"
+      - "44715:44715"
+      - "44367:44367"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
@@ -34,13 +34,13 @@ services:
   seabattle-ui-client:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=https://+:44391;http://+:44716
       - ASPNETCORE_Kestrel__Certificates__Default__Password=pa55word
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/seabattle.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/SeaBattle.UI_SPA.pfx
       - ASPNETCORE_HTTPS_PORT=44391
     ports:
-      - "80"
-      - "443"
+      - "44716:44716"
+      - "44391:44391"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

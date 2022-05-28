@@ -1,6 +1,9 @@
 version: '3.4'
 
 name: "SeaBattle"
+#networks:
+#  app-tier:
+#    driver: bridge
 
 services:
   seabattle-gameresources-db:
@@ -12,6 +15,8 @@ services:
       MSSQL_PID: Express
     ports:
       - "1434:1433"
+    #networks:
+    #  - app-tier
     
   seabattle-gameresources-api:
     build:
@@ -27,10 +32,12 @@ services:
       DBPassword: "Pa55w0rd2022"
       Datbase: "SeaBattle.GameResources"
     ports:
-      - "40078:80"
-      - "44359:443"
+      - "40078:40078"
+      - "44359:44359"
     depends_on:
       - seabattle-gameresources-db
+    #networks:
+    #  - app-tier
   
   seabattle-authorizationservice-db:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -41,6 +48,8 @@ services:
       MSSQL_PID: Express
     ports:
       - "1435:1433"
+    #networks:
+    #  - app-tier
     
   seabattle-authorizationservice-api:
     build:
@@ -56,10 +65,12 @@ services:
       DBPassword: "Pa66w0rd2022"
       Datbase: "SeaBattle.AuthorizationService"
     ports:
-      - "44715:80"
-      - "44367:443"
+      - "44715:44715"
+      - "44367:44367"
     depends_on:
       - seabattle-authorizationservice-db
+    #networks:
+    #  - app-tier
 
   seabattle-ui-client:
     build:
@@ -67,6 +78,8 @@ services:
       dockerfile: SeaBattle.UI_SPA/Dockerfile
     container_name: seabattle-ui-client
     ports:
-      - "60349:80"
-      - "44391:443"
+      - "44716:44716"
+      - "44391:44391"
+    #networks:
+    #  - app-tier
 

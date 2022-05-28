@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Security.Authentication;
 using IdentityModel.AspNetCore.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -33,35 +34,38 @@ namespace SeaBattle.GameResources
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            /*IdentityModelEventSource.ShowPII = true;*/
-            
-            //ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+            IdentityModelEventSource.ShowPII = true;
+
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = Configuration["TOKEN_SERVER_DOMAIN"]; //token server
-
+                    options.Authority = Configuration["TOKEN_SERVER_DOMAIN"].ToString(); //token server
+                    //System.Console.WriteLine($"Authority={options.Authority}");
                     //options.Audience = "resourseApi";
-
+                    
+                    options.BackchannelHttpHandler = new HttpClientHandler { ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator };
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false
                     };
-
+                   /* options.RequireHttpsMetadata = true;
+                    options.BackchannelHttpHandler = GetHandler();*/
                     //options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
 
                     // if token does not contain a dot, it is a reference token
                     //options.ForwardDefaultSelector = Selector.ForwardReferenceToken("introspection");
                 });
-                /*.AddOAuth2Introspection("introspection", options =>
-                {
-                    options.Authority = Configuration["TOKEN_SERVER_DOMAIN"]; //token server
+            /*.AddOAuth2Introspection("introspection", options =>
+            {
+                options.Authority = Configuration["TOKEN_SERVER_DOMAIN"]; //token server
 
-                    options.ClientId = "resourseApi";
+                options.ClientId = "resourseApi";
 
-                    options.ClientSecret = "secret-resourse-api";
-                });*/
+                options.ClientSecret = "secret-resourse-api";
+            });*/
+            
 
             services.AddAuthorization(options =>
             {
@@ -138,7 +142,7 @@ namespace SeaBattle.GameResources
 
             //app.UseMiddleware<SSLBypassMiddleware>();
 
-            app.UseErrorLogger();
+            //app.UseErrorLogger();
 
             app.UseHttpsRedirection();
 
@@ -151,11 +155,20 @@ namespace SeaBattle.GameResources
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers().RequireAuthorization("ApiScope");
+                endpoints.MapControllers().RequireAuthorization();//.RequireAuthorization("ApiScope");
 
                 endpoints.MapControllerRoute(name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}").RequireAuthorization("ApiScope");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");//.RequireAuthorization("ApiScope");
             });
+        }
+
+        private static HttpClientHandler GetHandler()
+        {
+            var handler = new HttpClientHandler();
+            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            handler.SslProtocols = SslProtocols.Tls12;
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+            return handler;
         }
     }
 }
