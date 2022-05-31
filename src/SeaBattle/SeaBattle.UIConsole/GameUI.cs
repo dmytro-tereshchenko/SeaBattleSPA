@@ -18,12 +18,17 @@ namespace SeaBattle.UIConsole
 
         private IPresenter _presenter;
 
+        private IGameFieldActionUtility _utility;
+
+        private bool _soloGame;
+
         private ICollection<IGamePlayer> _players;
 
-        public GameUI(IGameManager manager, IPresenter presenter)
+        public GameUI(IGameManager manager, IPresenter presenter, IGameFieldActionUtility utility)
         {
             _manager = manager;
             _presenter = presenter;
+            _utility = utility;
         }
 
         public void Start()
@@ -108,10 +113,17 @@ namespace SeaBattle.UIConsole
         {
             _players = new List<IGamePlayer>();
 
+            int choice = _presenter.MenuMultipleChoice(false, Resources.SoloGame, () => Console.Clear(), "Yes", "No");
+
+            _soloGame = choice == 0 ? true : false;
+
+            string playerName;
+
             for (int i = 0; i < _manager.GetMaxNumberOfPlayers(); i++)
             {
-                IResponseGamePlayer response =
-                    _manager.AddGamePlayer(_presenter.GetString($"{Resources.InpNamePlayers} {i + 1}"));
+                playerName = i > 0 && _soloGame ? $"Comp {i}" : _presenter.GetString($"{Resources.InpNamePlayers} {i + 1}");
+
+                IResponseGamePlayer response = _manager.AddGamePlayer(playerName);
 
                 if (response.State == StateCode.Success)
                 {
@@ -138,7 +150,14 @@ namespace SeaBattle.UIConsole
                 switch (response.State)
                 {
                     case StateCode.Success:
-                        InitializeField(response.Value);
+                        if (!player.Name.Equals(_players.FirstOrDefault().Name) && _soloGame)
+                        {
+                            InitializeFieldAI(response.Value);
+                        }
+                        else
+                        {
+                            InitializeField(response.Value);
+                        }
                         break;
                     case StateCode.ExceededMaxNumberOfPlayers:
                         return;
@@ -154,140 +173,306 @@ namespace SeaBattle.UIConsole
         private void GameProcessStart()
         {
             StateCode state = StateCode.InvalidOperation;
-            int choice = -1;
-            IGameField gameField = null;
-            string message = "";
             IGamePlayer player = null;
-            IGameShip ship = null;
 
             while (state != StateCode.GameFinished)
             {
-                state = StateCode.InvalidOperation;
+                player = _manager.CurrentGamePlayerMove;
 
-                //move
-                while (state != StateCode.GameFinished && state != StateCode.Success &&
-                       state != StateCode.InvalidPlayer)
+                if (_soloGame && !player.Name.Equals(_players.FirstOrDefault().Name))
                 {
-                    player = _manager.CurrentGamePlayerMove;
-                    gameField = _manager.GetGameField(player).Value;
-
-                    //select ship or skip (escape)
-                    var selectedShip = SelectShip(message);
-
-                    if (!selectedShip.isSelected)
-                    {
-                        _manager.NextMove();
-                        continue;
-                    }
-                    else
-                    {
-                        ship = selectedShip.Ship;
-                    }
-
-                    if (selectedShip.Ship == null || selectedShip.Ship.GamePlayer != player)
-                    {
-                        continue;
-                    }
-
-                    var selectedPlace =
-                        SelectTarget(
-                            $"{_presenter.GetShipStatus(ship)}\n{Resources.MovementPhase}. {Resources.SelectPlaceShip}");
-
-                    if (!selectedPlace.isSelected)
-                    {
-                        continue;
-                    }
-
-                    DirectionOfShipPosition direction = DirectionOfShipPosition.XDec;
-
-                    if (ship.Size != 1)
-                    {
-
-                        choice = _presenter.MenuMultipleChoice(true, $"{Resources.ChooseDirection}:", () =>
-                            {
-                                _presenter.ShowGameField(gameField, _players);
-                                _presenter.ShowMessage(_presenter.GetShipStatus(ship), false, false);
-                                _presenter.ShowMessage($"{Resources.MovementPhase}. {Resources.Player}:", false, false,
-                                    false);
-                                _presenter.ShowMessage(player.Name, false, false, true,
-                                    (ConsoleColor) ((_players as IList<IGamePlayer>).IndexOf(player) + 1));
-                            },
-                            new string[]
-                            {
-                                Resources.Up, Resources.Right, Resources.Down, Resources.Left, Resources.Cancel
-                            });
-
-                        switch (choice)
-                        {
-                            case 1:
-                                direction = DirectionOfShipPosition.YInc;
-                                break;
-                            case 2:
-                                direction = DirectionOfShipPosition.XInc;
-                                break;
-                            case 3:
-                                direction = DirectionOfShipPosition.YDec;
-                                break;
-                            case -1:
-                            case 4:
-                                state = StateCode.Success;
-                                break;
-                        }
-                    }
-
-                    if (ship.Size == 1 || choice is >= 0 and < 4)
-                    {
-                        state = _manager.PutShipOnField(player, ship, selectedPlace.X, selectedPlace.Y, direction);
-                    }
-
-                    message = InfoState(state);
+                    state = MoveAI();
                 }
-
-                state = StateCode.InvalidOperation;
-
-                //action
-                while (state != StateCode.GameFinished && state != StateCode.Success &&
-                       state != StateCode.InvalidPlayer && state != StateCode.MissTarget &&
-                       state != StateCode.TargetDestroyed)
+                else
                 {
-                    switch (SelectAction(ship, message))
-                    {
-                        case -1:
-                            continue;
-                        case 3:
-                            state = StateCode.Success;
-                            break;
-                        case 0:
-                            var selectedTargetAtack = SelectTarget($"{_presenter.GetShipStatus(ship)}\n{Resources.ActionPhase}. {Resources.SelectShipAttack}");
-
-                            if (selectedTargetAtack.isSelected)
-                            {
-                                state = _manager.AttackShip(player, ship, selectedTargetAtack.X, selectedTargetAtack.Y);
-                            }
-
-                            break;
-                        case 1:
-                            var selectedTargetRepair = SelectTarget($"{_presenter.GetShipStatus(ship)}\n{Resources.ActionPhase}. {Resources.SelectShipRepair}");
-
-                            if (selectedTargetRepair.isSelected)
-                            {
-                                state = _manager.RepairShip(player, ship, selectedTargetRepair.X, selectedTargetRepair.Y);
-                            }
-
-                            break;
-                        case 2:
-                            state=_manager.RepairAllShip(player, ship);
-                            break;
-                    }
-
-                    message = InfoState(state);
+                    state = MovePlayer();
                 }
 
                 _manager.NextMove();
             }
 
+            IGameField gameField = _manager.GetGameField(player).Value;
+
             _presenter.ShowGameField(gameField, _players);
             _presenter.ShowMessage($"{Resources.Winner}: {_manager.GetResultGame().Name}");
+        }
+
+        private StateCode MovePlayer()
+        {
+            StateCode state = StateCode.InvalidOperation;
+            int choice = -1;
+            string message = "";
+            IGamePlayer player = _manager.CurrentGamePlayerMove;
+            IGameField gameField = _manager.GetGameField(player).Value;
+            IGameShip ship = null;
+
+            //move
+            while (state != StateCode.GameFinished && state != StateCode.Success &&
+                   state != StateCode.InvalidPlayer)
+            {
+                //select ship or skip (escape)
+                var selectedShip = SelectShip(message);
+
+                if (!selectedShip.isSelected)
+                {
+                    _manager.NextMove();
+                    continue;
+                }
+                else
+                {
+                    ship = selectedShip.Ship;
+                }
+
+                if (selectedShip.Ship == null || selectedShip.Ship.GamePlayer != player)
+                {
+                    continue;
+                }
+
+                var selectedPlace =
+                    SelectTarget(
+                        $"{_presenter.GetShipStatus(ship)}\n{Resources.MovementPhase}. {Resources.SelectPlaceShip}");
+
+                if (!selectedPlace.isSelected)
+                {
+                    continue;
+                }
+
+                DirectionOfShipPosition direction = DirectionOfShipPosition.XDec;
+
+                if (ship.Size != 1)
+                {
+
+                    choice = _presenter.MenuMultipleChoice(true, $"{Resources.ChooseDirection}:", () =>
+                    {
+                        _presenter.ShowGameField(gameField, _players);
+                        _presenter.ShowMessage(_presenter.GetShipStatus(ship), false, false);
+                        _presenter.ShowMessage($"{Resources.MovementPhase}. {Resources.Player}:", false, false,
+                            false);
+                        _presenter.ShowMessage(player.Name, false, false, true,
+                            (ConsoleColor)((_players as IList<IGamePlayer>).IndexOf(player) + 1));
+                    },
+                        new string[]
+                        {
+                                Resources.Up, Resources.Right, Resources.Down, Resources.Left, Resources.Cancel
+                        });
+
+                    switch (choice)
+                    {
+                        case 1:
+                            direction = DirectionOfShipPosition.YInc;
+                            break;
+                        case 2:
+                            direction = DirectionOfShipPosition.XInc;
+                            break;
+                        case 3:
+                            direction = DirectionOfShipPosition.YDec;
+                            break;
+                        case -1:
+                        case 4:
+                            state = StateCode.Success;
+                            break;
+                    }
+                }
+
+                if (ship.Size == 1 || choice is >= 0 and < 4)
+                {
+                    state = _manager.PutShipOnField(player, ship, selectedPlace.X, selectedPlace.Y, direction);
+                }
+
+                message = InfoState(state);
+            }
+
+            state = StateCode.InvalidOperation;
+
+            //action
+            while (state != StateCode.GameFinished && state != StateCode.Success &&
+                   state != StateCode.InvalidPlayer && state != StateCode.MissTarget &&
+                   state != StateCode.TargetDestroyed)
+            {
+                switch (SelectAction(ship, message))
+                {
+                    case -1:
+                        continue;
+                    case 3:
+                        state = StateCode.Success;
+                        break;
+                    case 0:
+                        var selectedTargetAtack = SelectTarget($"{_presenter.GetShipStatus(ship)}\n{Resources.ActionPhase}. {Resources.SelectShipAttack}");
+
+                        if (selectedTargetAtack.isSelected)
+                        {
+                            state = _manager.AttackShip(player, ship, selectedTargetAtack.X, selectedTargetAtack.Y);
+                        }
+
+                        break;
+                    case 1:
+                        var selectedTargetRepair = SelectTarget($"{_presenter.GetShipStatus(ship)}\n{Resources.ActionPhase}. {Resources.SelectShipRepair}");
+
+                        if (selectedTargetRepair.isSelected)
+                        {
+                            state = _manager.RepairShip(player, ship, selectedTargetRepair.X, selectedTargetRepair.Y);
+                        }
+
+                        break;
+                    case 2:
+                        state = _manager.RepairAllShip(player, ship);
+                        break;
+                }
+
+                message = InfoState(state);
+            }
+
+            return state;
+        }
+
+        private StateCode MoveAI()
+        {
+            StateCode state = StateCode.InvalidOperation;
+            IGamePlayer player = _manager.CurrentGamePlayerMove;
+            IGameField gameField = _manager.GetGameField(player).Value;
+            (IGameShip ship, ushort x, ushort y) selectedShip = (new GameShip(), 1, 1);
+
+            //move
+            while (state != StateCode.GameFinished && state != StateCode.Success &&
+                   state != StateCode.InvalidPlayer)
+            {
+                //select ship
+                selectedShip = SelectShipAI(gameField, player);
+
+                //move ship
+                state = MoveShipAI(gameField, selectedShip);
+            }
+
+            state = StateCode.InvalidOperation;
+
+            //action
+            while (state != StateCode.GameFinished && state != StateCode.Success &&
+                   state != StateCode.InvalidPlayer && state != StateCode.MissTarget &&
+                   state != StateCode.TargetDestroyed && state != StateCode.OutOfDistance)
+            {
+                state = ActionShipAI(gameField, selectedShip);
+            }
+
+            return state;
+        }
+
+        private (IGameShip ship, ushort x, ushort y) SelectShipAI(IGameField field, IGamePlayer player)
+        
+        {
+            ICollection<(IGameShip ship, ushort x, ushort y)> ships = new List<(IGameShip ship, ushort x, ushort y)>();
+
+            IGameShip ship = null;
+
+            for (ushort i = 1; i <= field.SizeX; i++)
+            {
+                for (ushort j = 1; j <= field.SizeY; j++)
+                {
+                    ship = field[i, j];
+
+                    if (ship is not null && 
+                        player.Name.Equals(ship.GamePlayer.Name))
+                    {
+                        bool check = true;
+                        foreach (var item in ships)
+                        {
+                            if(item.ship == ship)
+                            {
+                                check = false;
+                                break;
+                            }
+                        }
+
+                        if (check)
+                        {
+                            ships.Add((ship, i, j));
+                        }
+                    }
+                }
+            }
+
+            if (ships.Count == 1)
+            {
+                return ships.FirstOrDefault();
+            }
+            else
+            {
+                Random rand = new Random();
+                return ships.ElementAtOrDefault(rand.Next(ships.Count));
+            }
+        }
+
+        private StateCode MoveShipAI(IGameField field, (IGameShip ship, ushort x, ushort y) selectedShip)
+        {
+            Random rand = new Random();
+
+            ushort x = (ushort)Math.Min(Math.Max(1, 
+                rand.Next(selectedShip.x - selectedShip.ship.Speed, 
+                selectedShip.x + selectedShip.ship.Speed)), 
+                field.SizeX);
+
+            ushort y = (ushort)Math.Min(Math.Max(1, 
+                rand.Next(selectedShip.y - selectedShip.ship.Speed, 
+                selectedShip.y + selectedShip.ship.Speed)), 
+                field.SizeY);
+
+            DirectionOfShipPosition direction = (DirectionOfShipPosition)rand.Next(4);
+
+            return _manager.PutShipOnField(selectedShip.ship.GamePlayer, selectedShip.ship, x, y, direction);
+        }
+
+        private StateCode ActionShipAI(IGameField field, (IGameShip ship, ushort x, ushort y) selectedShip)
+        {
+            Random rand = new Random();
+
+            ICollection<IGameShip> atackTargets =
+                _manager.GetVisibletargetsforShip(selectedShip.ship.GamePlayer,
+                selectedShip.ship,
+                ActionType.Attack);
+
+            if (atackTargets.Count > 0)
+            {
+                (ushort x, ushort y) targetPoint = GetTargetPointAI(field, atackTargets);
+
+                return _manager.AttackShip(selectedShip.ship.GamePlayer,
+                selectedShip.ship, targetPoint.x, targetPoint.y);
+            }
+            else if (rand.Next(2) == 1)
+            {
+                return _manager.RepairAllShip(selectedShip.ship.GamePlayer,
+                selectedShip.ship);
+            }
+            else
+            {
+                ICollection<IGameShip> repairTargets =
+                                _manager.GetVisibletargetsforShip(selectedShip.ship.GamePlayer,
+                                selectedShip.ship,
+                                ActionType.Repair);
+
+                if (repairTargets.Count > 0)
+                {
+                    (ushort x, ushort y) targetPoint = GetTargetPointAI(field, repairTargets);
+
+                    return _manager.RepairShip(selectedShip.ship.GamePlayer,
+                    selectedShip.ship, targetPoint.x, targetPoint.y);
+                }
+                else
+                {
+                    //don't have possible actions
+                    return StateCode.Success;
+                }
+            }
+        }
+
+        private (ushort x, ushort y) GetTargetPointAI(IGameField field, ICollection<IGameShip> targets)
+        {
+            Random rand = new Random();
+            IGameShip targetShip = targets.ElementAt(rand.Next(targets.Count));
+            ICollection<(ushort, ushort)> coords =
+                _utility.GetAllShipsCoordinates(field, targetShip.GamePlayer).
+                FirstOrDefault((ship) => ship.Key == targetShip).
+                Value;
+
+            return coords.ElementAt(rand.Next(coords.Count));
         }
 
         /// <summary>
@@ -348,6 +533,113 @@ namespace SeaBattle.UIConsole
             }
 
             _manager.ReadyPlayer(startField.GamePlayer);
+        }
+
+        /// <summary>
+        /// Create ships, allocate ships on the field for <see cref="IGamePlayer"/> by AI
+        /// </summary>
+        /// <param name="startField">The field for storing the location of ships and points for buy ships by the player when initializing game.</param>
+        private void InitializeFieldAI(IStartField startField)
+        {
+            Random rand = new Random();
+
+            ICollection<(ICommonShip, int)> commonShips = _manager.GetShips();
+
+            IWeapon weapon = _manager.GetWeapons().FirstOrDefault();
+            IRepair repair = _manager.GetRepairs().FirstOrDefault();
+
+            int choice = 0;
+            List<(ushort x, ushort y)> cells = GetPossibleCellsForShips(startField);
+
+            while (startField.Points > 0)
+            {
+                choice = Math.Min(rand.Next(commonShips.Count), startField.Points / 1000);
+
+                //buy ship
+                StateCode state = _manager.BuyShip(startField.GamePlayer, commonShips.ElementAt(choice).Item1);
+
+                if(state == StateCode.Success)
+                {
+                    IGameShip ship = startField.Ships.FirstOrDefault();
+
+                    //add equipment
+                    if(ship.Type == ShipType.Mixed)
+                    {
+                        while(ship.Size != ship.Weapons.Count + ship.Repairs.Count)
+                        {
+                            if (rand.Next(2) == 0)
+                            {
+                                _manager.AddWeapon(startField.GamePlayer, ship, weapon);
+                            }
+                            else
+                            {
+                                _manager.AddRepair(startField.GamePlayer, ship, repair);
+                            }
+                        }
+                    }
+
+                    state = StateCode.InvalidOperation;
+                    int position = -1;
+
+                    //set ship while don't have success and have possible position to set
+                    while (state != StateCode.Success && cells.Count > 0)
+                    {
+                        position = rand.Next(cells.Count);
+                        (ushort X, ushort Y) point = cells.ElementAtOrDefault(position);
+
+                        if (_utility.CheckFreeAreaAroundShip(startField.GameField, point.X, point.Y, ship))
+                        {
+
+                            DirectionOfShipPosition direction = (DirectionOfShipPosition)rand.Next(4);
+
+                            state = _manager.PutShipOnField(startField.GamePlayer, ship, point.X, point.Y, direction);
+                        }
+
+                        cells.RemoveAt(position);
+                    }
+                }
+            }
+
+            _manager.ReadyPlayer(startField.GamePlayer);
+        }
+
+        private (int minX, int minY, int maxX, int maxY) BordersOfField(IStartField startField)
+        {
+            int minX = startField.GameField.SizeX, minY = startField.GameField.SizeY, maxX = 0, maxY = 0;
+
+            for (int i = 0; i < startField.GameField.SizeX; i++)
+            {
+                for (int j = 0; j < startField.GameField.SizeY; j++)
+                {
+                    if (startField.FieldLabels[i, j])
+                    {
+                        if (i < minX) minX = i;
+                        if (j < minY) minY = j;
+                        if (i > maxX) maxX = i;
+                        if (j > maxY) maxY = j;
+                    }
+                }
+            }
+
+            return (minX, minY, maxX, maxY);
+        }
+
+        private List<(ushort x, ushort y)> GetPossibleCellsForShips(IStartField startField)
+        {
+            List<(ushort x, ushort y)> cells = new List<(ushort x, ushort y)>();
+
+            for (ushort i = 0; i < startField.GameField.SizeX; i++)
+            {
+                for (ushort j = 0; j < startField.GameField.SizeY; j++)
+                {
+                    if (startField.FieldLabels[i, j])
+                    {
+                        cells.Add(((ushort)(i + 1), (ushort)(j + 1)));
+                    }
+                }
+            }
+
+            return cells;
         }
 
         /// <summary>

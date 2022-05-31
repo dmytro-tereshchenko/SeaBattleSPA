@@ -57,6 +57,7 @@ namespace SeaBattle.Lib.Managers
         /// <exception cref="InvalidEnumArgumentException"></exception>
         public ICollection<(ushort, ushort)> GetCoordinatesShipByPosition(byte shipSize, ushort posX, ushort posY,
             DirectionOfShipPosition direction)
+        
         {
             byte i = 0;
             List<(ushort, ushort)> coordinates = new List<(ushort, ushort)>(shipSize);

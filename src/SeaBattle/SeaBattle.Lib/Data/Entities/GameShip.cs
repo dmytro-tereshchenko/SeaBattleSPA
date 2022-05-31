@@ -86,6 +86,8 @@ namespace SeaBattle.Lib.Entities
         public GameShip(ICommonShip ship, IGamePlayer gamePlayer, int points)
             : this(ship, gamePlayer, points, ship.MaxHp) { }
 
+        public GameShip() { }
+
         public static bool operator ==(GameShip obj1, GameShip obj2) =>
             obj1?.Equals(obj2) ?? false;
 

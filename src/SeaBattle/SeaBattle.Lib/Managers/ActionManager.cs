@@ -80,8 +80,8 @@ namespace SeaBattle.Lib.Managers
             //                      repair -> only friendly targets)
             filteringShips = action switch
             {
-                ActionType.Attack => filteringShips.Where(s => s.GamePlayer != player),
-                ActionType.Repair => filteringShips.Where(s => s.GamePlayer == player),
+                ActionType.Attack => filteringShips.Where(s => !s.GamePlayer.Name.Equals(player.Name)),
+                ActionType.Repair => filteringShips.Where(s => s.GamePlayer.Name.Equals(player.Name)),
                 _ => throw new InvalidEnumArgumentException()
             };
 
@@ -127,6 +127,21 @@ namespace SeaBattle.Lib.Managers
             }
 
             StateCode result;
+
+            //check border
+            if (!startField.FieldLabels[tPosX - 1, tPosY - 1] ||
+                (direction == DirectionOfShipPosition.XDec && tPosX - ship.Size < 0) ||
+                (direction == DirectionOfShipPosition.YDec && tPosY - ship.Size < 0) ||
+                (direction == DirectionOfShipPosition.XInc && tPosX + ship.Size - 1 > startField.GameField.SizeX) ||
+                (direction == DirectionOfShipPosition.YInc && tPosY + ship.Size - 1 > startField.GameField.SizeY) ||
+                (direction == DirectionOfShipPosition.XDec && !startField.FieldLabels[tPosX - ship.Size, tPosY - 1]) ||
+                (direction == DirectionOfShipPosition.YDec && !startField.FieldLabels[tPosX - 1, tPosY - ship.Size]) ||
+                (direction == DirectionOfShipPosition.XInc && !startField.FieldLabels[tPosX + ship.Size - 2, tPosY - 1]) ||
+                (direction == DirectionOfShipPosition.YInc && !startField.FieldLabels[tPosX - 1, tPosY + ship.Size - 2]))
+            {
+                return StateCode.InvalidPositionShip;
+            }
+
             try
             {
                 result = ActionUtility.PutShipOnField(player, ship, tPosX, tPosY, direction, startField.GameField);

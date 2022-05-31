@@ -285,6 +285,9 @@
   <data name="Skip" xml:space="preserve">
     <value>Skip</value>
   </data>
+  <data name="SoloGame" xml:space="preserve">
+    <value>Do you have game with AI?</value>
+  </data>
   <data name="SomeError" xml:space="preserve">
     <value>Some error</value>
   </data>
