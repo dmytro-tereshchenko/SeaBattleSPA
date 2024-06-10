@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
+using SeaBattle.AuthorizationService.Utilites;
 
 namespace SeaBattle.AuthorizationService
 {

@@ -24,11 +24,11 @@ WORKDIR "/src/SeaBattle.UI_SPA"
 RUN dotnet build "SeaBattle.UI_SPA.csproj" -c Release -o /app/build 
 
 FROM build AS publish
-RUN dotnet publish "SeaBattle.UI_SPA.csproj" -c Release -o /app/publish
+RUN dotnet publish "SeaBattle.UI_SPA.csproj" -c Release -o /app/publish 
 
 FROM base AS final
 WORKDIR /app/
-EXPOSE 80
-EXPOSE 443
+EXPOSE 44716
+EXPOSE 44391
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "SeaBattle.UI_SPA.dll"]

@@ -4,11 +4,11 @@
 
 export const environment = {
   production: false,
-  stsAuthority: 'https://localhost:44367/',
+  stsAuthority: 'https://localhost:44367',
   clientId: 'client-js',
-  clientRoot: 'https://localhost:44391/',
+  clientRoot: 'https://localhost:44391',
   clientScope: 'resourse-api token-api openid profile',
-  apiRoot: 'https://localhost:44359/',
+  apiRoot: 'https://localhost:44359',
 };
 
 /*

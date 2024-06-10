@@ -15,11 +15,11 @@ WORKDIR "/src/SeaBattle.GameResources"
 RUN dotnet build "SeaBattle.GameResources.csproj" -c Release -o /app/build 
 
 FROM build AS publish
-RUN dotnet publish "SeaBattle.GameResources.csproj" -c Release -o /app/publish
+RUN dotnet publish "SeaBattle.GameResources.csproj" -c Release -o /app/publish 
 
 FROM base AS final
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 40078
+EXPOSE 44359
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "SeaBattle.GameResources.dll"]

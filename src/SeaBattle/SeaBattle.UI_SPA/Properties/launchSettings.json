@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:60349",
+      "applicationUrl": "http://localhost:44716",
       "sslPort": 44391
     }
   },
@@ -13,7 +13,8 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "https://localhost:44391;http://localhost:44716"
     },
     "SeaBattle.UI_SPA": {
       "commandName": "Project",
@@ -21,7 +22,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+      "applicationUrl": "https://localhost:44391;http://localhost:44716"
     },
     "Docker": {
       "commandName": "Docker",
@@ -31,7 +32,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "publishAllPorts": true,
-      "httpPort": 60349,
+      "httpPort": 60348,
       "useSSL": true,
       "sslPort": 44391
     }

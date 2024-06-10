@@ -28,7 +28,7 @@ export class DataApiService {
       Authorization: 'Bearer ' + token,
     });
 
-    return this.httpClient.get<T>(`${environment.apiRoot}${path}`, { headers });
+    return this.httpClient.get<T>(`${environment.apiRoot}/${path}`, { headers });
   }
 
   public PostData<T>(path: string, data: any): Observable<any> {
@@ -43,7 +43,7 @@ export class DataApiService {
       Authorization: 'Bearer ' + token,
     });
 
-    return this.httpClient.post<T>(`${environment.apiRoot}${path}`, data, { headers });
+    return this.httpClient.post<T>(`${environment.apiRoot}/${path}`, data, { headers });
   }
 
   public PutData<T>(path: string, data: any): Observable<any> {
@@ -57,7 +57,7 @@ export class DataApiService {
       Accept: 'application/json',
       Authorization: 'Bearer ' + token,
     });
-    return this.httpClient.put<T>(`${environment.apiRoot}${path}`, data, { headers });
+    return this.httpClient.put<T>(`${environment.apiRoot}/${path}`, data, { headers });
   }
 
   public DeleteData<T>(path: string, data: any): Observable<any> {
@@ -72,6 +72,6 @@ export class DataApiService {
       Authorization: 'Bearer ' + token,
     });
 
-    return this.httpClient.delete<T>(`${environment.apiRoot}${path}`, { headers, body });
+    return this.httpClient.delete<T>(`${environment.apiRoot}/${path}`, { headers, body });
   }
 }

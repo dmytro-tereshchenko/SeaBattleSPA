@@ -1,11 +1,17 @@
 using System;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
+using System.Security.Authentication;
+using IdentityModel.AspNetCore.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SeaBattle.GameResources.Utilites;
 using SeaBattle.Lib.Data.Entities;
@@ -28,16 +34,38 @@ namespace SeaBattle.GameResources
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            IdentityModelEventSource.ShowPII = true;
+
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://localhost:44367"; //token server
-
+                    options.Authority = Configuration["TOKEN_SERVER_DOMAIN"].ToString(); //token server
+                    //System.Console.WriteLine($"Authority={options.Authority}");
+                    //options.Audience = "resourseApi";
+                    
+                    options.BackchannelHttpHandler = new HttpClientHandler { ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator };
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false
                     };
+                   /* options.RequireHttpsMetadata = true;
+                    options.BackchannelHttpHandler = GetHandler();*/
+                    //options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+
+                    // if token does not contain a dot, it is a reference token
+                    //options.ForwardDefaultSelector = Selector.ForwardReferenceToken("introspection");
                 });
+            /*.AddOAuth2Introspection("introspection", options =>
+            {
+                options.Authority = Configuration["TOKEN_SERVER_DOMAIN"]; //token server
+
+                options.ClientId = "resourseApi";
+
+                options.ClientSecret = "secret-resourse-api";
+            });*/
+            
 
             services.AddAuthorization(options =>
             {
@@ -53,7 +81,7 @@ namespace SeaBattle.GameResources
                 // this defines a CORS policy called "default"
                 options.AddPolicy("default", policy =>
                 {
-                    policy.WithOrigins("https://localhost:44391") //SPA client
+                    policy.WithOrigins(Configuration["SPA_CLIENT_DOMAIN"]) //SPA client
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
@@ -61,43 +89,14 @@ namespace SeaBattle.GameResources
 
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-            string connectionString;
-
-            if (Configuration["DBServer"] is null)
-            {
-                //in case of local db server
-                connectionString = Configuration.GetConnectionString("DefaultConnection");
-            }
-            else
-            {
-                //in case of containerization in docker
-                string server = Configuration["DBServer"] ?? Configuration.GetValue<string>("ConnectionDb:Server");
-                string port = Configuration["DBPort"] ?? Configuration.GetValue<string>("ConnectionDb:Port");
-                string user = Configuration["DBUser"] ?? Configuration.GetValue<string>("ConnectionDb:User");
-                string password = Configuration["DBPassword"] ?? Configuration.GetValue<string>("ConnectionDb:Password");
-                string database = Configuration["Database"] ?? Configuration.GetValue<string>("ConnectionDb:Database");
-                connectionString = $"Server={server},{port};Initial Catalog={database};User ID={user};Password={password}";
-            }
+            string connectionString = Config.GetConnectionString(Configuration);
 
             services.AddDbContext<GameDbContext>(options =>
                 options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
 
-            services.AddSingleton<IShipStorageUtility, ShipStorageUtility>(sp =>
-            {
-                int shipCostCoefficient = ushort.Parse(Configuration.GetValue<string>("GameConfig:ShipCostCoefficient"));
-                return new ShipStorageUtility(shipCostCoefficient);
-            });
+            services.AddSingleton<IShipStorageUtility, ShipStorageUtility>(sp => Config.GetShipStorageUtility(Configuration));
 
-            services.AddSingleton<IGameConfig, GameConfig>(sp =>
-            {
-                ushort minFieldSizeX = ushort.Parse(Configuration.GetValue<string>("GameConfig:MinFieldSizeX"));
-                ushort maxFieldSizeX = ushort.Parse(Configuration.GetValue<string>("GameConfig:MaxFieldSizeX"));
-                ushort minFieldSizeY = ushort.Parse(Configuration.GetValue<string>("GameConfig:MinFieldSizeY"));
-                ushort maxFieldSizeY = ushort.Parse(Configuration.GetValue<string>("GameConfig:MaxFieldSizeY"));
-                byte maxNumberOfPlayers =
-                    byte.Parse(Configuration.GetValue<string>("GameConfig:MaxNumberOfPlayers"));
-                return new GameConfig(minFieldSizeX, maxFieldSizeX, minFieldSizeY, maxFieldSizeY, maxNumberOfPlayers);
-            });
+            services.AddSingleton<IGameConfig, GameConfig>(sp => Config.GetGameConfig(Configuration));
 
             services.AddScoped<DbContext, GameDbContext>();
 
@@ -141,7 +140,9 @@ namespace SeaBattle.GameResources
                 }
             }
 
-            app.UseErrorLogger();
+            //app.UseMiddleware<SSLBypassMiddleware>();
+
+            //app.UseErrorLogger();
 
             app.UseHttpsRedirection();
 
@@ -154,11 +155,20 @@ namespace SeaBattle.GameResources
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers().RequireAuthorization("ApiScope");
+                endpoints.MapControllers().RequireAuthorization();//.RequireAuthorization("ApiScope");
 
                 endpoints.MapControllerRoute(name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}").RequireAuthorization("ApiScope");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");//.RequireAuthorization("ApiScope");
             });
+        }
+
+        private static HttpClientHandler GetHandler()
+        {
+            var handler = new HttpClientHandler();
+            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            handler.SslProtocols = SslProtocols.Tls12;
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+            return handler;
         }
     }
 }

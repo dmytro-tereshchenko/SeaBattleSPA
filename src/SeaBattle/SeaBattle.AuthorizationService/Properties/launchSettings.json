@@ -14,7 +14,8 @@
       "launchBrowser": true,
       "launchUrl": "",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SPA_CLIENT_DOMAIN": "https://localhost:44391"
       }
     },
     "SeaBattle.AuthorizationService": {
@@ -24,7 +25,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "applicationUrl": "https://localhost:44367;http://localhost:44715",
       "dotnetRunMessages": "true"
     },
     "Docker": {
@@ -32,8 +33,8 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "publishAllPorts": true,
-      "useSSL": true,
       "httpPort": 44715,
+      "useSSL": true,
       "sslPort": 44367
     }
   }

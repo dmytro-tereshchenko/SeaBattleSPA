@@ -15,16 +15,18 @@
       "launchUrl": "weatherforecast/get",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
+        "SPA_CLIENT_DOMAIN": "https://localhost:44391",
+        "TOKEN_SERVER_DOMAIN": "https://localhost:44367"
       }
     },
     "SeaBattle.GameResources": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "weatherforecast/get",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "applicationUrl": "https://localhost:44359;http://localhost:40078",
       "dotnetRunMessages": "true"
     },
     "Docker": {
@@ -32,8 +34,8 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast/get",
       "publishAllPorts": true,
-      "useSSL": true,
       "httpPort": 40078,
+      "useSSL": true,
       "sslPort": 44359
     }
   }
